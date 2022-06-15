@@ -1,0 +1,16 @@
+{
+  "msg": "success",
+  "deviceNum": { "total": 0, "outline": 0, "anomaly": 0, "online": 0 },
+  "deviceType": {
+    "穿墙套管": 0,
+    "断路器": 0,
+    "电流互感器": 0,
+    "隔离开关": 0,
+    "母线": 0
+  },
+  "alarmType": { "高压": 0, "低压": 0, "正常": 0 },
+  "code": 0,
+  "historyList": [],
+  "alarmList": [],
+  "voltLevel": { "750kV": 0, "66kV": 0, "330kV": 0 }
+}
