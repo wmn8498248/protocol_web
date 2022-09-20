@@ -40,12 +40,14 @@
         </template>
       </el-table-column>
     </el-table>
+    
+
     <div class="pagination taR mt20x">
       <el-pagination
         @size-change="onPageSizeChange"
         @current-change="onPageCurrentChange"
         :current-page="pages.pageNum"
-        :page-sizes="[10, 20, 50, 100]"
+        :page-sizes="[5, 10, 20, 50]"
         :page-size="pages.pageSize"
         layout="total, sizes, prev, pager, next, jumper"
         :total="total"
@@ -77,30 +79,25 @@ export default {
     projectId: Number,
   },
 
-  beforeDestroy() {
-    clearTimeout(this.timer);
-  },
   methods: {
     async getData() {
-      clearTimeout(this.timer);
+      // this.pages.pageNum = Number(this.$store.getters.size) || 1
       let { records, total } = await api.thHistoryNews({
         companyId: this.projectId,
-        name: this.name,
+        ...this.searchModel,
         ...this.pages,
       });
       this.total = total;
       this.tableData = records;
-      this.timer = setTimeout(() => {
-        this.getData();
-      }, 30000);
     },
     // 修改列表条数
     onPageSizeChange(e) {
       this.pages.pageSize = e;
       this.getData();
     },
-    // 修改列表页数
+    // 修改列表页数 
     onPageCurrentChange(e) {
+      // this.$store.commit('app/SET_SIZE', e); 
       this.pages.pageNum = e;
       this.getData();
     }, 

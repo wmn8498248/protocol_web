@@ -7,7 +7,7 @@
             class="w180x"
             v-model="searchModel.name"
             type="text"
-            placeholder="主设备别名"
+            placeholder="传感器别名"
           ></el-input>
         </el-form-item>
         <el-form-item label="">
@@ -32,8 +32,8 @@
       <el-table-column prop="immersionValue" label="水浸状态">
         <template slot-scope="{ row }">
           <div>
-            <el-tag type="info" v-if="row.immersionValue == 2"> 无水浸 </el-tag>
-            <el-tag type="success" v-else> 有水浸 </el-tag>
+            <el-tag type="info" v-if="row.immersionValue == 2"> 正常 </el-tag>
+            <el-tag type="success" v-else> 水浸 </el-tag>
           </div>
         </template>
       </el-table-column>
@@ -57,7 +57,7 @@
         @size-change="onPageSizeChange"
         @current-change="onPageCurrentChange"
         :current-page="pages.pageNum"
-        :page-sizes="[10, 20, 50, 100]"
+        :page-sizes="[5, 10, 20, 50]"
         :page-size="pages.pageSize"
         layout="total, sizes, prev, pager, next, jumper"
         :total="total"
@@ -91,16 +91,9 @@ export default {
       tableList: [],
     };
   },
-  created() {
+  activated() {
     this.getList();
   },
-  mounted() {},
-  // destroyed(){
-  //   console.log(2)
-  // },
-  // beforeDestroy(){
-  //   console.log(3)
-  // },
   methods: {
     // 导出表格
     async tableExport() {

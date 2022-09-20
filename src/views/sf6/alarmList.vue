@@ -7,7 +7,7 @@
             class="w180x"
             v-model="searchModel.deviceName"
             type="text"
-            placeholder="主设备别名"
+            placeholder="传感器别名"
           ></el-input>
         </el-form-item>
         <el-form-item label="">
@@ -26,13 +26,14 @@
         </el-form-item>
       </el-form>
     </div>
-
     <el-table height="500px" :data="tableList" stripe style="width: 100%">
       <!-- <el-table-column prop="deviceId" label="传感器编号"> </el-table-column> -->
       <el-table-column prop="deviceName" label="主设备名称"> </el-table-column>
-      <el-table-column prop="deviceId" label="传感器编号">
-      </el-table-column>
-      <el-table-column prop="pressureValue" :label="isAllStatus ? '报警值' : '气压'">
+      <el-table-column prop="deviceId" label="传感器编号"> </el-table-column>
+      <el-table-column
+        prop="pressureValue"
+        :label="isAllStatus ? '报警值' : '气压'"
+      >
       </el-table-column>
       <el-table-column prop="rated" label="额定值"> </el-table-column>
       <!-- <el-table-column prop="updateTime" label="传感器编号"> </el-table-column> -->
@@ -40,12 +41,15 @@
       <el-table-column v-if="isAllStatus" prop="alarmType" label="报警类型">
         <template slot-scope="{ row }">
           <div>
-            {{this.isAllStatus}}
-            <!-- {{ this.typeListName[row.alarmType] ? this.typeListName[row.alarmType] : "无" }} -->
+            {{ typeListName[row.alarmType] ? typeListName[row.alarmType] : "无" }}
           </div>
         </template>
       </el-table-column>
-      <el-table-column v-if="isAllStatus" prop="collectionTime" label="报警时间">
+      <el-table-column
+        v-if="isAllStatus"
+        prop="collectionTime"
+        label="报警时间"
+      >
         <template slot-scope="{ row }">
           <div>
             {{ row.collectionTime ? row.collectionTime : "无" }}
@@ -75,10 +79,10 @@
         </template>
       </el-table-column> -->
 
-      <el-table-column v-if="!isAllStatus" prop="updateTime" label="更新时间">
+      <el-table-column v-if="!isAllStatus" prop="collectionTime" label="更新时间">
         <template slot-scope="{ row }">
           <div>
-            {{ row.updateTime ? row.updateTime : "无" }}
+            {{ row.collectionTime ? row.collectionTime : "无" }}
           </div>
         </template>
       </el-table-column>
@@ -96,7 +100,7 @@
         @size-change="onPageSizeChange"
         @current-change="onPageCurrentChange"
         :current-page="pages.pageNum"
-        :page-sizes="[10, 20, 50, 100]"
+        :page-sizes="[5, 10, 20, 50]"
         :page-size="pages.pageSize"
         layout="total, sizes, prev, pager, next, jumper"
         :total="total"
@@ -123,7 +127,6 @@ export default {
         7: "湿度过高",
         8: "湿度过低",
       },
-      isAllStatus: this.$route.query.alarmType == 0 ? 0 : 1,
       searchModel: {
         deviceName: "",
         deviceNumber: "",
@@ -142,23 +145,23 @@ export default {
       alarmList: [],
     };
   },
-  created() {
+  activated() {
+    this.$emit("close-after", false);
     this.getList();
   },
-  mounted() {},
-  // destroyed(){
-  //   console.log(2)
-  // },
-  // beforeDestroy(){
-  //   console.log(3)
-  // },
+  computed: {
+    isAllStatus() {
+      return this.$route.query.alarmType == 0 ? false : true;
+    },
+  },
   methods: {
     handleHistory(res) {
+      this.$emit("close-after", true);
       let deviceNumber = res.deviceId;
       this.$router.push({
         path: `/sf6/qiya_data`,
         query: {
-          deviceNumber
+          deviceNumber,
         },
       });
     },
@@ -188,12 +191,12 @@ export default {
     // 修改列表条数
     onPageSizeChange(e) {
       this.pages.pageSize = e;
-      this.cutList();
+      this.getList();
     },
     // 修改列表页数
     onPageCurrentChange(e) {
       this.pages.pageNum = e;
-      this.cutList();
+      this.getList();
     },
     // 分割数组
     cutList() {
@@ -203,18 +206,19 @@ export default {
       );
     },
     async getList() {
-       const {alarmType , list} = await api.alarmDate({
+      const { alarmType, page } = await api.alarmDate({
+        dayNum: this.$route.query.times,
+        pageNum: this.pages.pageNum,
+        pageSize: this.pages.pageSize,
         alarmType: this.$route.query.alarmType,
-        dayNum: 365,
         companyId: this.$route.query.companyId,
         deviceName: this.searchModel.deviceName,
         deviceId: this.searchModel.deviceNumber,
-        startTime: this.searchModel.startTime,
-        endTime: this.searchModel.endTime,
+        // startTime: this.searchModel.startTime,
+        // endTime: this.searchModel.endTime,
       });
-      this.tableData = list
-      this.total = this.tableData.length;
-      this.cutList();
+      this.tableList = page.records;
+      this.total = page.total;
       //   this.total = list
     },
   },

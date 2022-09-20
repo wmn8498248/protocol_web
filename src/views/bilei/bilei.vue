@@ -48,7 +48,7 @@ export default {
 			timer: null
 		};
   },
-  mounted() {
+  activated() {
 		this.projectId = this.$route.meta.standId || 0;
 		this.companyId = this.$route.meta.companyId || 0;
 		// this.getData();

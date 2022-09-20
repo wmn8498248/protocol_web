@@ -32,7 +32,7 @@ export default {
   		deviceId: 0,
   	};
   },
-  mounted() {
+  activated() {
   	this.deviceId = this.$route.query.deviceId || 0;
   },
   methods: {

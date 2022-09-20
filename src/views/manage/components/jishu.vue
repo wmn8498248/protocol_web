@@ -34,7 +34,7 @@
       </el-table-column>
     </el-table>
     <div class="pagination taR mt20x">
-      <el-pagination @size-change="onPageSizeChange" @current-change="onPageCurrentChange" :current-page="pages.pageNum" :page-sizes="[10, 20, 50, 100]" :page-size="pages.pageSize" layout="total, sizes, prev, pager, next, jumper" :total="total">
+      <el-pagination @size-change="onPageSizeChange" @current-change="onPageCurrentChange" :current-page="pages.pageNum" :page-sizes="[5, 10, 20, 50]" :page-size="pages.pageSize" layout="total, sizes, prev, pager, next, jumper" :total="total">
       </el-pagination>
     </div>
   </div>

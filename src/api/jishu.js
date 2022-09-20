@@ -54,7 +54,7 @@ export const countingHistoryList = data =>
 // 计数传感器最新数据列表
 export const countingNewList = data =>
   axios.request({
-    url: 'wi/history/list',
+    url: 'wi/history/list123',
     method: 'post',
     data
   });

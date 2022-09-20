@@ -114,7 +114,7 @@
               @size-change="onPageSizeChange"
               @current-change="onPageCurrentChange"
               :current-page="pages.pageNum"
-              :page-sizes="[20, 50, 100, 200]"
+              :page-sizes="[10, 20, 50, 100]"
               :page-size="pages.pageSize"
               layout="total, sizes, prev, pager, next, jumper"
               :total="total"
@@ -223,7 +223,7 @@ export default {
 			return `电流：最大值：${maxN}${unit} 最小值：${minN}${unit} 平均值：${mean.toFixed(3)}${unit}`;
 		}
 	},
-  mounted() {
+  activated() {
     //deviceCode实际上是projectNumber，版本遗留
 		this.deviceCode = this.$route.query.deviceCode || '';
 		this.companyId = this.$route.query.companyId || 0;

@@ -131,7 +131,7 @@ export default {
 			return `温度：最大值：${maxN}${unit} 最小值：${minN}${unit} 平均值：${mean.toFixed(3)}${unit}`;
 		},
 	},
-  mounted() {
+  activated() {
     this.deviceNumber = this.$route.query.deviceNumber || '';
     this.companyId = this.$route.query.companyId || 0;
     this.projectId = this.$route.query.projectId || 0;

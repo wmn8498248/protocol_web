@@ -24,7 +24,7 @@
             <div class="table-item">
               <div class="item-name">水浸值mV</div>
               <div>
-                {{ dataInfo.immersionValue == 1 ? "有水浸" : "无水浸" }}
+                {{ dataInfo.immersionValue == 1 ? "水浸" : "正常" }}
               </div>
             </div>
 
@@ -62,7 +62,7 @@
             </el-table-column>
             <el-table-column prop="immersionValue" label="水浸状态">
               <template slot-scope="{ row }">
-                {{ row.immersionValue == 1 ? "有水浸" : "无水浸" }}
+                {{ row.immersionValue == 1 ? "水浸" : "正常" }}
               </template>
             </el-table-column>
 
@@ -139,7 +139,7 @@ export default {
       endTime: "",
     };
   },
-  mounted() {
+  activated() {
     this.deviceNumber = this.$route.query.deviceNumber || "";
 
     let newDate = new Date().getTime();

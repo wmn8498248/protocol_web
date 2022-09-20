@@ -32,10 +32,16 @@
           <el-table-column prop="userName" label="姓名"> </el-table-column>
           <el-table-column prop="companyList" label="所属公司">
             <template slot-scope="scope">
-              <el-tag type="success" v-for="(item, index) in scope.row.companyList" :key="index" style="padding-right: 3px;">{{item.companyName}}</el-tag>
+              <el-tag
+                type="success"
+                v-for="(item, index) in scope.row.companyList"
+                :key="index"
+                style="padding-right: 3px"
+                >{{ item.companyName }}</el-tag
+              >
             </template>
           </el-table-column>
-          <el-table-column prop="userLevel" label="角色"> 
+          <el-table-column prop="userLevel" label="角色">
             <template slot-scope="{ row }">
               <span v-if="row.userLevel == 0">管理员</span>
               <span v-if="row.userLevel == 1">普通用户</span>
@@ -73,20 +79,19 @@
                 filterable
                 allow-create
                 default-first-option
-                placeholder="请选择公司">
+                placeholder="请选择公司"
+              >
                 <el-option
                   v-for="item in companyOptions"
                   :key="item.companyId"
                   :label="item.companyName"
-                  :value="item.companyId">
+                  :value="item.companyId"
+                >
                 </el-option>
               </el-select>
             </el-form-item>
             <el-form-item label="所属角色" required>
-              <el-select
-                placeholder="用户角色"
-                v-model="userInfo.userLevel"
-              >
+              <el-select placeholder="用户角色" v-model="userInfo.userLevel">
                 <el-option
                   v-for="item in companyList"
                   :key="item.value"
@@ -96,10 +101,12 @@
                 </el-option>
               </el-select>
             </el-form-item>
-            
+
             <el-form-item>
               <el-button @click="saveUser" class="btn-create">保存</el-button>
-              <el-button @click="activeName = '1'" class="btn-cancel">取消</el-button>
+              <el-button @click="activeName = '1'" class="btn-cancel"
+                >取消</el-button
+              >
             </el-form-item>
           </el-form>
         </div>
@@ -127,9 +134,12 @@ export default {
       },
       total: 0,
       tableData: [],
-      companyId: '',
+      companyId: "",
       projectId: [],
-      companyList: [{label: '管理员', value: 0 },{label: '普通用户', value: 1}],
+      companyList: [
+        { label: "管理员", value: 0 },
+        { label: "普通用户", value: 1 },
+      ],
       siteList: [],
       userInfo: {
         companyIdList: [],
@@ -139,34 +149,31 @@ export default {
       },
     };
   },
-  mounted() {
+  activated() {
     this.getUserList();
   },
   methods: {
-    handleClick(){
+    handleClick() {
       if (this.activeName == 1) {
         this.getUserList();
-      } else if(this.activeName == 2) {
-        this.getSiteList()
+      } else if (this.activeName == 2) {
+        this.getSiteList();
       }
     },
     async getSiteList() {
-
       this.companyOptions = await api.projectList();
-
-     
     },
-    changePassword() { 
-      this.$prompt('请输入新密码', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-      }).then(async ({ value }) => {
-        await api.userUpdate(this.userInfo);
-        
-				await this.$message.success("保存成功");
-      }).catch(() => {
-     
-      });
+    changePassword() {
+      this.$prompt("请输入新密码", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+      })
+        .then(async ({ value }) => {
+          await api.userUpdate(this.userInfo);
+
+          await this.$message.success("保存成功");
+        })
+        .catch(() => {});
     },
     chooseCompany(item) {
       this.siteList = item.role;
@@ -181,12 +188,12 @@ export default {
       this.tableData = dataList;
     },
     async editUser(userId) {
-			this.$router.push({
-				path: `/manage/staff-edit`,
-				query: {
-					userId
-				}
-			});
+      this.$router.push({
+        path: `/manage/staff-edit`,
+        query: {
+          userId,
+        },
+      });
     },
     async saveUser() {
       // this.userInfo.companyId = this.companyId.companyId;
@@ -198,47 +205,49 @@ export default {
 
       validator.add(this.userInfo.password, ["isNonEmpty", "密码不能为空"]);
       validator.add(this.userInfo.userLevel, ["isNonEmpty", "请选择角色"]);
-      
+
       // validator.add(this.siteInfo.address, ["isNonEmpty", "详细地址不能为空"]);
       let msg = validator.start();
       if (msg) {
         this.$message.warning(msg);
-      }else {
-        console.log(this.userInfo, 1234)
-
-      	await api.userSave(this.userInfo);
-      	this.$message.success("保存成功");
-      	this.getUserList();
-      	this.activeName = '1';
+      } else {
+        await api.userSave(this.userInfo);
+        this.$message.success("保存成功");
+        this.getUserList();
+        this.userInfo.userName = "";
+        this.userInfo.password = "";
+        this.userInfo.companyIdList = [];
+        this.userInfo.userLevel = 1;
+        this.activeName = "1";
       }
     },
-		// 修改列表条数
-		onPageSizeChange(e) {
-			this.pages.pageSize = e;
-			this.getUserList();
-		},
-		// 修改列表页数
-		onPageCurrentChange(e) {
-			this.pages.pageNum = e;
-			this.getUserList();
-		},
-		// 删除员工
-		deleteUser(userId) {
-			this.$confirm('确定删除该账号?', '提示', {
-				confirmButtonText: '确定',
-				cancelButtonText: '取消',
-				type: 'warning'
-			}).then(async () => {
-				let data = {
-				  userId: userId,
-				};
-				await api.userDelete(data);
-				this.$message.success("删除成功");
-				this.getUserList();
-			}).catch(() => {
-				
-			});
-		}
+    // 修改列表条数
+    onPageSizeChange(e) {
+      this.pages.pageSize = e;
+      this.getUserList();
+    },
+    // 修改列表页数
+    onPageCurrentChange(e) {
+      this.pages.pageNum = e;
+      this.getUserList();
+    },
+    // 删除员工
+    deleteUser(userId) {
+      this.$confirm("确定删除该账号?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
+        .then(async () => {
+          let data = {
+            userId: userId,
+          };
+          await api.userDelete(data);
+          this.$message.success("删除成功");
+          this.getUserList();
+        })
+        .catch(() => {});
+    },
   },
 };
 </script>
@@ -378,4 +387,3 @@ export default {
   }
 }
 </style>
-

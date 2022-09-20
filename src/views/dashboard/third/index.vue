@@ -17,7 +17,7 @@
               </p>
               <p>
                 <span @click="numListClick(1)"
-                  >正常：<i>{{ deviceNum.onLine }}</i></span
+                  >在线：<i>{{ deviceNum.onLine }}</i></span
                 ><span @click="numListClick(0)"
                   >离线：<i>{{ deviceNum.outLine }}</i></span
                 >
@@ -166,8 +166,8 @@
         <div class="home-box flex10">
           <div class="box-title">
             <img class="itemImg" src="../../../assets/images/sb6.png" />历史曲线
-            <span class="right">温度: ℃&emsp;湿度: %</span>
-            <!-- <span class="right">气压: KPa</span> -->
+            <span class="right">温度: ℃&emsp;</span>
+            <!-- <span class="right">气压: MPa</span> -->
           </div>
           <div class="box-container">
             <div ref="chart4" style="width: 100%; height: 100%"></div>
@@ -281,12 +281,12 @@ export default {
     this.getDataOut();
   },
   destroyed() {
-    clearTimeout(this.nowDateId);
+    clearInterval(this.nowDateId);
   },
   methods: {
     getDataOut() {
       let that = this;
-      clearTimeout(this.nowDateId);
+      clearInterval(this.nowDateId);
       this.nowDateId = setInterval(() => {
         that.getData();
       }, 300000);
@@ -294,9 +294,10 @@ export default {
     numListClick(res) {
       this.$emit("moreInfoPopup", "设备数量");
       this.$router.push({
-        path: "/bt/quantity",
+        path: "/bt/mix",
         query: {
-          lineState: res,
+          type: "status",
+          params: res,
           companyId: this.companyId,
         },
       });
@@ -342,9 +343,12 @@ export default {
     async getList() {
       this.dataDetailsList = [];
 
-      const { list } = await api.tcDeviceHistoryList({
+      const { page } = await api.tcDeviceHistoryList({
         companyId: this.companyId,
+        pageNum: 1,
+        pageSize: 100,
       });
+      let list = page.records
 
       if (list.length > 7) {
         this.newDataOption.step = 1;
@@ -879,11 +883,12 @@ export default {
         ],
       });
       this.myChart1.on("click", function (param) {
-        that.$emit("moreInfoPopup", "电压等级:" + param.name);
+        that.$emit("moreInfoPopup", "电压等级:" + param.name + "(V)");
         that.$router.push({
-          path: "/bt/grade",
+          path: "/bt/mix",
           query: {
-            voltLevel: param.name,
+            type: "voltLevel",
+            params: param.name,
             companyId: that.companyId,
           },
         });
@@ -972,14 +977,14 @@ export default {
       this.myChart2.on("click", function (param) {
         that.$emit("moreInfoPopup", "设备类型：" + param.name);
         that.$router.push({
-          path: "/bt/equipmentType",
+          path: "/bt/mix",
           query: {
-            deviceClassify: param.name,
+            type: "deviceClassify",
+            params: param.name,
             companyId: that.companyId,
           },
         });
       });
-      console.log(12345);
       this.getList();
       // this.chart5Refresh(historyAlarmCount, "");
     },

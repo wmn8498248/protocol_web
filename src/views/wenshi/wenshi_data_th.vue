@@ -112,8 +112,8 @@ export default {
       tableData: [],
       tableList: [],
       onload: false,
-      startTime:moment().startOf("day").format("YYYY-MM-DD HH:mm:ss"),
-			endTime: moment().endOf("day").format("YYYY-MM-DD HH:mm:ss"),
+      startTime: moment().startOf("day").format("YYYY-MM-DD HH:mm:ss"),
+      endTime: moment().endOf("day").format("YYYY-MM-DD HH:mm:ss"),
     };
   },
   watch: {
@@ -165,10 +165,10 @@ export default {
       )}${unit}`;
     },
   },
-  mounted() {
+  activated() {
     // this.initEchart();
     this.deviceNumber = this.$route.query.deviceNumber || "";
-    
+
     this.activeName = "1";
     this.getData();
   },
@@ -184,7 +184,7 @@ export default {
         startTime: this.startTime,
         endTime: this.endTime,
       });
-      this.tableData = this.tableData.reverse()
+      this.tableData = this.tableData.reverse();
       this.total = this.tableData.length;
       this.cutList();
       this.initEchart();
@@ -223,6 +223,16 @@ export default {
         legend: {
           data: ["温度", "湿度"],
         },
+
+        tooltip: {
+          trigger: "axis",
+          axisPointer: {
+            type: "cross",
+            label: {
+              backgroundColor: "#6a7985",
+            },
+          },
+        },
         grid: {
           top: 52,
           left: 66,
@@ -234,7 +244,7 @@ export default {
           boundaryGap: false,
           data: this.tableData
             .map((item) => {
-              return item.createTime || "--";
+              return item.collectionTime || "--";
             })
             .reverse(),
           splitLine: {

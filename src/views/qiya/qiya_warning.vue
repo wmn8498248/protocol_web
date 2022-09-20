@@ -19,7 +19,7 @@
             ></el-table-column>
             <el-table-column
               prop="pressure"
-              label="压力值(KPa)"
+              label="压力值(MPa)"
             ></el-table-column>
             <el-table-column
               prop="address"
@@ -31,7 +31,7 @@
               @size-change="onPageSizeChange"
               @current-change="onPageCurrentChange"
               :current-page="pages.pageNum"
-              :page-sizes="[5, 10, 20, 50, 100]"
+              :page-sizes="[5, 5, 10, 20, 50]"
               :page-size="pages.pageSize"
               layout="total, sizes, prev, pager, next, jumper"
               :total="total"
@@ -96,7 +96,7 @@ export default {
       onload: false,
     };
   },
-  mounted() {
+  activated() {
     this.deviceId = this.$route.query.deviceId || 0;
     this.deviceNumber = this.$route.query.deviceNumber || 0;
     this.getList();
@@ -215,7 +215,7 @@ export default {
         },
         yAxis: {
           type: "value",
-          name: "压力/KPa",
+          name: "压力/MPa",
           splitLine: {
             show: false,
           },

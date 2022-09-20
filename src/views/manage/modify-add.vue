@@ -54,6 +54,7 @@
         </el-form-item>
       </el-form>
     </div>
+    <div class="search-container" v-else>网关不存在去添加网关</div>
   </div>
 </template>
 <script>
@@ -62,7 +63,7 @@ import * as api from "@/api/shengsuo";
 import { getToken } from "@/utils/auth";
 
 export default {
-  name: "Shengsuo_edit",
+  name: "Modify-add",
   data: function () {
     return {
       deviceType: "",
@@ -76,7 +77,7 @@ export default {
       fileList: [],
       rulesAnalysis: {
         gatewayId: [
-          { required: true, message: "请输入网关Id", trigger: "blur" },
+          { required: true, message: "请输入网关Id", trigger: ["blur", "change"] },
         ],
       },
 
@@ -103,7 +104,7 @@ export default {
       };
     },
   },
-  mounted() {
+  activated() {
     this.projectId = this.$route.query.projectId || 0;
     this.getCompanyList();
   },
@@ -136,8 +137,8 @@ export default {
       this.fileList = []
     },
     handlePreview() {
-      this.actionUrl =
-        "http://tx2.yuanguaniot.com/protocol/tc/device/batchSave";
+      // this.actionUrl =
+      //   "http://tx2.yuanguaniot.com/protocol/tc/device/batchSave";
       console.log(this.actionUrl);
     },
     batchExcel() {
@@ -177,6 +178,8 @@ export default {
   position: relative;
   display: flex;
   justify-content: center;
+  .none-gateway{
+  }
   .title {
     color: #fff;
     font-size: 13px;
@@ -188,6 +191,7 @@ export default {
     color: #fff;
   }
   >>> .search-container {
+    color: #fff;
     margin-top: 120px;
     .tip {
       font-size: 14px;

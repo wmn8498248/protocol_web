@@ -359,9 +359,7 @@ export default {
       this.countTime = 30;
     }, 30000);
   },
-  destroyed() {
-    console.log("destroyed");
-  },
+  
   deactivated() {
     console.log("deactivated");
   },
@@ -762,7 +760,7 @@ export default {
             data: [
               {
                 value: 58.46,
-                name: "Kpa",
+                name: "MPa",
               },
             ],
           },
@@ -968,7 +966,7 @@ export default {
         },
         series: [
           {
-            name: "气压(Kpa)",
+            name: "气压(MPa)",
             type: "line",
             data: this.devicepressure[this.equipmentName],
             symbol: "ture",

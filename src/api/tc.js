@@ -1,4 +1,13 @@
-import axios from "@/utils/ajaxRequest";
+import axios from "@/utils/ajaxRequest"; 
+
+export const getTcListMix = (data) =>
+  axios.request({
+    url: "tc/index/list/mix",
+    method: "get",
+    params: {
+      ...data,
+    },
+  });
 
 export const alarmExport = (data) =>
   axios.request({

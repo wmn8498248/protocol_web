@@ -6,7 +6,7 @@
           <el-input
             type="text"
             v-model="searchModel.deviceId"
-            placeholder="设备编号"
+            placeholder="传感器编号"
           ></el-input>
         </el-form-item>
 
@@ -31,6 +31,7 @@
       <el-table-column prop="updateTime" label="更新时间"> </el-table-column>
       <el-table-column label="操作" width="250">
         <template slot-scope="{ row }">
+          <el-button class="btn-data" size="mini" @click="upgrade('bt/offset',row.deviceId)">远程升级</el-button>
           <!-- <el-button class="btn-data" size="mini" @click="toSet(row.deviceId)">远程升级</el-button> -->
           <el-button
             class="btn-detail"
@@ -52,7 +53,7 @@
         @size-change="onPageSizeChange"
         @current-change="onPageCurrentChange"
         :current-page="pages.pageNum"
-        :page-sizes="[10, 20, 50, 100]"
+        :page-sizes="[5, 10, 20, 50]"
         :page-size="pages.pageSize"
         layout="total, sizes, prev, pager, next, jumper"
         :total="total"
@@ -85,6 +86,15 @@ export default {
     };
   },
   methods: {
+    upgrade(deviceType,deviceId){
+      this.$router.push({
+        path: "/manage/upgrade_setting",
+        query: {
+          deviceType,
+          deviceId
+        },
+      });
+    },
     async getList() {
       let data = {
         companyId: this.projectId,

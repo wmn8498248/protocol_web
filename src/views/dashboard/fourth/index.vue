@@ -17,7 +17,7 @@
               </p>
               <p>
                 <span @click="numListClick(0)"
-                  >正常：<i>{{ deviceNum.online }}</i></span
+                  >在线：<i>{{ deviceNum.online }}</i></span
                 ><span @click="numListClick(1)"
                   >离线：<i>{{ deviceNum.outline }}</i></span
                 >
@@ -166,7 +166,7 @@
           <div class="box-title">
             <img class="itemImg" src="../../../assets/images/sb6.png" />历史曲线
             <span class="right">长度: mm&emsp;温度: ℃</span>
-            <!-- <span class="right">气压: KPa</span> -->
+            <!-- <span class="right">气压: MPa</span> -->
           </div>
           <div class="box-container">
             <div ref="chart4" style="width: 100%; height: 100%"></div>
@@ -256,10 +256,6 @@ export default {
       this.handlerMouserScroll
     );
   },
-  // destroyed() {
-  // },
-  // beforeCreate() {
-  // },
   created() {
     let that = this;
     this.$nextTick(() => {
@@ -268,12 +264,12 @@ export default {
     this.getDataOut();
   },
   destroyed() {
-    clearTimeout(this.nowDateId);
+    clearInterval(this.nowDateId);
   },
   methods: {
     getDataOut() {
       let that = this;
-      clearTimeout(this.nowDateId);
+      clearInterval(this.nowDateId);
       this.nowDateId = setInterval(() => {
         that.getData();
       }, 300000);
@@ -888,7 +884,7 @@ export default {
         ],
       });
       this.myChart1.on("click", function (param) {
-        that.$emit("moreInfoPopup", "电压等级:" + param.name);
+        that.$emit("moreInfoPopup", "电压等级:" + param.name + "(V)");
         that.$router.push({
           path: "/tj/grade",
           query: {

@@ -58,7 +58,7 @@
             <span>{{ humidityData }}</span>
           </div>
           <el-table :data="tableList" stripe style="width: 100%">
-            <el-table-column prop="updateTime" label="时间"></el-table-column>
+            <el-table-column prop="createTime" label="时间"></el-table-column>
             <el-table-column
               prop="deviceName"
               label="传感器别名"
@@ -69,14 +69,13 @@
               prop="humidity"
               label="湿度（%rh）"
             ></el-table-column>
-           
           </el-table>
           <div class="pagination taR mt20x">
             <el-pagination
               @size-change="onPageSizeChange"
               @current-change="onPageCurrentChange"
               :current-page="pages.pageNum"
-              :page-sizes="[20, 50, 100, 200]"
+              :page-sizes="[10, 20, 50, 100]"
               :page-size="pages.pageSize"
               layout="total, sizes, prev, pager, next, jumper"
               :total="total"
@@ -146,8 +145,8 @@ export default {
         pageNum: 1,
         pageSize: 20,
       },
-      startTime:moment().startOf("day").format("YYYY-MM-DD HH:mm:ss"),
-			endTime: moment().endOf("day").format("YYYY-MM-DD HH:mm:ss"),
+      startTime: moment().startOf("day").format("YYYY-MM-DD HH:mm:ss"),
+      endTime: moment().endOf("day").format("YYYY-MM-DD HH:mm:ss"),
       total: 0,
       tableData: [],
       tableList: [],
@@ -203,7 +202,7 @@ export default {
       )}${unit}`;
     },
   },
-  mounted() {
+  activated() {
     this.deviceNumber = this.$route.query.deviceNumber || "";
     this.companyId = this.$route.query.companyId || 0;
     this.projectId = this.$route.query.projectId || 0;
@@ -214,8 +213,12 @@ export default {
     async getData() {
       this.dataInfo = await api.temperatureControlDataInfo({
         deviceId: this.deviceNumber,
-        // deviceId: "9c65f9ffa2b10001",
       });
+
+      if (this.dataInfo === null) {
+        this.activeName = "2";
+        this.getList();
+      } 
     },
     async getList() {
       this.tableData = await api.temperatureControlHistoryList({
@@ -224,7 +227,7 @@ export default {
         startTime: this.startTime,
         endTime: this.endTime,
       });
-      this.tableData = this.tableData.reverse()
+      this.tableData = this.tableData.reverse();
       this.total = this.tableData.length;
       this.cutList();
       this.initEchart();

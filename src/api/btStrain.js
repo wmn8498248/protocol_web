@@ -1,5 +1,14 @@
 import axios from "@/utils/ajaxRequest";
 
+export const getBtStrainMix = (data) => 
+  axios.request({
+    url: "bt/strain/index/list/mix",
+    method: "get",
+    params: {
+      ...data,
+    },
+  });
+
 export const alarmExport = (data) =>
   axios.request({
     url: "tc/alarm/export",

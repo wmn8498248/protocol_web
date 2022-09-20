@@ -10,14 +10,14 @@
           </div>
           <div class="box-container box-container-num">
             <div class="container-num-table">
-              <p class="first">
+              <p class="first"> 
                 <span
                   >总数：<i>{{ deviceNum.total }}</i></span
                 >
               </p>
               <p>
                 <span @click="numListClick(1)"
-                  >正常：<i>{{ deviceNum.onLine }}</i></span
+                  >在线：<i>{{ deviceNum.onLine }}</i></span
                 ><span @click="numListClick(0)"
                   >离线：<i>{{ deviceNum.outLine }}</i></span
                 >
@@ -167,7 +167,7 @@
           <div class="box-title">
             <img class="itemImg" src="../../../assets/images/sb6.png" />历史曲线
             <span class="right">温度: ℃&emsp;湿度: %</span>
-            <!-- <span class="right">气压: KPa</span> -->
+            <!-- <span class="right">气压: MPa</span> -->
           </div>
           <div class="box-container">
             <div ref="chart4" style="width: 100%; height: 100%"></div>
@@ -281,12 +281,12 @@ export default {
     this.getDataOut();
   },
   destroyed() {
-    clearTimeout(this.nowDateId);
+    clearInterval(this.nowDateId);
   },
   methods: {
     getDataOut() {
       let that = this;
-      clearTimeout(this.nowDateId);
+      clearInterval(this.nowDateId);
       this.nowDateId = setInterval(() => {
         that.getData();
       }, 300000);
@@ -882,7 +882,7 @@ export default {
         ],
       });
       this.myChart1.on("click", function (param) {
-        that.$emit("moreInfoPopup", "电压等级:" + param.name);
+        that.$emit("moreInfoPopup", "电压等级:" + param.name + "(V)");
         that.$router.push({
           path: "/bt/grade",
           query: {

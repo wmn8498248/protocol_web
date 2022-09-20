@@ -19,6 +19,7 @@
             type="text"
             minlength="8"
             v-model="info.deviceId"
+            :readonly="type == 'edit'"
           ></el-input>
         </el-form-item>
         <el-form-item required label="传感器别名" prop="deviceName">
@@ -28,10 +29,12 @@
         <el-form-item required label="网关Id" prop="gatewayId">
           <el-select v-model="info.gatewayId" clearable placeholder="请选择">
             <el-option
+              :disabled="type == 'edit'"
               v-for="item in gatewayIdList"
               :key="item.id"
               :label="item.netName"
-              :value="item.id">
+              :value="item.id"
+            >
             </el-option>
           </el-select>
         </el-form-item>
@@ -44,7 +47,7 @@
           <el-input type="number" v-model="info.voltLevel"></el-input>
         </el-form-item>
 
-        <el-form-item label="经度" prop="longitude" >
+        <el-form-item label="经度" prop="longitude">
           <el-input type="number" v-model="info.longitude"></el-input>
         </el-form-item>
 
@@ -52,31 +55,31 @@
           <el-input type="number" v-model="info.latitude"></el-input>
         </el-form-item>
 
-        <el-form-item label="温补系数" prop="tco">
+        <el-form-item label="tcoOffset" prop="tco">
           <el-input type="number" v-model="info.tco"></el-input>
         </el-form-item>
 
-        <el-form-item label="KPaOffset" prop="offset">
+        <el-form-item label="Offset" prop="offset">
           <el-input type="number" v-model="info.offset"></el-input>
         </el-form-item>
 
-        <el-form-item label="额定值" prop="rated">
+        <el-form-item label="额定值(MPa)" prop="rated">
           <el-input type="number" v-model="info.rated"></el-input>
         </el-form-item>
 
-        <el-form-item label="量程最小值(KPa)" prop="num1">
+        <el-form-item label="量程最小值(MPa)" prop="num1">
           <el-input type="number" v-model="info.num1"></el-input>
         </el-form-item>
 
-        <el-form-item label="量程最大值(KPa)" prop="num4">
+        <el-form-item label="量程最大值(MPa)" prop="num4">
           <el-input type="number" v-model="info.num4"></el-input>
         </el-form-item>
 
-        <el-form-item label="低压值(KPa)" prop="num2">
+        <el-form-item label="低压值(MPa)" prop="num2">
           <el-input type="number" v-model="info.num2"></el-input>
         </el-form-item>
 
-        <el-form-item label="高压值(KPa)" prop="num3">
+        <el-form-item label="高压值(MPa)" prop="num3">
           <el-input type="number" v-model="info.num3"></el-input>
         </el-form-item>
 
@@ -99,26 +102,56 @@ export default {
       gatewayIdList: [],
       rulesAnalysis: {
         devicePrefix: [
-          { required: true, message: "请输入传感器前缀", trigger: "blur" },
+          {
+            required: true,
+            message: "请输入传感器前缀",
+            trigger: ["blur", "change"],
+          },
         ],
         deviceId: [
-          { required: true, message: "请输入传感器编号", trigger: "blur" },
-          { min: 6, max: 100, message: "长度在 6 字符以上", trigger: "blur" },
+          {
+            required: true,
+            message: "请输入传感器编号",
+            trigger: ["blur", "change"],
+          },
+          {
+            min: 6,
+            max: 100,
+            message: "长度在 6 字符以上",
+            trigger: ["blur", "change"],
+          },
         ],
         deviceName: [
-          { required: true, message: "请输入传感器别名", trigger: "blur" },
+          {
+            required: true,
+            message: "请输入传感器别名",
+            trigger: ["blur", "change"],
+          },
         ],
         gatewayId: [
-          { required: true, message: "请输入网关Id", trigger: "blur" },
+          {
+            required: true,
+            message: "请输入网关Id",
+            trigger: ["blur", "change"],
+          },
         ],
         deviceClassify: [
-          { required: true, message: "请输入设备分类", trigger: "blur" },
+          {
+            required: true,
+            message: "请输入设备分类",
+            trigger: ["blur", "change"],
+          },
         ],
         voltLevel: [
-          { required: true, message: "请输入电压分类", trigger: "blur" },
+          {
+            required: true,
+            message: "请输入电压分类",
+            trigger: ["blur", "change"],
+          },
         ],
       },
       info: {
+        devicePrefix: "",
         deviceId: "",
         deviceName: "",
         gatewayId: null,
@@ -140,17 +173,16 @@ export default {
       projectId: 0, //站点id
     };
   },
-  mounted() {
+  activated() {
     this.companyId = this.$route.query.companyId || 0;
     this.projectId = this.$route.query.projectId || 0;
     this.deviceId = this.$route.query.deviceId || 0;
     this.type = this.$route.query.type || "add";
 
-    this.getCompanyList()
+    this.getCompanyList();
 
-    if (this.type == "edit") {
-      this.getInfo();
-    }
+    this.getInfo();
+    
   },
   methods: {
     async getCompanyList() {
@@ -158,21 +190,41 @@ export default {
         companyId: this.projectId,
       };
       this.gatewayIdList = await api.companyList(data);
-
     },
 
     coefficient() {
       console.log("coefficient____TCU");
     },
     async getInfo() {
-      let data = {
-        id: this.deviceId,
-      };
-      this.info = await api.pressureInfo(data);
+      this.info.devicePrefix = "";
+      this.info.deviceId = "";
+      this.info.deviceName = "";
+      this.info.gatewayId = null;
+      this.info.longitude = "";
+      this.info.offset = "";
+      this.info.num4 = "";
+      this.info.num2 = "";
+      this.info.rated = "";
+      this.info.deviceClassify = "";
+      this.info.num3 = "";
+      this.info.latitude = "";
+      this.info.tco = "";
+      this.info.voltLevel = "";
+      this.info.num1 = "";
+      if (this.type == "edit") {
+          let data = {
+          id: this.deviceId,
+        };
+        this.info = await api.pressureInfo(data);
+      }
+      
     },
     async toSave() {
       let validator = new Validator();
-      validator.add(this.info.devicePrefix, ["isNonEmpty", "传感器前缀不能为空"]);
+      validator.add(this.info.devicePrefix, [
+        "isNonEmpty",
+        "传感器前缀不能为空",
+      ]);
       validator.add(this.info.deviceId, ["isNonEmpty", "传感器编号不能为空"]);
       validator.add(this.info.deviceName, ["isNonEmpty", "传感器别名不能为空"]);
       validator.add(this.info.gatewayId, ["isNonEmpty", "网关Id不能为空"]);
@@ -187,7 +239,6 @@ export default {
         this.$message.warning(msg);
       } else {
         if (this.type == "edit") {
-    
           await api.pressureUpdate({
             ...this.info,
             // gatewayId: this.companyId,

@@ -49,13 +49,11 @@ export default {
       }
     },
   },
-  activated() {
-    // this.getList();
-  },
+ 
   beforeDestroy() {
     clearTimeout(this.timer);
   },
-  mounted() {
+  activated() {
     this.getList();
   },
   methods: {

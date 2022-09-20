@@ -1,6 +1,6 @@
 <template>
   <div class="profile">
-    <!-- <img class="profile-img" src="../../../assets/images/pp_bg.png" alt="" /> -->
+    <img class="profile-img" src="../../../assets/images/pp_bg.png" alt="" />
     <div class="profile-closed" @click="goBack">关闭</div>
     <!-- <div class="profile-con">
       <p class="title">公司简介</p>

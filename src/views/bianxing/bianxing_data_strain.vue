@@ -156,7 +156,7 @@ export default {
       }
     },
   },
-  mounted() {
+  activated() {
     this.deviceNumber = this.$route.query.deviceNumber || "";
     this.companyId = this.$route.query.companyId || 0;
     this.projectId = this.$route.query.projectId || 0;

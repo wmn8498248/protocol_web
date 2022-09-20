@@ -104,7 +104,7 @@
               @size-change="onPageSizeChange"
               @current-change="onPageCurrentChange"
               :current-page="pages.pageNum"
-              :page-sizes="[20, 50, 100, 200]"
+              :page-sizes="[10, 20, 50, 100]"
               :page-size="pages.pageSize"
               layout="total, sizes, prev, pager, next, jumper"
               :total="total"
@@ -212,11 +212,11 @@ export default {
 			    sumC += arrC[i];
 			}
 			let meanC = sumC / arrC.length;
-			let unit = 'KPa';
+			let unit = 'MPa';
 			return `动作次数：最大值：A:${maxNA}${unit}, B:${maxNB}${unit}, C:${maxNC}${unit}  最小值：A:${minNA}${unit}, B:${minNB}${unit}, C:${minNC}${unit}  平均值：A:${meanA.toFixed(3)}${unit}, B:${meanB.toFixed(3)}${unit}, C:${meanC.toFixed(3)}${unit}`;
 		},
 	},
-  mounted() {
+  activated() {
     this.deviceNumber = this.$route.query.deviceNumber || '';
     this.companyId = this.$route.query.companyId || 0;
     this.projectId = this.$route.query.projectId || 0;

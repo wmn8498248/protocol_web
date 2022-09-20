@@ -9,7 +9,7 @@
       <el-form label-width="160px" :model="info" :rules="rulesAnalysis">
         <el-form-item label="传感器类型"> 无线伸缩节传感器 </el-form-item>
         <el-form-item label="传感器编号" required prop="deviceId">
-          <el-input type="text" v-model="info.deviceId"></el-input>
+          <el-input type="text" v-model="info.deviceId" :readonly="type == 'edit'"></el-input>
         </el-form-item>
 
         <el-form-item label="传感器别名" required="" prop="deviceName">
@@ -19,6 +19,7 @@
         <el-form-item required label="网关Id" prop="gatewayId">
           <el-select v-model="info.gatewayId" clearable placeholder="请选择">
             <el-option
+              :disabled="type == 'edit'"
               v-for="item in gatewayIdList"
               :key="item.id"
               :label="item.netName"
@@ -63,20 +64,20 @@ export default {
 
       rulesAnalysis: {
         deviceId: [
-          { required: true, message: "请输入传感器编号", trigger: "blur" },
-          { min: 6, max: 100, message: "长度在 6 字符以上", trigger: "blur" },
+          { required: true, message: "请输入传感器编号", trigger: ["blur", "change"] },
+          { min: 6, max: 100, message: "长度在 6 字符以上", trigger: ["blur", "change"] },
         ],
         deviceName: [
-          { required: true, message: "请输入传感器别名", trigger: "blur" },
+          { required: true, message: "请输入传感器别名", trigger: ["blur", "change"] },
         ],
         gatewayId: [
-          { required: true, message: "请输入网关Id", trigger: "blur" },
+          { required: true, message: "请输入网关Id", trigger: ["blur", "change"] },
         ],
         deviceClassify: [
-          { required: true, message: "请输入设备分类", trigger: "blur" },
+          { required: true, message: "请输入设备分类", trigger: ["blur", "change"] },
         ],
         voltLevel: [
-          { required: true, message: "请输入电压分类", trigger: "blur" },
+          { required: true, message: "请输入电压分类", trigger: ["blur", "change"] },
         ],
       },
       info: {
@@ -97,16 +98,14 @@ export default {
       projectId: 0, //站点id
     };
   },
-  mounted() {
+  activated() {
     this.companyId = this.$route.query.companyId || 0;
     this.projectId = this.$route.query.projectId || 0;
     this.deviceId = this.$route.query.deviceId || 0;
     this.type = this.$route.query.type || "add";
     this.getCompanyList();
-
-    if (this.type == "edit") {
-      this.getInfo();
-    }
+    this.getInfo();
+    
   },
   methods: {
     
@@ -117,10 +116,21 @@ export default {
       this.gatewayIdList = await api.companyList(data);
     },
     async getInfo() {
-      let data = {
-        id: this.deviceId,
-      };
-      this.info = await api.telescopicJointInfo(data);
+      this.info.deviceId = "";
+      this.info.deviceName = "";
+      this.info.gatewayId = null;
+      this.info.deviceClassify = "";
+      this.info.voltLevel = "";
+      this.info.longitude = "";
+      this.info.latitude = "";
+
+      if (this.type == "edit") {
+        let data = {
+          id: this.deviceId,
+        };
+        this.info = await api.telescopicJointInfo(data);
+      }
+      
     },
     async toSave() {
       let validator = new Validator();

@@ -23,7 +23,7 @@
           <div class="data-table">
             <div class="table-item">
               <div class="item-name">温度（°C）</div>
-              <div>{{ dataInfo.temperature }}</div>
+              <div>{{ dataInfo.temperature }}</div> 
             </div>
             <div class="table-item">
               <div class="item-name">湿度（%rh）</div>
@@ -111,7 +111,7 @@ export default {
       status: "",
       statusName: "",
       updateTime: "",
-      humidity: "",
+      humidity: "", 
       temperature: "",
       address: "",
       longitude: "",
@@ -177,7 +177,7 @@ export default {
       )}${unit}`;
     },
   },
-  mounted() {
+  activated() {
     this.deviceNumber = this.$route.query.deviceNumber || "";
     this.companyId = this.$route.query.companyId || 0;
     this.projectId = this.$route.query.projectId || 0;
@@ -237,7 +237,7 @@ export default {
           boundaryGap: false,
           data: this.tableData
             .map((item) => {
-              return item.createTime || "--";
+              return item.collectionTime || "--";
             })
             .reverse(),
           splitLine: {

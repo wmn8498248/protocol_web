@@ -30,7 +30,6 @@ import Layout from "@/layout/index.vue";
 
 // 常量路由
 export const constantRoutes = [
-
   {
     path: "/login",
     component: () => import("@/views/front/Login"),
@@ -60,391 +59,504 @@ export const constantRoutes = [
       {
         path: "indexHome",
         name: "indexHome",
-        meta: { title: "XXXXXXXXXXXXXX平台-大屏监控", icon: "screen", affix: true },
+        meta: {
+          title: "大屏监控",
+          icon: "screen",
+          // affix: true,
+        },
         hidden: true,
         // hidden: true
       },
       {
-        path: '/sf6/qiya_data',
-        component: () => import('@/views/qiya/qiya_data_sf6'),
-        name: 'Qiya_data_sf6',
+        path: "/temp/mix",
+        component: () => import("@/views/temp/mix"),
+        name: "Temp_mix",
+        meta: { title: "数据详情", icon: "theme" },
+        hidden: true,
+      },
+      {
+        path: "/temp/alarmList",
+        component: () => import("@/views/temp/alarmList"),
+        name: "Temp_alarmList",
+        meta: { title: "数据详情", icon: "theme" },
+        hidden: true,
+      },
+      {
+        path: "/temp/temp_data",
+        component: () => import("@/views/wenduyg/wendu_data"),
+        name: "Wenduyg_data_sf6",
         meta: {
-          icon: 'theme',
-          title: '监测监控图'
-        },
-        hidden: true
-      },
-      
-      {
-        path: '/sf6/alarmList',
-        component: () => import('@/views/sf6/alarmList'),
-        name: 'alarmList',
-        meta: { title: '数据详情', icon: 'theme' },
-        hidden: true
-      },
-      {
-        path: '/sf6/alarmType',
-        component: () => import('@/views/sf6/alarmType'),
-        name: 'alarmType',
-        meta: { title: '设备报警', icon: 'theme' },
-        hidden: true
-      },
-      {
-        path: '/sf6/equipmentType',
-        component: () => import('@/views/sf6/equipmentType'),
-        name: 'equipmentType',
-        meta: { title: '设备类型', icon: 'theme' },
-        hidden: true
-      },
-      {
-        path: '/sf6/grade',
-        component: () => import('@/views/sf6/grade'),
-        name: 'grade',
-        meta: { title: '电压等级', icon: 'theme' },
-        hidden: true
-      },
-      {
-        path: '/sf6/quantity',
-        component: () => import('@/views/sf6/quantity'),
-        name: 'quantity',
-        meta: { title: '设备数量', icon: 'theme' },
-        hidden: true
+          icon: "theme",
+          title: "监测监控图",
+        },  
+        hidden: true,
       },
 
+
       {
-        path: '/wi/shuijin_data_wi',
-        component: () => import('@/views/shuijin/shuijin_data_wi'),
-        name: 'Shuijin_data_wi',
+        path: "/ec/dianliu_data",
+        component: () => import("@/views/dianliu/dianliu_data"),
+        name: "Dianliu_data_sf6",
         meta: {
-          icon: 'theme',
-          title: '监测监控图'
-        },
-        hidden: true
-      },
-      
-      {
-        path: '/wi/alarmList',
-        component: () => import('@/views/wi/alarmList'),
-        name: 'tcAlarmList',
-        meta: { title: '数据详情', icon: 'theme' },
-        hidden: true
-      },
-      {
-        path: '/wi/alarmType',
-        component: () => import('@/views/wi/alarmType'),
-        name: 'thAlarmType',
-        meta: { title: '设备报警', icon: 'theme' },
-        hidden: true
-      },
-      {
-        path: '/wi/equipmentType',
-        component: () => import('@/views/wi/equipmentType'),
-        name: 'thEquipmentType',
-        meta: { title: '设备类型', icon: 'theme' },
-        hidden: true
-      },
-      {
-        path: '/wi/grade',
-        component: () => import('@/views/wi/grade'),
-        name: 'thGrade',
-        meta: { title: '电压等级', icon: 'theme' },
-        hidden: true
-      },
-      {
-        path: '/wi/quantity',
-        component: () => import('@/views/wi/quantity'),
-        name: 'thQuantity',
-        meta: { title: '设备数量', icon: 'theme' },
-        hidden: true
+          icon: "theme",
+          title: "监测监控图",
+        },  
+        hidden: true,
       },
 
-
-
-
-
-
+      {
+        path: "/ec/mix",
+        component: () => import("@/views/ec/mix"),
+        name: "Ec_mix",
+        meta: { title: "数据详情", icon: "theme" },
+        hidden: true,
+      },
+      {
+        path: "/ec/alarmList",
+        component: () => import("@/views/ec/alarmList"),
+        name: "Ec_alarmList",
+        meta: { title: "数据详情", icon: "theme" },
+        hidden: true,
+      },
 
       {
-        path: '/tc/wenkong_data_tc',
-        component: () => import('@/views/wenkong/wenkong_data_tc'),
-        name: 'Wengan_data_tc',
+        path: "/sf6/qiya_data",
+        component: () => import("@/views/qiya/qiya_data"),
+        name: "Qiya_data_sf6",
         meta: {
-          icon: 'theme',
-          title: '监测监控图'
-        },
-        hidden: true
-      },
-      
-      {
-        path: '/tc/alarmList',
-        component: () => import('@/views/tc/alarmList'),
-        name: 'tcAlarmList',
-        meta: { title: '数据详情', icon: 'theme' },
-        hidden: true
-      },
-      {
-        path: '/tc/alarmType',
-        component: () => import('@/views/tc/alarmType'),
-        name: 'tcAlarmType',
-        meta: { title: '设备报警', icon: 'theme' },
-        hidden: true
-      },
-      {
-        path: '/tc/equipmentType',
-        component: () => import('@/views/tc/equipmentType'),
-        name: 'tcEquipmentType',
-        meta: { title: '设备类型', icon: 'theme' },
-        hidden: true
-      },
-      {
-        path: '/tc/grade',
-        component: () => import('@/views/tc/grade'),
-        name: 'tcGrade',
-        meta: { title: '电压等级', icon: 'theme' },
-        hidden: true
-      },
-      {
-        path: '/tc/quantity',
-        component: () => import('@/views/tc/quantity'),
-        name: 'tcQuantity',
-        meta: { title: '设备数量', icon: 'theme' },
-        hidden: true
-      },
-      {
-        path: '/th/wenshi_data_th',
-        component: () => import('@/views/wenshi/wenshi_data_th'),
-        name: 'Wengan_data_th',
-        meta: {
-          icon: 'theme',
-          title: '监测监控图'
-        },
-        hidden: true
-      },
-      
-      {
-        path: '/th/alarmList',
-        component: () => import('@/views/th/alarmList'),
-        name: 'tcAlarmList',
-        meta: { title: '数据详情', icon: 'theme' },
-        hidden: true
-      },
-      {
-        path: '/th/alarmType',
-        component: () => import('@/views/th/alarmType'),
-        name: 'thAlarmType',
-        meta: { title: '设备报警', icon: 'theme' },
-        hidden: true
-      },
-      {
-        path: '/th/equipmentType',
-        component: () => import('@/views/th/equipmentType'),
-        name: 'thEquipmentType',
-        meta: { title: '设备类型', icon: 'theme' },
-        hidden: true
-      },
-      {
-        path: '/th/grade',
-        component: () => import('@/views/th/grade'),
-        name: 'thGrade',
-        meta: { title: '电压等级', icon: 'theme' },
-        hidden: true
-      },
-      {
-        path: '/th/quantity',
-        component: () => import('@/views/th/quantity'),
-        name: 'thQuantity',
-        meta: { title: '设备数量', icon: 'theme' },
-        hidden: true
+          icon: "theme",
+          title: "监测监控图",
+        },  
+        hidden: true,
       },
 
       {
-        path: '/bt/wengan_data_bt',
-        component: () => import('@/views/wengan/wengan_data_bt'),
-        name: 'Wengan_data_bt',
+        path: "/sf6/mix",
+        component: () => import("@/views/sf6/mix"),
+        name: "sf6_mix",
+        meta: { title: "数据详情", icon: "theme" },
+        hidden: true,
+      },
+
+      {
+        path: "/sf6/alarmList",
+        component: () => import("@/views/sf6/alarmList"),
+        name: "alarmList",
+        meta: { title: "数据详情", icon: "theme" },
+        hidden: true,
+      },
+      {
+        path: "/sf6/alarmType",
+        component: () => import("@/views/sf6/alarmType"),
+        name: "alarmType",
+        meta: { title: "设备报警", icon: "theme" },
+        hidden: true,
+      },
+      {
+        path: "/sf6/equipmentType",
+        component: () => import("@/views/sf6/equipmentType"),
+        name: "equipmentType",
+        meta: { title: "设备类型", icon: "theme" },
+        hidden: true,
+      },
+      {
+        path: "/sf6/grade",
+        component: () => import("@/views/sf6/grade"),
+        name: "grade",
+        meta: { title: "电压等级", icon: "theme" },
+        hidden: true,
+      },
+      {
+        path: "/sf6/quantity",
+        component: () => import("@/views/sf6/quantity"),
+        name: "quantity",
+        meta: { title: "设备数量", icon: "theme" },
+        hidden: true,
+      },
+
+      {
+        path: "/wi/shuijin_data_wi",
+        component: () => import("@/views/shuijin/shuijin_data"),
+        name: "Shuijin_data_wi",
         meta: {
-          icon: 'theme',
-          title: '监测监控图'
+          icon: "theme",
+          title: "监测监控图",
         },
-        hidden: true
+        hidden: true,
       },
-      
+
       {
-        path: '/bt/alarmList',
-        component: () => import('@/views/bt/alarmList'),
-        name: 'btAlarmList',
-        meta: { title: '数据详情', icon: 'theme' },
-        hidden: true
-      },
-      {
-        path: '/bt/alarmType',
-        component: () => import('@/views/bt/alarmType'),
-        name: 'btAlarmType',
-        meta: { title: '设备报警', icon: 'theme' },
-        hidden: true
+        path: "/wi/mix",
+        component: () => import("@/views/wi/mix"),
+        name: "wi_mix",
+        meta: { title: "数据详情", icon: "theme" },
+        hidden: true,
       },
       {
-        path: '/bt/equipmentType',
-        component: () => import('@/views/bt/equipmentType'),
-        name: 'btEquipmentType',
-        meta: { title: '设备类型', icon: 'theme' },
-        hidden: true
+
+        path: "/wi/alarmList",
+        component: () => import("@/views/wi/alarmList"),
+        name: "tcAlarmList",
+        meta: { title: "数据详情", icon: "theme" },
+        hidden: true,
       },
       {
-        path: '/bt/grade',
-        component: () => import('@/views/bt/grade'),
-        name: 'btGrade',
-        meta: { title: '电压等级', icon: 'theme' },
-        hidden: true
+        path: "/wi/alarmType",
+        component: () => import("@/views/wi/alarmType"),
+        name: "thAlarmType",
+        meta: { title: "设备报警", icon: "theme" },
+        hidden: true,
       },
       {
-        path: '/bt/quantity',
-        component: () => import('@/views/bt/quantity'),
-        name: 'btQuantity',
-        meta: { title: '设备数量', icon: 'theme' },
-        hidden: true
+        path: "/wi/equipmentType",
+        component: () => import("@/views/wi/equipmentType"),
+        name: "thEquipmentType",
+        meta: { title: "设备类型", icon: "theme" },
+        hidden: true,
+      },
+      {
+        path: "/wi/grade",
+        component: () => import("@/views/wi/grade"),
+        name: "thGrade",
+        meta: { title: "电压等级", icon: "theme" },
+        hidden: true,
+      },
+      {
+        path: "/wi/quantity",
+        component: () => import("@/views/wi/quantity"),
+        name: "thQuantity",
+        meta: { title: "设备数量", icon: "theme" },
+        hidden: true,
+      },
+
+      {
+        path: "/tc/mix",
+        component: () => import("@/views/tc/mix"),
+        name: "tc_mix",
+        meta: {
+          icon: "theme",
+          title: "数据详情",
+        },
+        hidden: true,
+      },
+
+      {
+        path: "/tc/wenkong_data_tc",
+        component: () => import("@/views/wenkong/wenkong_data"),
+        name: "Wengan_data_tc",
+        meta: {
+          icon: "theme",
+          title: "监测监控图",
+        },
+        hidden: true,
+      },
+
+      {
+        path: "/tc/alarmList",
+        component: () => import("@/views/tc/alarmList"),
+        name: "tcAlarmList",
+        meta: { title: "数据详情", icon: "theme" },
+        hidden: true,
+      },
+      {
+        path: "/tc/alarmType",
+        component: () => import("@/views/tc/alarmType"),
+        name: "tcAlarmType",
+        meta: { title: "设备报警", icon: "theme" },
+        hidden: true,
+      },
+      {
+        path: "/tc/equipmentType",
+        component: () => import("@/views/tc/equipmentType"),
+        name: "tcEquipmentType",
+        meta: { title: "设备类型", icon: "theme" },
+        hidden: true,
+      },
+      {
+        path: "/tc/grade",
+        component: () => import("@/views/tc/grade"),
+        name: "tcGrade",
+        meta: { title: "电压等级", icon: "theme" },
+        hidden: true,
+      },
+      {
+        path: "/tc/quantity",
+        component: () => import("@/views/tc/quantity"),
+        name: "tcQuantity",
+        meta: { title: "设备数量", icon: "theme" },
+        hidden: true,
+      },
+
+      {
+        path: "/th/wenshi_data_th",
+        component: () => import("@/views/wenshi/wenshi_data"),
+        name: "Wenshi_data_th",
+        meta: {
+          icon: "theme",
+          title: "监测监控图",
+        },
+        hidden: true,
+      },
+
+      {
+        path: "/th/mix",
+        component: () => import("@/views/th/mix"),
+        name: "th_mix",
+        meta: { title: "数据详情", icon: "theme" },
+        hidden: true,
+      },
+
+      {
+        path: "/th/alarmList",
+        component: () => import("@/views/th/alarmList"),
+        name: "tcAlarmList",
+        meta: { title: "数据详情", icon: "theme" },
+        hidden: true,
+      },
+      {
+        path: "/th/alarmType",
+        component: () => import("@/views/th/alarmType"),
+        name: "thAlarmType",
+        meta: { title: "设备报警", icon: "theme" },
+        hidden: true,
+      },
+      {
+        path: "/th/equipmentType",
+        component: () => import("@/views/th/equipmentType"),
+        name: "thEquipmentType",
+        meta: { title: "设备类型", icon: "theme" },
+        hidden: true,
+      },
+      {
+        path: "/th/grade",
+        component: () => import("@/views/th/grade"),
+        name: "thGrade",
+        meta: { title: "电压等级", icon: "theme" },
+        hidden: true,
+      },
+      {
+        path: "/th/quantity",
+        component: () => import("@/views/th/quantity"),
+        name: "thQuantity",
+        meta: { title: "设备数量", icon: "theme" },
+        hidden: true,
+      },
+
+      {
+        path: "/bt/wengan_data",
+        component: () => import("@/views/wengan/wengan_data"),
+        name: "Wengan_data_bt",
+        meta: {
+          icon: "theme",
+          title: "监测监控图",
+        },
+        hidden: true,
+      },
+
+      {
+        path: "/bt/mix",
+        component: () => import("@/views/bt/mix"),
+        name: "bt_mix",
+        meta: {
+          icon: "theme",
+          title: "监测监控图",
+        },
+        hidden: true,
+      },
+
+      {
+        path: "/bt/alarmList",
+        component: () => import("@/views/bt/alarmList"),
+        name: "btAlarmList",
+        meta: { title: "数据详情", icon: "theme" },
+        hidden: true,
+      },
+      {
+        path: "/bt/alarmType",
+        component: () => import("@/views/bt/alarmType"),
+        name: "btAlarmType",
+        meta: { title: "设备报警", icon: "theme" },
+        hidden: true,
+      },
+      {
+        path: "/bt/equipmentType",
+        component: () => import("@/views/bt/equipmentType"),
+        name: "btEquipmentType",
+        meta: { title: "设备类型", icon: "theme" },
+        hidden: true,
+      },
+      {
+        path: "/bt/grade",
+        component: () => import("@/views/bt/grade"),
+        name: "btGrade",
+        meta: { title: "电压等级", icon: "theme" },
+        hidden: true,
+      },
+      {
+        path: "/bt/quantity",
+        component: () => import("@/views/bt/quantity"),
+        name: "btQuantity",
+        meta: { title: "设备数量", icon: "theme" },
+        hidden: true,
       },
       // ——————————————————————
       {
-        path: '/btOffset/shengsuo_data_offset',
-        component: () => import('@/views/shengsuo/shengsuo_data_offset'),
-        name: 'Shengsuo_data_offset',
+        path: "/btOffset/shengsuo_data_offset",
+        component: () => import("@/views/shengsuo/shengsuo_data"),
+        name: "Shengsuo_data_offset",
         meta: {
-          icon: 'theme',
-          title: '监测监控图'
+          icon: "theme",
+          title: "监测监控图",
         },
-        hidden: true
+        hidden: true,
       },
-      
+
       {
-        path: '/btOffset/alarmList',
-        component: () => import('@/views/btOffset/alarmList'),
-        name: 'btOffsetAlarmList',
-        meta: { title: '数据详情', icon: 'theme' },
-        hidden: true
+        path: "/btOffset/mix",
+        component: () => import("@/views/btOffset/mix"),
+        name: "btOffset_mix",
+        meta: { title: "数据详情", icon: "theme" },
+        hidden: true,
       },
+
       {
-        path: '/btOffset/alarmType',
-        component: () => import('@/views/btOffset/alarmType'),
-        name: 'btOffsetAlarmType',
-        meta: { title: '设备报警', icon: 'theme' },
-        hidden: true
-      },
-      {
-        path: '/btOffset/equipmentType',
-        component: () => import('@/views/btOffset/equipmentType'),
-        name: 'btOffsetEquipmentType',
-        meta: { title: '设备类型', icon: 'theme' },
-        hidden: true
+        path: "/btOffset/alarmList",
+        component: () => import("@/views/btOffset/alarmList"),
+        name: "btOffsetAlarmList",
+        meta: { title: "数据详情", icon: "theme" },
+        hidden: true,
       },
       {
-        path: '/btOffset/grade',
-        component: () => import('@/views/btOffset/grade'),
-        name: 'btOffsetGrade',
-        meta: { title: '电压等级', icon: 'theme' },
-        hidden: true
+        path: "/btOffset/alarmType",
+        component: () => import("@/views/btOffset/alarmType"),
+        name: "btOffsetAlarmType",
+        meta: { title: "设备报警", icon: "theme" },
+        hidden: true,
       },
       {
-        path: '/btOffset/quantity',
-        component: () => import('@/views/btOffset/quantity'),
-        name: 'btOffsetQuantity',
-        meta: { title: '设备数量', icon: 'theme' },
-        hidden: true
+        path: "/btOffset/equipmentType",
+        component: () => import("@/views/btOffset/equipmentType"),
+        name: "btOffsetEquipmentType",
+        meta: { title: "设备类型", icon: "theme" },
+        hidden: true,
+      },
+      {
+        path: "/btOffset/grade",
+        component: () => import("@/views/btOffset/grade"),
+        name: "btOffsetGrade",
+        meta: { title: "电压等级", icon: "theme" },
+        hidden: true,
+      },
+      {
+        path: "/btOffset/quantity",
+        component: () => import("@/views/btOffset/quantity"),
+        name: "btOffsetQuantity",
+        meta: { title: "设备数量", icon: "theme" },
+        hidden: true,
       },
       // ————————————————————————————
       {
-        path: '/btStrain/bianxing_data_strain',
-        component: () => import('@/views/bianxing/bianxing_data_strain'),
-        name: 'Bianxing_data_strain',
+        path: "/btStrain/bianxing_data_strain",
+        component: () => import("@/views/bianxing/bianxing_data"),
+        name: "Bianxing_data_strain",
         meta: {
-          icon: 'theme',
-          title: '监测监控图'
+          icon: "theme",
+          title: "监测监控图",
         },
-        hidden: true
+        hidden: true,
       },
-      
+
       {
-        path: '/btStrain/alarmList',
-        component: () => import('@/views/btStrain/alarmList'),
-        name: 'btStrainAlarmList',
-        meta: { title: '数据详情', icon: 'theme' },
-        hidden: true
+        path: "/btStrain/mix",
+        component: () => import("@/views/btStrain/mix"),
+        name: "btStrain_mix",
+        meta: { title: "数据详情", icon: "theme" },
+        hidden: true,
       },
+
       {
-        path: '/btStrain/alarmType',
-        component: () => import('@/views/btStrain/alarmType'),
-        name: 'btStrainAlarmType',
-        meta: { title: '设备报警', icon: 'theme' },
-        hidden: true
-      },
-      {
-        path: '/btStrain/equipmentType',
-        component: () => import('@/views/btStrain/equipmentType'),
-        name: 'btStrainEquipmentType',
-        meta: { title: '设备类型', icon: 'theme' },
-        hidden: true
+        path: "/btStrain/alarmList",
+        component: () => import("@/views/btStrain/alarmList"),
+        name: "btStrainAlarmList",
+        meta: { title: "数据详情", icon: "theme" },
+        hidden: true,
       },
       {
-        path: '/btStrain/grade',
-        component: () => import('@/views/btStrain/grade'),
-        name: 'btStrainGrade',
-        meta: { title: '电压等级', icon: 'theme' },
-        hidden: true
+        path: "/btStrain/alarmType",
+        component: () => import("@/views/btStrain/alarmType"),
+        name: "btStrainAlarmType",
+        meta: { title: "设备报警", icon: "theme" },
+        hidden: true,
       },
       {
-        path: '/btStrain/quantity',
-        component: () => import('@/views/btStrain/quantity'),
-        name: 'btStrainQuantity',
-        meta: { title: '设备数量', icon: 'theme' },
-        hidden: true
+        path: "/btStrain/equipmentType",
+        component: () => import("@/views/btStrain/equipmentType"),
+        name: "btStrainEquipmentType",
+        meta: { title: "设备类型", icon: "theme" },
+        hidden: true,
+      },
+      {
+        path: "/btStrain/grade",
+        component: () => import("@/views/btStrain/grade"),
+        name: "btStrainGrade",
+        meta: { title: "电压等级", icon: "theme" },
+        hidden: true,
+      },
+      {
+        path: "/btStrain/quantity",
+        component: () => import("@/views/btStrain/quantity"),
+        name: "btStrainQuantity",
+        meta: { title: "设备数量", icon: "theme" },
+        hidden: true,
       },
       // ————————————————————————————
 
       {
-        path: '/df/bianxing_data_df',
-        component: () => import('@/views/bianxing/bianxing_data_df'),
-        name: 'Bianxing_data_df',
+        path: "/df/bianxing_data_df",
+        component: () => import("@/views/bianxing/bianxing_data"),
+        name: "Bianxing_data_df",
         meta: {
-          icon: 'theme',
-          title: '监测监控图'
+          icon: "theme",
+          title: "监测监控图",
         },
-        hidden: true
+        hidden: true,
       },
 
       {
-        path: '/df/alarmList',
-        component: () => import('@/views/df/alarmList'),
-        name: 'tcAlarmList',
-        meta: { title: '数据详情', icon: 'theme' },
-        hidden: true
+        path: "/df/alarmList",
+        component: () => import("@/views/df/alarmList"),
+        name: "tcAlarmList",
+        meta: { title: "数据详情", icon: "theme" },
+        hidden: true,
       },
       {
-        path: '/df/alarmType',
-        component: () => import('@/views/df/alarmType'),
-        name: 'tcAlarmType',
-        meta: { title: '设备报警', icon: 'theme' },
-        hidden: true
+        path: "/df/alarmType",
+        component: () => import("@/views/df/alarmType"),
+        name: "tcAlarmType",
+        meta: { title: "设备报警", icon: "theme" },
+        hidden: true,
       },
       {
-        path: '/df/equipmentType',
-        component: () => import('@/views/df/equipmentType'),
-        name: 'tcEquipmentType',
-        meta: { title: '设备类型', icon: 'theme' },
-        hidden: true
+        path: "/df/equipmentType",
+        component: () => import("@/views/df/equipmentType"),
+        name: "tcEquipmentType",
+        meta: { title: "设备类型", icon: "theme" },
+        hidden: true,
       },
       {
-        path: '/df/grade',
-        component: () => import('@/views/df/grade'),
-        name: 'tcGrade',
-        meta: { title: '电压等级', icon: 'theme' },
-        hidden: true
+        path: "/df/grade",
+        component: () => import("@/views/df/grade"),
+        name: "tcGrade",
+        meta: { title: "电压等级", icon: "theme" },
+        hidden: true,
       },
       {
-        path: '/df/quantity',
-        component: () => import('@/views/df/quantity'),
-        name: 'tcQuantity',
-        meta: { title: '设备数量', icon: 'theme' },
-        hidden: true
-      }
+        path: "/df/quantity",
+        component: () => import("@/views/df/quantity"),
+        name: "tcQuantity",
+        meta: { title: "设备数量", icon: "theme" },
+        hidden: true,
+      },
     ],
   },
   {
@@ -457,21 +569,22 @@ export const constantRoutes = [
         // component: () => import('@/views/dashboard/test'),
         name: "currentIndex",
         // meta: { title: "灵州-大屏监控", icon: "screen", affix: true },
-        hidden: true
+        hidden: true,
       },
       {
-        path: '/lz/index2',
-        component: () => import('@/views/dashboard/currentIndex/first/index2'),
-        name: 'currentIndex2',
+        path: "/lz/index2",
+        component: () => import("@/views/dashboard/currentIndex/first/index2"),
+        name: "currentIndex2",
         // meta: { title: '数据详情', icon: 'theme' },
-        hidden: true
+        hidden: true,
       },
       {
-        path: '/lz/equipmentEdit',
-        component: () => import('@/views/dashboard/currentIndex/first/equipmentEdit'),
-        name: 'equipmentEdit',
+        path: "/lz/equipmentEdit",
+        component: () =>
+          import("@/views/dashboard/currentIndex/first/equipmentEdit"),
+        name: "equipmentEdit",
         // meta: { title: '数据详情', icon: 'theme' },
-        hidden: true
+        hidden: true,
       },
     ],
   },
@@ -513,7 +626,7 @@ export function resetRouter() {
 //   // console.log(store.state.user.userinfo.userName == "admin", "___________to");
 //   // console.log(to.fullPath, "___________to");
 //   next();
-  
+
 //   if (store.state.user.userinfo.userName == "admin") {
 //     // 通过vuex state获取当前的token是否存在
 //     // next({

@@ -44,15 +44,47 @@ router.beforeEach(async (to, from, next) => {
               name: "DataHistory",
               component: "Layout",
               hidden: false,
+              redirect: "/dataHistory/dataHistory",
               meta: {
                 icon: "chatList",
-                title: "历史信息",
+                // title: "设备信息",
                 noCache: false,
                 standId: null,
                 companyId: null,
               },
               alwaysShow: false,
               children: [
+                {
+                  path: "dianliu_data",
+                  name: "Dianliu_data",
+                  component: "/dianliu/dianliu_data",
+                  hidden: true,
+                  meta: {
+                    icon: "qy",
+                    title: "电流传感器监测监控图",
+                    noCache: false,
+                    standId: 1,
+                    companyId: 1,
+                  },
+                  alwaysShow: false,
+                  children: null,
+                },
+
+                {
+                  path: "wenduyg_data",
+                  name: "Wenduyg_data",
+                  component: "/wenduyg/wendu_data",
+                  hidden: true,
+                  meta: {
+                    icon: "qy",
+                    title: "温度传感器监测监控图",
+                    noCache: false,
+                    standId: 1,
+                    companyId: 1,
+                  },
+                  alwaysShow: false,
+                  children: null,
+                },
                 {
                   path: "shuijin_data",
                   name: "Shuijin_data",
@@ -68,7 +100,7 @@ router.beforeEach(async (to, from, next) => {
                   alwaysShow: false,
                   children: null,
                 },
-             
+
                 {
                   path: "wenshi_data",
                   name: "Wenshi_data",
@@ -84,7 +116,7 @@ router.beforeEach(async (to, from, next) => {
                   alwaysShow: false,
                   children: null,
                 },
-             
+
                 {
                   path: "bianxing_data",
                   name: "Bianxing_data",
@@ -259,7 +291,8 @@ router.beforeEach(async (to, from, next) => {
                   hidden: false,
                   meta: {
                     icon: "chatList",
-                    title: "历史信息",
+                    title: "传感器列表",
+                    affix: true,
                     noCache: false,
                     standId: null,
                     companyId: null,
@@ -274,6 +307,7 @@ router.beforeEach(async (to, from, next) => {
               path: "/manage",
               name: "upproject",
               component: "Layout",
+              redirect: "/manage/sensor",
               hidden: false,
               meta: {
                 icon: "menu",
@@ -285,13 +319,86 @@ router.beforeEach(async (to, from, next) => {
               alwaysShow: false,
               children: [
                 {
+                  path: "dianliu_edit",
+                  name: "Ddianliu_edit",
+                  component: "/dianliu/dianliu_edit",
+                  hidden: true,
+                  meta: {
+                    icon: "sensor",
+                    title: "电流传感器管理",
+                    noCache: true,
+                    standId: null,
+                    companyId: null,
+                  },
+                  alwaysShow: false,
+                  children: null,
+                },
+                {
+                  path: "dianliu_setting",
+                  name: "Dianliu_setting",
+                  component: "/dianliu/dianliu_setting",
+                  hidden: true,
+                  meta: {
+                    icon: "sensor",
+                    title: "电流传感器参数设置",
+                    noCache: true,
+                    standId: null,
+                    companyId: null,
+                  },
+                  alwaysShow: false,
+                  children: null,
+                },
+                {
+                  path: "wenduyg_edit",
+                  name: "Wenduyg_edit",
+                  component: "/wenduyg/wendu_edit",
+                  hidden: true,
+                  meta: {
+                    icon: "sensor",
+                    title: "温度传感器管理",
+                    noCache: true,
+                    standId: null,
+                    companyId: null,
+                  },
+                  alwaysShow: false,
+                  children: null,
+                },
+                {
+                  path: "wenduyg_setting",
+                  name: "Wenduyg_setting",
+                  component: "/wenduyg/wendu_setting",
+                  hidden: true,
+                  meta: {
+                    icon: "sensor",
+                    title: "温度传感器参数设计",
+                    noCache: true,
+                    standId: null,
+                    companyId: null,
+                  },
+                  alwaysShow: false,
+                  children: null,
+                },
+
+                {
                   path: "modify_add",
-                  name: "modify_add",
+                  name: "Modify_add",
                   component: "/manage/modify-add",
                   hidden: true,
                   meta: {
                     icon: "sensor",
+                    noCache: true,
                     title: "批量导入",
+                  },
+                  alwaysShow: false,
+                },
+                {
+                  path: "upgrade_setting",
+                  name: "Upgrade_setting",
+                  component: "/manage/upgrade_setting",
+                  hidden: true,
+                  meta: {
+                    icon: "sensor",
+                    title: "升级设置",
                     noCache: true,
                   },
                   alwaysShow: false,
@@ -482,7 +589,7 @@ router.beforeEach(async (to, from, next) => {
                   component: "/qiya/qiya_edit",
                   hidden: true,
                   meta: {
-                    icon: "sensor", 
+                    icon: "sensor",
                     title: "SF6气体压力监测器管理",
                     noCache: true,
                     standId: null,

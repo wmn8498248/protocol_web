@@ -254,7 +254,7 @@
                 <ul class="item">
                   <li>
                     <span class="title" v-text="'传感器别名'"></span>
-                    <span class="title" v-text="'气压(Kpa)'"></span>
+                    <span class="title" v-text="'气压(MPa)'"></span>
                     <span class="title" v-text="'温度(℃)'"></span>
                     <span class="title" v-text="'电量(%)'"></span>
                   </li>
@@ -436,9 +436,7 @@ export default {
       this.countTime = 30;
     }, 30000);
   },
-  destroyed() {
-    console.log("destroyed");
-  },
+ 
   deactivated() {
     console.log("deactivated");
   },
@@ -582,7 +580,7 @@ export default {
             data: [
               {
                 value: 58.46,
-                name: "Kpa",
+                name: "MPa",
               },
             ],
           },

@@ -62,7 +62,7 @@
       <el-table-column prop="deviceNumber" label="传感器编号">
       </el-table-column>
       <el-table-column prop="deviceName" label="传感器别名"> </el-table-column>
-      <el-table-column label="压力值(KPa)">
+      <el-table-column label="压力值(MPa)">
         <template slot-scope="{ row }">
           <span style="color: #f2fa14">{{ row.pressure }}</span>
         </template>
@@ -95,7 +95,7 @@
         @size-change="onPageSizeChange"
         @current-change="onPageCurrentChange"
         :current-page="pages.pageNum"
-        :page-sizes="[10, 20, 50, 100]"
+        :page-sizes="[5, 10, 20, 50]"
         :page-size="pages.pageSize"
         layout="total, sizes, prev, pager, next, jumper"
         :total="total"

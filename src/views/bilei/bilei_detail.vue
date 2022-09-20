@@ -48,7 +48,7 @@
               @size-change="onPageSizeChange"
               @current-change="onPageCurrentChange"
               :current-page="pages.pageNum"
-              :page-sizes="[5, 10, 20, 50, 100]"
+              :page-sizes="[5, 5, 10, 20, 50]"
               :page-size="pages.pageSize"
               layout="total, sizes, prev, pager, next, jumper"
               :total="total"
@@ -109,7 +109,7 @@ export default {
 			return (num*100).toFixed(2) + '%';
 		}
 	},
-  mounted() {
+  activated() {
     this.companyId = this.$route.query.companyId || 0;
     this.projectId = this.$route.query.projectId || 0;
 		this.boardId = this.$route.query.boardId || '';

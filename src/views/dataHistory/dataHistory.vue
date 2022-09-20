@@ -3,13 +3,19 @@
     <div class="menu">
       <!-- <el-tag size="small" type="success" >公司列表</el-tag> -->
       <el-radio-group v-model="projectId" size="small" @change="groupChange">
-       <el-radio-button width="100px"  v-for="item in companyList" :key="item.companyId" :label="item.companyId">{{item.companyName}}</el-radio-button>
+        <el-radio-button
+          width="100px"
+          v-for="item in companyList"
+          :key="item.companyId"
+          :label="item.companyId"
+          >{{ item.companyName }}</el-radio-button
+        >
       </el-radio-group>
     </div>
-    
+
     <div class="content" v-if="companyList.length > 0">
       <el-tabs v-model="activeName">
-        <el-tab-pane label="SF6气体压力传感器" name="4">
+        <el-tab-pane label="SF6气体压力传感器" name="4" >
           <qiya :companyId="companyId" :projectId="projectId" ref="qiya"></qiya>
         </el-tab-pane>
 
@@ -43,7 +49,7 @@
             ref="bianxing"
           ></bianxing>
         </el-tab-pane>
-         <el-tab-pane label="温湿度传感器" name="10">
+        <el-tab-pane label="温湿度传感器" name="10">
           <wenshi
             :companyId="companyId"
             :projectId="projectId"
@@ -56,6 +62,21 @@
             :projectId="projectId"
             ref="shuijin"
           ></shuijin>
+        </el-tab-pane>
+        
+        <el-tab-pane label="温度传感器" name="13">
+          <wenduyg
+            :companyId="companyId"
+            :projectId="projectId"
+            ref="wenduyg"
+          ></wenduyg>
+        </el-tab-pane>
+        <el-tab-pane label="电流传感器" name="14">
+          <dianliu
+            :companyId="companyId"
+            :projectId="projectId"
+            ref="dianliu"
+          ></dianliu>
         </el-tab-pane>
 
         <el-tab-pane label="避雷器" name="1" disabled>
@@ -79,7 +100,8 @@
             ref="wendu"
           ></wendu>
         </el-tab-pane>
-       
+
+      
         <!-- <el-tab-pane label="水位传感器" name="6" disabled>
           <shuiwei
             :companyId="companyId"
@@ -87,7 +109,7 @@
             ref="shuiwei"
           ></shuiwei>
         </el-tab-pane> -->
-       
+
         <el-tab-pane label="断路器计数器" name="8" disabled>
           <jishu
             :companyId="companyId"
@@ -95,7 +117,6 @@
             ref="jishu"
           ></jishu>
         </el-tab-pane>
-        
       </el-tabs>
       <!-- <div class="export">
         <el-form inline label-width="100px">
@@ -122,12 +143,16 @@ import wenshi from "../wenshi/wenshi";
 import shengsuo from "../shengsuo/shengsuo";
 import bianxing from "../bianxing/bianxing";
 
+import wenduyg from "../wenduyg/wendu";
+import dianliu from "../dianliu/dianliu";
 
 import Cookies from "js-cookie";
 
 export default {
   name: "Sensor",
   components: {
+    dianliu,
+    wenduyg,
     bilei,
     qingxie,
     wendu,
@@ -143,6 +168,7 @@ export default {
   },
   data() {
     return {
+      timer: null,
       companyListInit: [],
       companyList: [],
       props: {
@@ -158,25 +184,24 @@ export default {
     };
   },
 
-  mounted() {
+  activated() {
     this.getuserRights();
   },
   methods: {
-    groupChange(value){
-      console.log(value)
+    groupChange(value) {
+      console.log(value);
       Cookies.set("sensorTabB", value);
-      this.getList()
+      this.getList();
     },
     async getuserRights() {
-        this.companyList = await api.projectList();
+      this.companyList = await api.projectList();
 
-      if(this.companyList.length > 0) {
-        if(Cookies.get("sensorTabB")){
-          this.projectId = parseInt(Cookies.get("sensorTabB"))
-        }else{
-          this.projectId = this.companyList[0].companyId
+      if (this.companyList.length > 0) {
+        if (Cookies.get("sensorTabB")) {
+          this.projectId = parseInt(Cookies.get("sensorTabB"));
+        } else {
+          this.projectId = this.companyList[0].companyId;
         }
-        
       }
 
       this.$nextTick(() => {
@@ -203,50 +228,100 @@ export default {
       let node = this.$refs.Tree.getNode(data);
       this.childNodes(node);
     },
+    beforeDestroy() {
+      clearInterval(this.timer);
+    },
     getList() {
       console.log(this.activeName, "this.activeName");
+      clearInterval(this.timer);
+      // this.$store.commit('app/SET_SIZE', 1); 
+      let that = this;
       switch (this.activeName) {
         case "1":
-          this.$refs.bilei.getData();
+          that.$refs.bilei.getData();
+          // that.timer = setInterval(() => {
+          //   that.$refs.bilei.getData();
+          // }, 30000);
           break;
         case "2":
-          this.$refs.qingxie.getData();
+          that.$refs.qingxie.getData();
+          // that.timer = setInterval(() => {
+          //   that.$refs.qingxie.getData();
+          // }, 30000);
           break;
         case "3":
-          this.$refs.wendu.getData();
+          that.$refs.wendu.getData();
+          // that.timer = setInterval(() => {
+          //   that.$refs.wendu.getData();
+          // }, 30000);
           break;
         case "4":
-          this.$refs.qiya.getData();
+          that.$refs.qiya.getData();
+          // that.timer = setInterval(() => {
+          //   that.$refs.qiya.getData();
+          // }, 30000);
           break;
         case "5":
-          this.$refs.shuijin.getData();
+          that.$refs.shuijin.getData();
+          // that.timer = setInterval(() => {
+          //   that.$refs.shuijin.getData();
+          // }, 30000);
           break;
         case "6":
-          this.$refs.shuiwei.getData();
+          that.$refs.shuiwei.getData();
+          // that.timer = setInterval(() => {
+          //   that.$refs.shuiwei.getData();
+          // }, 30000);
           break;
         case "7":
-          this.$refs.wenkong.getData();
+          that.$refs.wenkong.getData();
+          // that.timer = setInterval(() => {
+          //   that.$refs.wenkong.getData();
+          // }, 30000);
           break;
         case "8":
-          this.$refs.jishu.getData();
+          that.$refs.jishu.getData();
+          // that.timer = setInterval(() => {
+          //   that.$refs.jishu.getData();
+          // }, 30000);
           break;
         case "9":
-          this.$refs.wengan.getData();
+          that.$refs.wengan.getData();
+          // that.timer = setInterval(() => {
+          //   that.$refs.wengan.getData();
+          // }, 30000);
           break;
         case "10":
-          this.$refs.wenshi.getData();
+          that.$refs.wenshi.getData();
+          // that.timer = setInterval(() => {
+          //   that.$refs.wenshi.getData();
+          // }, 30000);
           break;
         case "11":
-          this.$refs.shengsuo.getData();
+          that.$refs.shengsuo.getData();
+          // that.timer = setInterval(() => {
+          //   that.$refs.shengsuo.getData();
+          // }, 30000);
           break;
         case "12":
-          this.$refs.bianxing.getData();
+          that.$refs.bianxing.getData();
+          // that.timer = setInterval(() => {
+          //   that.$refs.bianxing.getData();
+          // }, 30000);
+          break;
+        case "13":
+          that.$refs.wenduyg.getData();
+          break;
+        case "14":
+          console.log('获取电流')
+          that.$refs.dianliu.getData();
           break;
         default:
           break;
       }
     },
     toAdd() {
+      clearInterval(this.timer);
       let url = "";
       switch (this.activeName) {
         case "1":
@@ -285,6 +360,10 @@ export default {
         case "12":
           url = "/manage/bianxing_edit";
           break;
+
+        case "13":
+          url = "/manage/bianxing_edit";
+          break;  
         default:
           break;
       }
@@ -317,6 +396,7 @@ export default {
     activeName: function (newVal) {
       Cookies.set("sensorTabA", newVal);
       if (newVal) {
+        // this.$store.commit("app/SET_SIZE", 1);
         this.$nextTick(() => {
           this.getList();
         });
@@ -334,11 +414,11 @@ export default {
     display: flex;
     margin-top: 10px;
   }
-  .menu{
+  .menu {
     margin-bottom: 15px;
     text-align: center;
   }
-  .project-name{
+  .project-name {
     display: inline-block;
     color: #14e1fa;
     border: 1px solid #14e1fa;

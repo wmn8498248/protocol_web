@@ -1,5 +1,36 @@
 import axios from '@/utils/ajaxRequest';
 
+// 升级
+export const upgradeUpgrade= data =>
+  axios.request({
+    url: 'upgrade/upgrade',
+    method: 'post', 
+    data
+  });
+
+// 接收
+export const upgradeAccept= data =>
+  axios.request({
+    url: 'upgrade/accept',
+    method: 'post', 
+    data
+  });  
+
+// 查询
+export const upgradeQuery= data =>
+  axios.request({
+    url: 'upgrade/query',
+    method: 'post', 
+    data
+  });
+
+// 详细信息
+export const upgradeInfo= data =>
+  axios.request({
+    url: 'upgrade/info',
+    method: 'post', 
+    data
+  });
 
 // 导入sf6
 export const sf6BatchSave = data =>

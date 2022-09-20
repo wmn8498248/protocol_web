@@ -6,7 +6,7 @@
           <el-input
             type="text"
             v-model="searchModel.deviceId"
-            placeholder="设备编号"
+            placeholder="传感器编号"
           ></el-input>
         </el-form-item>
 
@@ -25,24 +25,35 @@
     <el-table :data="tableData" stripe>
       <el-table-column prop="deviceId" label="传感器编号"> </el-table-column>
       <el-table-column prop="deviceName" label="传感器别名"> </el-table-column>
-      <el-table-column prop="voltLevel" label="电压等级"> </el-table-column>
-      <el-table-column prop="deviceClassify" label="设备分类"> </el-table-column>
-      <el-table-column prop="statusName" label="布防"> </el-table-column>
-      <el-table-column prop="floodHigh" label="水浸告警高阈值mV"> </el-table-column>
-      <el-table-column prop="floodLow" label="水浸告警低阈值mV"> </el-table-column>
-      <el-table-column prop="dataCollection" label="采集间隔(S)"> </el-table-column>
-      <el-table-column prop="collectionNumber" label="采集个数"> </el-table-column>
-      <el-table-column prop="updateTime" label="更新时间"> </el-table-column>
-      <el-table-column label="操作" width="250">
+      <el-table-column prop="alarmStatus" width="100" label="布防状态">
         <template slot-scope="{ row }">
-          <el-button class="btn-data" size="mini" @click="toSet(row.deviceId)">参数设置</el-button>
+          <div>
+            <el-tag type="info" v-if="row.alarmStatus == 1"> 撤防 </el-tag>
+            <el-tag type="success" v-else-if="row.alarmStatus == 0">
+              布防
+            </el-tag>
+          </div>
+        </template>
+      </el-table-column>
+      <el-table-column prop="currentLow" label="报警电流(mA)">
+      </el-table-column>
+     
+      <el-table-column prop="collectionInterval" label="采集间隔(S)">
+      </el-table-column>
+      <el-table-column prop="collectionNumber" label="采集个数">
+      </el-table-column>
+      <el-table-column prop="updateTime" width="150" label="更新时间"> </el-table-column>
+      <el-table-column label="操作" width="350">
+        <template slot-scope="{ row }">
+          <el-button class="btn-data" size="mini" @click="upgrade('wi',row.deviceId)">远程升级</el-button>
+          <el-button class="btn-data" size="mini" @click="toSet(row.id, row.deviceId)">参数设置</el-button>
           <el-button class="btn-detail" size="mini" @click="toEdit(row.id)">修改</el-button>
           <el-button class="btn-clear" size="mini" @click="toDelete(row.deviceId)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
     <div class="pagination taR mt20x">
-      <el-pagination @size-change="onPageSizeChange" @current-change="onPageCurrentChange" :current-page="pages.pageNum" :page-sizes="[10, 20, 50, 100]" :page-size="pages.pageSize" layout="total, sizes, prev, pager, next, jumper" :total="total">
+      <el-pagination @size-change="onPageSizeChange" @current-change="onPageCurrentChange" :current-page="pages.pageNum" :page-sizes="[5, 10, 20, 50]" :page-size="pages.pageSize" layout="total, sizes, prev, pager, next, jumper" :total="total">
       </el-pagination>
     </div>
   </div>
@@ -72,6 +83,15 @@ export default {
     };
   },
   methods: {
+    upgrade(deviceType,deviceId){
+      this.$router.push({
+        path: "/manage/upgrade_setting",
+        query: {
+          deviceType,
+          deviceId
+        },
+      });
+    },
     async getList() {
       let data = {
         companyId: this.projectId,
@@ -83,10 +103,11 @@ export default {
       this.total = dataList.total;
 
     },
-    async toSet(deviceId) {
+    async toSet(id, deviceId) {
       this.$router.push({
         path: "/manage/shuijin_setting",
         query: {
+          id,
           deviceId
         },
       });

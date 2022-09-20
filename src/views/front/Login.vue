@@ -5,7 +5,7 @@
       <h3 class="title">
         <img class="logo" src="@/assets/images/logo1.png" alt="" />
         <div class="name">
-          XXXXXXXXXXXXXX平台
+         国网宁夏超高压公司物联管理平台           
           <!-- <img src="@/assets/images/login_title.png" alt="" /> -->
         </div>
       </h3>
@@ -110,6 +110,8 @@ import { codeDown } from "@/utils/codeDown";
 import * as user from "@/api/user";
 import Validator from "@/utils/validator";
 import { setToken } from "@/utils/auth";
+import Cookies from "js-cookie";
+
 export default {
   name: "Login",
   data() {
@@ -165,6 +167,8 @@ export default {
           setToken(res.token);
           // this.$router.push({ path: this.redirect || "/" }); // 有redirect跳转对应页面  没有跳转默认页面
           if (res.userLevel == 0) {
+            Cookies.set("userName", res.userName);
+            console.log(res.userName, "res.userName__")
             this.$store.commit("app/SET_UPDATE_TRUE");
             this.$router.push({ path: "/dataHistory/dataHistory" }); // 有redirect跳转对应页面  没有跳转默认页面
           } else {

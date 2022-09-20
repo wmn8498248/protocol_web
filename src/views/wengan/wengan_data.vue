@@ -64,7 +64,7 @@
               @size-change="onPageSizeChange"
               @current-change="onPageCurrentChange"
               :current-page="pages.pageNum"
-              :page-sizes="[20, 50, 100, 200]"
+              :page-sizes="[10, 20, 50, 100]"
               :page-size="pages.pageSize"
               layout="total, sizes, prev, pager, next, jumper"
               :total="total"
@@ -154,19 +154,22 @@ export default {
 			return `温度：最大值：${maxN}${unit} 最小值：${minN}${unit} 平均值：${mean.toFixed(3)}${unit}`;
 		},
 	},
-  mounted() {
+  activated() {
     this.deviceNumber = this.$route.query.deviceNumber || '';
     this.companyId = this.$route.query.companyId || 0;
     this.projectId = this.$route.query.projectId || 0;
     this.activeName = '1';
-    this.getData();
+    this.getData(); 
   },
   methods: {
 		async getData() {
 			this.resultData = await api.wirelessTemperatureDataInfo({
 				deviceId: this.deviceNumber
 			});
-
+      if (this.resultData === null) {
+        this.activeName = "2";
+        this.getList();
+      } 
 		},
 		async getList() {
 			this.tableData = await api.wirelessTemperatureHistoryList({

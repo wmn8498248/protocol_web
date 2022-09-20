@@ -24,7 +24,7 @@ export default {
   },
   data() {
     return {
-      title: 'XXXXXXXXXXXXXX平台',
+      title: '国网宁夏超高压公司物联管理平台',
       logo: require('@/assets/images/logo.png')
     };
   }

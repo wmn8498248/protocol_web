@@ -38,10 +38,9 @@
             :key="index"
             >{{ itemList.deviceType }}</span
           >
-          
         </div>
 
-        <span>XXXXXXXXXXXXXX平台</span>
+        <span>国网宁夏超高压公司物联管理平台</span>
       </div>
       <!-- slide-fade moveL slide-->
       <transition name="slide">
@@ -56,13 +55,17 @@
     </div>
 
     <el-dialog
+      min-height="700px"
       :title="dialogTitle"
       :visible.sync="dialogTableVisible"
       @close="dialogClosed"
       width="90%"
+      :before-close="handleClose"
       center
     >
-      <router-view />
+      <keep-alive :include="cachedViews">
+        <router-view :key="key" @close-after="closeAfter" />
+      </keep-alive>
     </el-dialog>
   </div>
 </template>
@@ -117,17 +120,40 @@ export default {
       isActive: 0,
       sensorType: [],
       equipmentType: [{ deviceTypeList: [] }],
+      openPop: false,
     };
   },
   created() {
     this.getCompanyList(0);
   },
   computed: {
+    cachedViews() {
+      this.$store.state.tagsView.cachedViews;
+    },
+    key() {
+      return this.$route.fullPath;
+    },
     adminStatus() {
       return this.$store.state.app.update;
     },
   },
   methods: {
+    closeAfter(res) {
+      this.openPop = res;
+    },
+    handleClose(done) {
+      if (this.openPop) {
+        this.$router.go(-1);
+      } else {
+        done();
+        // this.dialogTableVisible = false;
+      }
+      // this.$confirm("确认关闭？")
+      //   .then((_) => {
+      //     done();
+      //   })
+      //   .catch((_) => {});
+    },
     async getCompanyList(res) {
       this.equipmentType = await api.getCompanyHasDevice();
       if (this.equipmentType.length > 0) {
@@ -182,6 +208,8 @@ export default {
       this.currentTabComponent = profile;
     },
     dialogClosed() {
+      console.log('返回页数为1')
+      this.$store.commit("app/SET_SIZE", 1);
       this.$router.push({
         path: "/indexHome",
       });
@@ -263,7 +291,25 @@ export default {
       console.log(deviceName, "设备类型pages");
       this.isActiveList = res;
 
+      // deviceName = "temp"
+
       switch (deviceName) {
+        // 电流
+        case "ec":
+          this.currentTabComponent = fifth;
+          break;
+
+        // 温度
+        case "temp":
+          this.currentTabComponent = second;
+          break;
+        
+        // 湿度
+        case "humidity":
+          this.currentTabComponent = fourth;
+          break;
+
+
         case "sf6":
           this.currentTabComponent = first;
           break;
@@ -275,9 +321,11 @@ export default {
         case "bt/offset":
           this.currentTabComponent = thirdB;
           break;
+
         case "bt/strain":
           this.currentTabComponent = thirdC;
           break;
+
         case "tc":
           this.currentTabComponent = six;
           break;
@@ -434,7 +482,6 @@ export default {
     right: 25px;
     color: #ffff;
     writing-mode: vertical-rl;
-    border: 1px solid #19508f;
     padding: 10px;
     z-index: 1;
     cursor: pointer;
@@ -762,7 +809,7 @@ export default {
       }
     }
     .title-right {
-      width: 450px;
+      width: 500px;
       display: flex;
       flex-wrap: wrap;
       justify-content: flex-end;

@@ -7,7 +7,7 @@
             class="w180x"
             v-model="searchModel.deviceName"
             type="text"
-            placeholder="主设备别名"
+            placeholder="传感器别名"
           ></el-input>
         </el-form-item>
         <el-form-item label="">
@@ -42,7 +42,7 @@
           </div>
         </template>
       </el-table-column>
-      <el-table-column prop="createTime" label="更新时间" width="150px">
+      <el-table-column prop="collectionTime" label="更新时间" width="150px">
       </el-table-column>
       <el-table-column prop="voltLevel" label="主设备电压等级">
       </el-table-column>
@@ -62,7 +62,7 @@
         @size-change="onPageSizeChange"
         @current-change="onPageCurrentChange"
         :current-page="pages.pageNum"
-        :page-sizes="[10, 20, 50, 100]"
+        :page-sizes="[5, 10, 20, 50]"
         :page-size="pages.pageSize"
         layout="total, sizes, prev, pager, next, jumper"
         :total="total"
@@ -97,18 +97,14 @@ export default {
       alarmList: [],
     };
   },
-  created() {
+  activated() {
+    this.$emit("close-after", false);
     this.getList();
   },
-  mounted() {},
-  // destroyed(){
-  //   console.log(2)
-  // },
-  // beforeDestroy(){
-  //   console.log(3)
-  // },
+  
   methods: {
     handleHistory(res) {
+      this.$emit("close-after", true);
       let deviceNumber = res.deviceId;
 
       this.$router.push({
@@ -144,12 +140,12 @@ export default {
     // 修改列表条数
     onPageSizeChange(e) {
       this.pages.pageSize = e;
-      this.cutList();
+      this.getList();
     },
     // 修改列表页数
     onPageCurrentChange(e) {
       this.pages.pageNum = e;
-      this.cutList();
+      this.getList();
     },
     // 分割数组
     cutList() {
@@ -159,16 +155,17 @@ export default {
       );
     },
     async getList() {
-      const { list } = await api.alarmDate({
+      const { page } = await api.alarmDate({
         companyId: this.$route.query.companyId,
         deviceName: this.searchModel.deviceName,
         deviceId: this.searchModel.deviceNumber,
         alarmType: this.$route.query.alarmType,
         dayNum: this.$route.query.times,
+        pageNum: this.pages.pageNum,
+        pageSize: this.pages.pageSize,
       });
-      this.tableData = list;
-      this.total = list.length;
-      this.cutList();
+      this.tableList = page.records;
+      this.total = page.total;
       //   this.total = list
     },
   },

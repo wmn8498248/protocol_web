@@ -11,20 +11,24 @@
         </div>
         <div class="data-detail">
           <div class="data-chart">
-            <!-- <div class="data-name">
+            <div class="data-name">
               <svg-icon icon-class="dianliu" style="font-size: 20px"></svg-icon>
               电流
-              <span class="data-num">5A</span>
-            </div> -->
+              <span class="data-num">{{ dataInfo.currentValue }}mA</span>
+            </div>
             <img class="chart-img" src="../../assets/images/005.gif" />
-            <div class="chart-num">{{ dataInfo.currentValue }}mA</div>
+            <!-- <div class="chart-num">{{ dataInfo.currentValue }}mA</div> -->
             <div>{{ dataInfo.collectionTime }}</div>
           </div>
           <div class="data-table">
             <div class="table-item">
+              <div class="item-name">传感器别名</div>
+              <div>{{ dataInfo.deviceName }}</div>
+            </div>
+            <div class="table-item">
               <div class="item-name">水浸值mV</div>
               <div>
-                {{ dataInfo.immersionValue == 1 ? "有水浸" : "无水浸" }}
+                {{ dataInfo.immersionValue == 1 ? "水浸" : "正常" }}
               </div>
             </div>
 
@@ -36,10 +40,7 @@
               <div class="item-name">传感器编号</div>
               <div>{{ dataInfo.deviceId }}</div>
             </div>
-            <div class="table-item">
-              <div class="item-name">传感器别名</div>
-              <div>{{ dataInfo.deviceName }}</div>
-            </div>
+            
           </div>
         </div>
       </el-tab-pane>
@@ -62,7 +63,7 @@
             </el-table-column>
             <el-table-column prop="immersionValue" label="水浸状态">
               <template slot-scope="{ row }">
-                {{ row.immersionValue == 1 ? "有水浸" : "无水浸" }}
+                {{ row.immersionValue == 1 ? "水浸" : "正常" }}
               </template>
             </el-table-column>
 
@@ -84,7 +85,7 @@
         </div>
       </el-tab-pane>
     </el-tabs>
-    <div class="search-container">
+    <div class="search-container" v-if="activeName == '2'">
       <el-form inline label-width="100px">
         <el-form-item label="">
           <el-date-picker
@@ -139,7 +140,7 @@ export default {
       endTime: "",
     };
   },
-  mounted() {
+  activated() {
     this.deviceNumber = this.$route.query.deviceNumber || "";
 
     let newDate = new Date().getTime();
@@ -159,10 +160,14 @@ export default {
     },
   },
   methods: {
-    async getData() {
+    async getData() { 
       this.dataInfo = await api.wiHistoryInfo({
         deviceId: this.deviceNumber,
       });
+      if (this.dataInfo === null) {
+        this.activeName = "2";
+        this.getList();
+      } 
     },
     async getList() {
       this.tableData = await api.wiHistoryList({

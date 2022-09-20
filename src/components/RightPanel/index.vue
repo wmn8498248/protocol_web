@@ -60,7 +60,7 @@ export default {
       }
     }
   },
-  mounted() {
+  activated() {
     this.insertToBody();
   },
   beforeDestroy() {

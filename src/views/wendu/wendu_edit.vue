@@ -76,7 +76,7 @@ export default {
       deviceId: 0,
     };
   },
-  mounted() {
+  activated() {
 		this.companyId = this.$route.query.companyId || 0;
 		this.projectId = this.$route.query.projectId || 0;
 		this.deviceId = this.$route.query.deviceId || 0;

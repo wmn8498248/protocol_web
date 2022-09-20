@@ -1,46 +1,57 @@
 <template>
   <div class="qingxieDataPage">
     <el-tabs v-model="activeName">
-      <el-tab-pane label="气压数据图" name="1">
+      <el-tab-pane label="气压数据图" name="1" v-if="dataInfo">
         <div class="data-top">
           <img class="data-image" src="../../assets/images/qiya.png" />
           <div>
-            <div class="name">{{ deviceName }}</div>
+            <div class="name">{{ dataInfo.deviceName }}</div>
             <!-- <div :class="['status', `status_${status || 0}`]"><i class="status-icon" />{{statusName || '--'}}</div> -->
           </div>
         </div>
         <div class="data-detail">
           <div class="data-chart">
             <div class="chart-img" ref="chart"></div>
-            <div>当前气压：{{ pressureValue }}KPa</div>
-            <div>{{ collectionTime }}</div>
-          </div>、
-
+            <div>当前气压：{{ dataInfo.pressureValue }}MPa</div>
+            <div>{{ dataInfo.collectionTime }}</div>
+          </div>
           <div class="data-table">
             <div class="table-item">
-              <div class="item-name">电流值</div>
-              <div>{{ currentValue }}</div>
+              <div class="item-name">传感器别名</div>
+              <div>{{ dataInfo.deviceName }}</div>
             </div>
             <div class="table-item">
               <div class="item-name">当前温度(℃)</div>
-              <div>{{ temperature }}</div>
+              <div>{{ dataInfo.temperature }}</div>
             </div>
             <div class="table-item">
-              <div class="item-name">压力值(KPa)</div>
-              <div>{{ pressureValue }}</div>
-            </div>
-            <div class="table-item">
-              <div class="item-name">帧计数器</div>
-              <div>{{ frameNum }}</div>
-            </div>
-            <div class="table-item">
-              <div class="item-name">额定值(kPa)</div>
-              <div>{{ rated }}</div>
+              <div class="item-name">压力值(MPa)</div>
+              <div>{{ dataInfo.pressureValue }}</div>
             </div>
 
             <div class="table-item">
-              <div class="item-name">传感器别名</div>
-              <div>{{ deviceName }}</div>
+              <div class="item-name">额定值(MPa)</div>
+              <div>{{ dataInfo.rated }}</div>
+            </div>
+
+            <div class="table-item">
+              <div class="item-name">最小量程</div>
+              <div>{{ dataInfo.num1 }}</div>
+            </div>
+
+            <div class="table-item">
+              <div class="item-name">最大量程</div>
+              <div>{{ dataInfo.num4 }}</div>
+            </div>
+
+            <div class="table-item">
+              <div class="item-name">低压值</div>
+              <div>{{ dataInfo.num2 }}</div>
+            </div>
+
+            <div class="table-item">
+              <div class="item-name">高压值</div>
+              <div>{{ dataInfo.num3 }}</div>
             </div>
           </div>
         </div>
@@ -65,34 +76,21 @@
               prop="deviceName"
               label="传感器别名"
             ></el-table-column>
-            <el-table-column prop="collectionTime" label="时间"></el-table-column>
-            <el-table-column prop="pressureValue" label="压力值(KPa)">
+            <el-table-column
+              prop="collectionTime"
+              label="时间"
+            ></el-table-column>
+            <el-table-column prop="pressureValue" label="压力值(MPa)">
             </el-table-column>
             <el-table-column prop="temperature" label="当前温度(℃)">
             </el-table-column>
-            <!-- <el-table-column prop="currentValue" label="电流值"> </el-table-column>
-            <el-table-column prop="frameNum" label="帧数"> </el-table-column>
-            <el-table-column prop="rated" label="额定值"> </el-table-column> -->
-            <!-- <el-table-column prop="protectionName" label="布防状态">
-              <template slot-scope="{ row }">
-                <div>
-                  <el-tag type="info" v-if="row.protectionName == '撤防'">
-                    撤防
-                  </el-tag>
-                  <el-tag type="success" v-else> 布防 </el-tag>
-                </div>
-              </template>
-            </el-table-column> -->
-
-            <!-- <el-table-column prop="address" label="传感器地址">
-            </el-table-column> -->
           </el-table>
           <div class="pagination taR mt20x">
             <el-pagination
               @size-change="onPageSizeChange"
               @current-change="onPageCurrentChange"
               :current-page="pages.pageNum"
-              :page-sizes="[20, 50, 100, 200]"
+              :page-sizes="[10, 20, 50, 100]"
               :page-size="pages.pageSize"
               layout="total, sizes, prev, pager, next, jumper"
               :total="total"
@@ -144,6 +142,7 @@ export default {
   name: "Qiya_data",
   data() {
     return {
+      dataInfo: null,
       deviceNumber: "",
       companyId: 0,
       projectId: 0,
@@ -156,8 +155,11 @@ export default {
       frameNum: "",
       collectionTime: "",
       rated: "",
+      num1: null,
+      num2: null,
+      num3: null,
+      num4: null,
       collectionTime: "",
-
       pages: {
         pageNum: 1,
         pageSize: 20,
@@ -180,7 +182,7 @@ export default {
     },
   },
   computed: {
-    pressureData(){
+    pressureData() {
       if (this.tableData.length == 0) {
         return "";
       }
@@ -194,7 +196,7 @@ export default {
         sum += arr[i];
       }
       let mean = sum / arr.length;
-      let unit = "KPa";
+      let unit = "MPa";
       return `气压：最大值：${maxN}${unit} 最小值：${minN}${unit} 平均值：${mean.toFixed(
         3
       )}${unit}`;
@@ -219,54 +221,61 @@ export default {
       )}${unit}`;
     },
   },
-  mounted() {
+  activated() {
     this.deviceNumber = this.$route.query.deviceNumber || "";
     this.companyId = this.$route.query.companyId || 0;
     this.projectId = this.$route.query.projectId || 0;
-    let newDate = new Date().getTime();
-    this.endTime = parseTime(newDate);
+
     this.endTime = moment().endOf("day").format("YYYY-MM-DD HH:mm:ss"); // 当天23点59分59秒的时间格式
     this.startTime = moment().startOf("day").format("YYYY-MM-DD HH:mm:ss"); // 当天23点59分59秒的时间格式
+    this.activeName = "1";
     this.getData();
   },
+
   methods: {
     async getData() {
-      let result = await api.pressureDataInfo({
+      this.dataInfo = await api.pressureDataInfo({
         deviceId: this.deviceNumber,
       });
-      console.log(result, "result_____________")
-
-      this.deviceId = result.deviceId;
-      this.deviceName = result.deviceName || "无";
-      this.pressureValue = result.pressureValue || "无";
-      this.currentValue = result.currentValue || "无";
-      this.temperature = result.temperature || "无";
-      this.frameNum = result.frameNum || "无";
-      this.collectionTime = result.collectionTime || "无";
-      this.rated = result.rated || "无";
-      this.setDash();
+      // if (result === null) {
+      //   // this.$router.go(-1);
+      //   // this.$emit("close-after", true);
+      //   // this.$message.warning("此设备不存在，无法查看！");
+      // }
+      if (this.dataInfo === null) {
+        this.activeName = "2";
+        this.getList();
+      } else {
+        this.$nextTick(() => {
+          this.setDash();
+        });
+      }
     },
     setDash() {
       const myChart = this.$echarts.init(this.$refs.chart);
       myChart.clear();
-      let pressure =
-        ((+this.pressure - this.num1) / (this.num4 - this.num1)) * 100;
-      // console.log("测试用户",(this.num2 - this.num1) / (this.num4 - this.num1))
+
       const option = {
         series: [
           {
             type: "gauge",
+            min: this.dataInfo.num1 || 0,
+            max: this.dataInfo.num4 || 0,
+            // splitNumber: 5,
+
             radius: "100%",
             axisLine: {
               lineStyle: {
                 width: 7,
                 color: [
                   [
-                    (this.num2 - this.num1) / (this.num4 - this.num1),
+                    (this.dataInfo.num2 || 0 - this.dataInfo.num1 || 0) /
+                      (this.dataInfo.num4 || 0 - this.dataInfo.num1 || 0),
                     "#67e0e3",
                   ],
                   [
-                    (this.num3 - this.num1) / (this.num4 - this.num1),
+                    (this.dataInfo.num3 || 0 - this.dataInfo.num1 || 0) /
+                      (this.dataInfo.num4 || 0 - this.dataInfo.num1 || 0),
                     "#37a2da",
                   ],
                   [1, "#fd666d"],
@@ -274,7 +283,7 @@ export default {
               },
             },
             splitLine: {
-              distance: -3, //-18
+              distance: -5, //-18
               length: 16,
               lineStyle: {
                 color: "#14e1fa", // x轴刻度大颜色
@@ -282,13 +291,13 @@ export default {
             },
             axisTick: {
               distance: 0, //-12
-              length: 10,
+              length: 4,
               lineStyle: {
                 color: "#14e1fa", // x轴刻度小颜色
               },
             },
             axisLabel: {
-              distance: 2, //-50
+              distance: 8, //-50
               color: "#14e1fa", // x轴刻度文字颜色
               fontSize: 9,
             },
@@ -309,15 +318,15 @@ export default {
               },
             },
 
-            axisTick: {
-              show: false,
-            },
-            splitLine: {
-              show: false,
-            },
-            axisLabel: {
-              show: false,
-            },
+            // axisTick: {
+            //   show: false,
+            // },
+            // splitLine: {
+            //   show: false,
+            // },
+            // axisLabel: {
+            //   show: false,
+            // },
             detail: {
               show: false,
               valueAnimation: true,
@@ -325,8 +334,17 @@ export default {
             },
             data: [
               {
-                value: pressure,
+                value: this.dataInfo.pressureValue,
               },
+              // {
+              //   value: this.num2,
+              // },
+              // {
+              //   value: this.num3,
+              // },
+              // {
+              //   value: this.num4,
+              // },
             ],
           },
         ],
@@ -339,7 +357,7 @@ export default {
         startTime: this.startTime,
         endTime: this.endTime,
       });
-      this.tableData = this.tableData.reverse()
+      this.tableData = this.tableData.reverse();
       this.total = this.tableData.length;
       this.cutList();
       this.initEchart();
@@ -371,7 +389,7 @@ export default {
           trigger: "axis",
         },
         legend: {
-          data: ["压力" , "温度"],
+          data: ["压力", "温度"],
           textStyle: {
             color: "#fff",
           },
@@ -411,7 +429,7 @@ export default {
         },
         yAxis: {
           type: "value",
-          name: "压力/KPa",
+          name: "压力/MPa",
           splitLine: {
             show: false,
           },

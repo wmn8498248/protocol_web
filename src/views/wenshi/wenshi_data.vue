@@ -1,11 +1,11 @@
 <template>
-  <div class="qingxieDataPage"> 
+  <div class="qingxieDataPage">
     <el-tabs v-model="activeName">
       <el-tab-pane label="温湿器数据图" name="1" v-if="dataInfo">
         <div class="data-top">
           <img class="data-image" src="../../assets/images/wen-shi.png" />
           <div>
-            <div class="name">{{ dataInfo.deviceName }}</div> 
+            <div class="name">{{ dataInfo.deviceName }}</div>
             <!-- <div class="status"><i class="status-icon" />在线</div> -->
           </div>
         </div>
@@ -70,11 +70,11 @@
             ></el-table-column>
           </el-table>
           <div class="pagination taR mt20x">
-           <el-pagination
+            <el-pagination
               @size-change="onPageSizeChange"
               @current-change="onPageCurrentChange"
               :current-page="pages.pageNum"
-              :page-sizes="[20, 50, 100, 200]"
+              :page-sizes="[10, 20, 50, 100]"
               :page-size="pages.pageSize"
               layout="total, sizes, prev, pager, next, jumper"
               :total="total"
@@ -84,7 +84,7 @@
         </div>
       </el-tab-pane>
     </el-tabs>
-    <div class="search-container">
+    <div class="search-container" v-if="activeName == '2'">
       <el-form inline label-width="100px">
         <el-form-item label="">
           <el-date-picker
@@ -92,7 +92,7 @@
             placeholder="选择起始时间"
             v-model="startTime"
             value-format="yyyy-MM-dd HH:mm:ss"
-            format="yyyy-MM-dd HH:mm:ss"
+            format="yyyy-MM-dd HH:mm:ss" 
           >
           </el-date-picker>
         </el-form-item>
@@ -136,8 +136,8 @@ export default {
       tableData: [],
       tableList: [],
       onload: false,
-      startTime:moment().startOf("day").format("YYYY-MM-DD HH:mm:ss"),
-			endTime: moment().endOf("day").format("YYYY-MM-DD HH:mm:ss"),
+      startTime: moment().startOf("day").format("YYYY-MM-DD HH:mm:ss"),
+      endTime: moment().endOf("day").format("YYYY-MM-DD HH:mm:ss"),
     };
   },
   watch: {
@@ -189,10 +189,9 @@ export default {
       )}${unit}`;
     },
   },
-  mounted() {
+  activated() {
     // this.initEchart();
     this.deviceNumber = this.$route.query.deviceNumber || "";
-    
     this.activeName = "1";
     this.getData();
   },
@@ -201,6 +200,10 @@ export default {
       this.dataInfo = await api.thHistoryInfo({
         deviceId: this.deviceNumber,
       });
+      if (this.dataInfo === null) {
+        this.activeName = "2";
+        this.getList();
+      } 
     },
     async getList() {
       this.tableData = await api.thHistoryChart({
@@ -208,13 +211,13 @@ export default {
         startTime: this.startTime,
         endTime: this.endTime,
       });
-      this.tableData = this.tableData.reverse()
+      this.tableData = this.tableData.reverse();
       this.total = this.tableData.length;
       this.cutList();
       this.initEchart();
     },
     // 导出表格
-    async tableExport() {
+    async tableExport() { 
       this.onload = true;
       await exportExcel({
         url: "temperatureControlHistory/exportExcel",
@@ -247,6 +250,15 @@ export default {
         legend: {
           data: ["温度", "湿度"],
         },
+        tooltip: {
+          trigger: "axis",
+          axisPointer: {
+            type: "cross",
+            label: {
+              backgroundColor: "#6a7985",
+            },
+          },
+        },
         grid: {
           top: 52,
           left: 66,
@@ -255,10 +267,10 @@ export default {
         },
         xAxis: {
           type: "category",
-          boundaryGap: false,
+          // boundaryGap: false,
           data: this.tableData
             .map((item) => {
-              return item.createTime || "--";
+              return item.collectionTime || "--";
             })
             .reverse(),
           splitLine: {
@@ -362,7 +374,7 @@ export default {
     },
     // 修改列表页数
     onPageCurrentChange(e) {
-      this.pages.pageNum = e;
+      this.pages.pageNum = e;      
       this.cutList();
     },
     // 分割数组

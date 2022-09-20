@@ -38,16 +38,16 @@
               <div>{{ dataInfo.voltage }}</div>
             </div>
             <div class="table-item">
-              <div class="item-name">传感器类型</div>
+              <div class="item-name">传感器类型</div> 
               <div>无线变形传感器</div>
             </div>
             <div class="table-item">
               <div class="item-name">传感器编号</div>
-              <div>{{ dataInfo.deviceId}}</div>
+              <div>{{ dataInfo.deviceId }}</div>
             </div>
             <div class="table-item">
               <div class="item-name">传感器别名</div>
-              <div>{{ dataInfo.deviceId }}</div>
+              <div>{{ dataInfo.deviceName }}</div>
             </div>
           </div>
         </div>
@@ -75,8 +75,7 @@
             ></el-table-column>
             <el-table-column prop="datavalue" label="形变量ε">
             </el-table-column>
-            <el-table-column prop="temdev" label="温度/℃">
-            </el-table-column>
+            <el-table-column prop="temdev" label="温度/℃"> </el-table-column>
             <el-table-column prop="voltage" label="电压/V"> </el-table-column>
           </el-table>
           <div class="pagination taR mt20x">
@@ -84,7 +83,7 @@
               @size-change="onPageSizeChange"
               @current-change="onPageCurrentChange"
               :current-page="pages.pageNum"
-              :page-sizes="[20, 50, 100, 200]"
+              :page-sizes="[10, 20, 50, 100]"
               :page-size="pages.pageSize"
               layout="total, sizes, prev, pager, next, jumper"
               :total="total"
@@ -146,8 +145,8 @@ export default {
         pageNum: 1,
         pageSize: 20,
       },
-      startTime:moment().startOf("day").format("YYYY-MM-DD HH:mm:ss"),
-			endTime: moment().endOf("day").format("YYYY-MM-DD HH:mm:ss"),
+      startTime: moment().startOf("day").format("YYYY-MM-DD HH:mm:ss"),
+      endTime: moment().endOf("day").format("YYYY-MM-DD HH:mm:ss"),
       total: 0,
       tableData: [],
       tableList: [],
@@ -184,7 +183,7 @@ export default {
       }
     },
   },
-  mounted() {
+  activated() {
     this.deviceNumber = this.$route.query.deviceNumber || "";
     this.companyId = this.$route.query.companyId || 0;
     this.projectId = this.$route.query.projectId || 0;
@@ -196,6 +195,10 @@ export default {
       this.dataInfo = await api.deformationDataInfo({
         deviceId: this.deviceNumber,
       });
+      if (this.dataInfo === null) {
+        this.activeName = "2";
+        this.getList();
+      }
     },
     async getList() {
       this.tableData = await api.deformationHistoryList({
@@ -203,7 +206,7 @@ export default {
         startTime: this.startTime,
         endTime: this.endTime,
       });
-      this.tableData = this.tableData.reverse()
+      this.tableData = this.tableData.reverse();
       this.total = this.tableData.length;
       this.cutList();
       this.initEchart();

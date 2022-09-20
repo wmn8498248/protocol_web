@@ -5,7 +5,15 @@
         <el-form-item label="">
           <el-input
             class="w180x"
-            v-model="deviceName"
+            v-model="searchModel.deviceId"
+            type="text"
+            placeholder="传感器编号"
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="">
+          <el-input
+            class="w180x"
+            v-model="searchModel.deviceName"
             type="text"
             placeholder="传感器别名"
           ></el-input>
@@ -41,7 +49,7 @@
         @size-change="onPageSizeChange"
         @current-change="onPageCurrentChange"
         :current-page="pages.pageNum"
-        :page-sizes="[10, 20, 50, 100]"
+        :page-sizes="[5, 10, 20, 50]"
         :page-size="pages.pageSize"
         layout="total, sizes, prev, pager, next, jumper"
         :total="total"
@@ -57,6 +65,8 @@ export default {
 	name: 'Wendu',
   data() {
     return {
+      searchModel: { deviceId: "", deviceName: "" },
+
 			companyId: 0,
 			projectId: 0,
 			timer: null,
@@ -69,27 +79,17 @@ export default {
       tableData: [],
     };
   },
-  mounted() {
-		this.projectId = this.$route.meta.standId || 0;
-		this.companyId = this.$route.meta.companyId || 0;
-	},
-	beforeDestroy() {
-		clearTimeout(this.timer);
-	},
+
   methods: {
 		async getData() {
-			clearTimeout(this.timer);
 			let { pageInfo, total } = await api.temperatureElectricNewList({
 				companyId: this.companyId,
-				projectId: this.projectId,
-				deviceName: this.deviceName,
+				        ...this.searchModel,
+
 				...this.pages
 			});
 			this.total = total;
 			this.tableData = pageInfo;
-			this.timer = setTimeout(() => {
-				this.getData();
-			}, 30000);
 		},
 		// 修改列表条数
 		onPageSizeChange(e) {

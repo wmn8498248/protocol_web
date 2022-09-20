@@ -18,12 +18,11 @@
           <el-button @click="messageBox(4)" class="btn-create">
             查询监测参数
           </el-button>
-          <el-button @click="backPage" class="btn-cancel">返回</el-button>
         </el-form-item>
         <el-form-item label="布防状态" required>
-          <el-select v-model="info.alarmStatus">
-            <el-option label="撤防" value="1"></el-option>
-            <el-option label="布防" value="0"></el-option>
+          <el-select :value="info.alarmStatus">
+            <el-option label="撤防" :value="1"></el-option>
+            <el-option label="布防" :value="0"></el-option>
           </el-select>
         </el-form-item>
 
@@ -59,7 +58,7 @@
           ></el-input>
         </el-form-item>
 
-         <el-form-item label="高湿度" required>
+        <el-form-item label="高湿度" required>
           <el-input
             type="text"
             v-model="info.humidityHigh"
@@ -67,10 +66,10 @@
           ></el-input>
         </el-form-item>
 
-         <el-form-item label="低湿度" required>
+        <el-form-item label="低湿度" required>
           <el-input
             type="text"
-            v-model="info.gumidityLow"
+            v-model="info.humidityLow"
             :disabled="disabled"
           ></el-input>
         </el-form-item>
@@ -84,6 +83,7 @@
         </el-form-item> -->
         <el-form-item>
           <el-button @click="toSave" class="btn-create">保存</el-button>
+          <el-button @click="backPage" class="btn-cancel">返回</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -105,21 +105,23 @@ export default {
         temperatureHigh: "",
         temperatureLow: "",
         humidityHigh: "",
-        gumidityLow: "",
+        humidityLow: "",
       },
       disabled: false,
-      deviceId: 0,
+      deviceId: null,
+      id: null,
     };
   },
-  mounted() {
+
+  activated() {
     this.deviceId = this.$route.query.deviceId || 0;
-    // this.getInfo();
-    // console.log('this.$store.getters',)
+    this.id = this.$route.query.id || 0;
+    this.getInfo();
   },
   methods: {
     async defence() {
       let data = {
-        deviceId: this.deviceId,
+        deviceId: this.info.deviceId,
       };
       this.issuanceLoad = true;
       let defence = await api.defence(data);
@@ -219,16 +221,23 @@ export default {
         this.issuanceLoad = false;
       }
     },
-   
+
     async getInfo() {
+      this.info.deviceName = "";
+      this.info.alarmStatus = null;
+      this.info.collectionInterval = "";
+      this.info.collectionNumber = "";
+      this.info.temperatureHigh = "";
+      this.info.temperatureLow = "";
+      this.info.humidityHigh = "";
+      this.info.humidityLow = "";
       let data = {
-        deviceId: this.deviceId,
+        id: this.id,
       };
-      let { info } = await api.pressureInfo(data);
-      this.info = info;
+      this.info = await api.temperatureAndHumidityInfo(data);
     },
     async toSave() {
-       let validator = new Validator();
+      let validator = new Validator();
       validator.add(this.info.collectionInterval, [
         "isNonEmpty",
         "请输入数据采集间隔",
@@ -240,8 +249,7 @@ export default {
       validator.add(this.info.temperatureHigh, ["isNonEmpty", "请输入高温值"]);
       validator.add(this.info.temperatureLow, ["isNonEmpty", "请输入高温值"]);
       validator.add(this.info.humidityHigh, ["isNonEmpty", "请输入高湿度值"]);
-      validator.add(this.info.gumidityLow, ["isNonEmpty", "请输入低湿度值"]);
-
+      validator.add(this.info.humidityLow, ["isNonEmpty", "请输入低湿度值"]);
 
       let msg = validator.start();
       if (msg) {
@@ -249,11 +257,14 @@ export default {
       } else {
         await api.deviceSetGeneral({
           ...this.info,
-          deviceId: this.deviceId,
         });
         await api.deviceSetAlarm({
-          ...this.info,
-          deviceId: this.deviceId,
+          // ...this.info,
+          deviceId: this.info.deviceId,
+          temperatureHigh: this.info.temperatureHigh,
+          temperatureLow: this.info.temperatureLow,
+          humidityHigh: this.info.humidityHigh,
+          gumidityLow: this.info.gumidityLow,
         });
         this.$message.success("保存成功");
         this.backPage();

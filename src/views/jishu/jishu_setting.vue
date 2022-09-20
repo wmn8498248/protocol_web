@@ -93,7 +93,7 @@ export default {
 			halfWaveThresholdDisabled: true
 		};
   },
-  mounted() {
+  activated() {
 		this.deviceId = this.$route.query.deviceId || 0;
 		this.getInfo();
 	},

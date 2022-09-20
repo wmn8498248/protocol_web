@@ -6,7 +6,7 @@ const state = {
     withoutAnimation: false
   },
   device: 'desktop',
-  size: Cookies.get('size') || 'mini',
+  size: Cookies.get('size') || 1,
   uploadUrl: process.env.VUE_APP_BASE_API + 'file/upload',
   update: Cookies.get('update') || false,
   show: false
@@ -59,7 +59,7 @@ const actions = {
   },
   toggleDevice({ commit }, device) {
     commit('TOGGLE_DEVICE', device)
-  },
+  }, 
   setSize({ commit }, size) {
     commit('SET_SIZE', size)
   }
