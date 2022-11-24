@@ -4,7 +4,7 @@
       <el-form inline :model="searchModel" label-width="100px">
         
         <el-form-item label="">
-          <el-input type="text" v-model="searchModel.deviceId" placeholder="传感器编号"></el-input>
+          <el-input type="text" v-model="searchModel.deviceId" placeholder="设备编号"></el-input>
         </el-form-item>
 
         <el-form-item label="">
@@ -17,38 +17,35 @@
       </el-form>
     </div>
     <el-table :data="tableData">
-      <el-table-column prop="deviceId" width="150" label="传感器编号"> </el-table-column>
-      <el-table-column prop="deviceName" width="150" label="传感器别名"> </el-table-column>
-      <el-table-column prop="alarmStatus" width="100"  label="布防状态">
+      <el-table-column prop="deviceId" width="150" label="设备编号"> </el-table-column>
+      <el-table-column prop="deviceName" sortable width="150" label="传感器别名"> </el-table-column>
+      <el-table-column prop="statusName" label="布防状态">
         <template slot-scope="{ row }">
-          <div>
-            <el-tag type="info" v-if="row.alarmStatus == 1"> 撤防 </el-tag>
-            <el-tag type="success" v-else-if="row.alarmStatus == 0">
-              布防
-            </el-tag>
-          </div>
+         <div>
+          <el-tag type="info" v-if="row.statusName==1"> 
+            撤防
+          </el-tag>
+          <el-tag type="success" v-else>
+            布防
+          </el-tag>
+         </div>
         </template>
       </el-table-column>
-      <!-- <el-table-column prop="gasHigh" label="气压告警高阈值(MPa)"> </el-table-column> -->
-      <!-- <el-table-column prop="gasLow" label="气压告警低阈值(MPa)"> </el-table-column> -->
-      <el-table-column prop="collectionInterval" label="采集间隔(S)"> </el-table-column>
+      <el-table-column prop="gasHigh" width="150" label="气压告警高阈值(KPa)"> </el-table-column>
+      <el-table-column prop="gasLow" width="150" label="气压告警低阈值(KPa)"> </el-table-column>
+      <el-table-column prop="dataCollection" label="采集间隔(S)"> </el-table-column>
       <el-table-column prop="collectionNumber" label="采集个数"> </el-table-column>
-      <el-table-column prop="updateTime" width="150" label="更新时间" > </el-table-column>
-      <!-- <el-table-column prop="num1" label="最小量程"> </el-table-column>
-      <el-table-column prop="num4" label="低压值"> </el-table-column>
-      <el-table-column prop="num2" label="高压值"> </el-table-column>
-      <el-table-column prop="num3" label="最大量程"> </el-table-column> -->
-      <el-table-column label="操作" width="350">
+      <el-table-column prop="updateTime" width="150" label="更新时间"> </el-table-column>
+      <el-table-column fixed="right" label="操作" width="250">
         <template slot-scope="{ row }">
-          <el-button class="btn-data" size="mini" @click="upgrade('sf6',row.deviceId)">远程升级</el-button>
-          <el-button class="btn-data" size="mini" @click="toSet(row.id ,row.deviceId)">参数设置</el-button>
+          <el-button class="btn-data" size="mini" @click="toSet(row.deviceId)">参数设置</el-button>
           <el-button class="btn-detail" size="mini" @click="toEdit(row.id)">修改</el-button>
           <el-button class="btn-clear" size="mini" @click="toDelete(row.deviceId)">删除</el-button>
         </template>
       </el-table-column>qiya_edit
     </el-table>
     <div class="pagination taR mt20x">
-      <el-pagination @size-change="onPageSizeChange" @current-change="onPageCurrentChange" :current-page="pages.pageNum" :page-sizes="[5, 10, 20, 50]" :page-size="pages.pageSize" layout="total, sizes, prev, pager, next, jumper" :total="total">
+      <el-pagination @size-change="onPageSizeChange" @current-change="onPageCurrentChange" :current-page="pages.pageNum" :page-sizes="[10, 20, 50, 100]" :page-size="pages.pageSize" layout="total, sizes, prev, pager, next, jumper" :total="total">
       </el-pagination>
     </div>
   </div>
@@ -84,29 +81,19 @@ export default {
         ...this.searchModel,
         ...this.pages,
       };
-      let dataList = await api.pressureList(data); 
+      let dataList = await api.pressureList(data);
       this.tableData = dataList.records;
 			this.total = dataList.total;
     },
-    upgrade(deviceType,deviceId){
-      this.$router.push({
-        path: "/manage/upgrade_setting",
-        query: {
-          deviceType,
-          deviceId
-        },
-      });
-    },
-     toSet(id,deviceId) {
+    async toSet(deviceId) {
       this.$router.push({
         path: "/manage/qiya_setting",
         query: {
-          id,
           deviceId
         },
       });
     },
-     toEdit(deviceId) {
+    async toEdit(deviceId) {
 			this.$router.push({
 			  path: "/manage/qiya_edit",
 			  query: {

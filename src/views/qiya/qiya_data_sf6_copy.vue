@@ -12,7 +12,7 @@
         <div class="data-detail">
           <div class="data-chart">
             <div class="chart-img" ref="chart"></div>
-            <div>当前气压：{{ pressureValue }}MPa</div>
+            <div>当前气压：{{ pressureValue }}KPa</div>
             <div>{{ collectionTime }}</div>
           </div>
           <div class="data-table">
@@ -25,7 +25,7 @@
               <div>{{ temperature }}</div>
             </div>
             <div class="table-item">
-              <div class="item-name">压力值(MPa)</div>
+              <div class="item-name">压力值(KPa)</div>
               <div>{{ pressureValue }}</div>
             </div>
             <div class="table-item">
@@ -33,7 +33,7 @@
               <div>{{ frameNum }}</div>
             </div>
             <div class="table-item">
-              <div class="item-name">额定值(MPa)</div>
+              <div class="item-name">额定值(kPa)</div>
               <div>{{ rated }}</div>
             </div>
 
@@ -148,13 +148,13 @@ export default {
         sum += arr[i];
       }
       let mean = sum / arr.length;
-      let unit = "MPa";
+      let unit = "KPa";
       return `气压：最大值：${maxN}${unit} 最小值：${minN}${unit} 平均值：${mean.toFixed(
         3
       )}${unit}`;
     },
   },
-  activated() {
+  mounted() {
     this.deviceNumber = this.$route.query.deviceNumber || "";
     this.companyId = this.$route.query.companyId || 0;
     this.projectId = this.$route.query.projectId || 0;
@@ -185,6 +185,7 @@ export default {
       myChart.clear();
       let pressure =
         ((+this.pressure - this.num1) / (this.num4 - this.num1)) * 100;
+      // console.log("测试用户",(this.num2 - this.num1) / (this.num4 - this.num1))
       const option = {
         series: [
           {
@@ -283,6 +284,7 @@ export default {
     // 导出表格
     async tableExport() {
       this.onload = true;
+      // console.log('this.deviceName', this.deviceName)
       await exportExcel({
         url: "pressureHistory/exportExcel",
         params: {
@@ -346,7 +348,7 @@ export default {
         },
         yAxis: {
           type: "value",
-          name: "压力/MPa",
+          name: "压力/KPa",
           splitLine: {
             show: false,
           },

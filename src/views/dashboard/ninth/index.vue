@@ -22,7 +22,7 @@
             </p>
             <p>
               <span @click="numListClick(1)"
-                >在线：<i>{{ deviceNum.onLine }}</i></span
+                >正常：<i>{{ deviceNum.onLine }}</i></span
               ><span @click="numListClick(0)"
                 >离线：<i>{{ deviceNum.outLine }}</i></span
               >
@@ -104,10 +104,10 @@
             </div>
           </div>
           <div class="title-right">
-            <el-button class="btn-map" @click="parentRouting" size="mini">
+            <el-button class="btn-map" @click="parentRouting">
               更多信息</el-button
             >
-            <el-button class="btn-retry" @click="tableExport" :loading="onload" size="mini"
+            <el-button class="btn-retry" @click="tableExport" :loading="onload"
               >导出excel</el-button
             >
           </div>
@@ -205,7 +205,7 @@
                   <span
                     class="date"
                     :title="index"
-                    v-text="item.immersionValue == 1 ? '水浸' : '正常'"
+                    v-text="item.immersionValue==1?'有水浸':'无水浸'"
                   ></span>
                   <span
                     class="date"
@@ -241,8 +241,8 @@
       <div class="home-box flex4">
         <div class="box-title">
           <img class="itemImg" src="../../../assets/images/sb6.png" />历史曲线
-          <span class="right">水浸(1)，正常(2)</span>
-          <!-- <span class="right">气压: MPa</span> -->
+          <span class="right">有水浸(1)，无水浸(2)</span>
+          <!-- <span class="right">气压: KPa</span> -->
         </div>
         <div class="box-container">
           <div ref="chart4" style="width: 100%; height: 100%"></div>
@@ -352,12 +352,12 @@ export default {
     this.getDataOut();
   },
   destroyed() {
-    clearInterval(this.nowDateId);
+    clearTimeout(this.nowDateId);
   },
   methods: {
     getDataOut() {
       let that = this;
-      clearInterval(this.nowDateId);
+      clearTimeout(this.nowDateId);
       this.nowDateId = setInterval(() => {
         that.getData();
       }, 300000);
@@ -365,10 +365,9 @@ export default {
     numListClick(res) {
       this.$emit("moreInfoPopup", "设备数量");
       this.$router.push({
-        path: "/wi/mix",
+        path: "/wi/quantity",
         query: {
-          type: "status",
-          params: res,
+          lineState: res,
           companyId: this.companyId,
         },
       });
@@ -415,14 +414,11 @@ export default {
       this.dataDetailsType = res;
       this.alarmList = [];
 
-      const { alarmType, page } = await api.alarmDate({
+      const { alarmType, list } = await api.alarmDate({
         companyId: this.companyId,
-        alarmType: this.typeList[res],
+        alarmType: res,
         dayNum: this.times,
-        pageNum: 1,
-        pageSize: 100,
       });
-      let list = page.records;
 
       if (list.length > 7) {
         this.newDataOption.step = 1;
@@ -464,11 +460,8 @@ export default {
         let deviceId = this.alarmList[res].deviceId;
         historyList = await api.deviceHistoryList({
           deviceId: deviceId,
-          startTime: moment()
-            .startOf("day")
-            .day(moment().day() - this.times)
-            .format("YYYY-MM-DD HH:mm:ss"),
-          endTime: moment().endOf("day").format("YYYY-MM-DD HH:mm:ss"),
+          startTime: moment().startOf('day').day(moment().day() - this.times).format('YYYY-MM-DD HH:mm:ss'),
+          endTime: moment().endOf('day').format('YYYY-MM-DD HH:mm:ss'),
         });
         deviceName = this.alarmList[res].deviceName;
       }
@@ -494,14 +487,11 @@ export default {
     async changeTimes(times) {
       this.times = times;
 
-      const { alarmType, page } = await api.alarmDate({
+      const { alarmType, list } = await api.alarmDate({
         companyId: this.companyId,
-        alarmType: this.typeList[this.dataDetailsType],
+        alarmType: this.dataDetailsType,
         dayNum: times,
-        pageNum: 1,
-        pageSize: 100,
       });
-      let list = page.records;
 
       if (list.length > 7) {
         this.newDataOption.step = 1;
@@ -899,12 +889,11 @@ export default {
       });
 
       this.myChart1.on("click", function (param) {
-        that.$emit("moreInfoPopup", "电压等级:" + param.name + "(V)");
+        that.$emit("moreInfoPopup", "电压等级:" + param.name);
         that.$router.push({
-          path: "/wi/mix",
+          path: "/wi/grade",
           query: {
-            type: "voltLevel",
-            params: param.name,
+            voltLevel: param.name,
             companyId: that.companyId,
           },
         });
@@ -995,10 +984,9 @@ export default {
       this.myChart2.on("click", function (param) {
         that.$emit("moreInfoPopup", "设备类型：" + param.name);
         that.$router.push({
-          path: "/wi/mix",
+          path: "/wi/equipmentType",
           query: {
-            type: "deviceClassify",
-            params: param.name,
+            deviceClassify: param.name,
             companyId: that.companyId,
           },
         });

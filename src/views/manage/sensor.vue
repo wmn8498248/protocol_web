@@ -12,9 +12,9 @@
         >
       </el-radio-group>
     </div>
+
     <div class="content" v-if="companyList.length > 0">
       <el-tabs v-model="activeName">
-        
         <el-tab-pane label="SF6气体压力传感器" name="4">
           <qiya :companyId="companyId" :projectId="projectId" ref="qiya"></qiya>
         </el-tab-pane>
@@ -63,37 +63,6 @@
           ></shuijin>
         </el-tab-pane>
 
-        <el-tab-pane label="温度传感器" name="13">
-          <wenduyg
-            :companyId="companyId"
-            :projectId="projectId"
-            ref="wenduyg"
-          ></wenduyg>
-        </el-tab-pane>
-        <el-tab-pane label="电流传感器" name="14">
-          <dianliu
-            :companyId="companyId"
-            :projectId="projectId"
-            ref="dianliu"
-          ></dianliu>
-        </el-tab-pane>
-
-        <el-tab-pane label="单火开关" name="15">
-          <onoff
-            :companyId="companyId"
-            :projectId="projectId"
-            ref="onoff"
-          ></onoff>
-        </el-tab-pane>
-        <el-tab-pane label="断路器计数器" name="16">
-          <jishu
-            :companyId="companyId"
-            :projectId="projectId"
-            ref="jishu"
-          ></jishu>
-        </el-tab-pane>
-        
-
         <el-tab-pane label="避雷器" name="1" disabled>
           <bilei
             :companyId="companyId"
@@ -124,7 +93,13 @@
           ></shuiwei>
         </el-tab-pane>
 
-        
+        <el-tab-pane label="断路器计数器" name="8" disabled>
+          <jishu
+            :companyId="companyId"
+            :projectId="projectId"
+            ref="jishu"
+          ></jishu>
+        </el-tab-pane>
       </el-tabs>
       <div class="export">
         <el-form inline label-width="100px">
@@ -132,9 +107,24 @@
             <el-button @click="toAdd" class="btn-create">新增设备</el-button>
           </el-form-item>
           <el-form-item>
+            <!-- <el-button @click="batchExcel" class="btn-retry"
+              >批量导入</el-button
+            > -->
             <el-button size="small" type="success" @click="toModifyAdd"
               >批量导入</el-button
             >
+            <!-- <el-button type="text" @click="open">点击打开 Message Box</el-button>
+            <el-upload
+              class="upload-demo"
+              :action="actionUrl"
+              :headers="headerObj"
+              :data="{ gatewayId: projectId }"
+              :on-success="handle_success"
+              :on-preview="handlePreview"
+              :file-list="fileList"
+            >
+              <el-button size="small" type="success">点击上传</el-button>
+            </el-upload> -->
           </el-form-item>
         </el-form>
       </div>
@@ -155,20 +145,13 @@ import wengan from "./components/wengan";
 import wenshi from "./components/wenshi";
 import shengsuo from "./components/shengsuo";
 import bianxing from "./components/bianxing";
-
-import wenduyg from "./components/wenduyg";
-import dianliu from "./components/dianliu";
-import onoff from "./components/onoff";
-
 import Cookies from "js-cookie";
 import { getToken } from "@/utils/auth";
+
 // sf6BatchSave tcBatchSave thBatchSave wiBatchSave
 export default {
   name: "Sensor",
   components: {
-    onoff,
-    dianliu,
-    wenduyg,
     bilei,
     qingxie,
     wendu,
@@ -210,7 +193,7 @@ export default {
       };
     },
   },
-  activated() {
+  mounted() {
     this.getuserRights();
   },
   methods: {
@@ -225,6 +208,7 @@ export default {
     handlePreview() {
       this.actionUrl =
         "http://tx2.yuanguaniot.com/protocol/tc/device/batchSave";
+      console.log(this.actionUrl);
     },
     batchExcel() {
       console.log(this.projectId);
@@ -308,18 +292,6 @@ export default {
         case "12":
           this.$refs.bianxing.getList();
           break;
-        case "13":
-          this.$refs.wenduyg.getList();
-          break;
-        case "14":
-          this.$refs.dianliu.getList();
-          break;
-        case "15":
-          this.$refs.onoff.getList();
-          break;
-        case "16":
-          this.$refs.jishu.getList();
-          break;  
         default:
           break;
       }
@@ -370,18 +342,6 @@ export default {
           break;
         case "12":
           url = "/manage/bianxing_edit";
-          break;
-        case "13":
-          url = "/manage/wenduyg_edit";
-          break;
-        case "14":
-          url = "/manage/dianliu_edit";
-          break;
-        case "15":
-          url = "/manage/onoff_edit";
-          break;
-        case "16":
-          url = "/manage/jishu_edit";
           break;
         default:
           break;
@@ -446,12 +406,6 @@ export default {
   }
   .content {
     width: 100%;
-    >>> .el-table__expanded-cell {
-      background-color: #00051e;
-    }
-    >>> .el-form-item__label {
-      color: #14e1fa;
-    }
     >>> .el-tabs__nav-wrap {
       background: #141e46;
     }
@@ -475,7 +429,6 @@ export default {
       width: 400px;
     }
   }
-
   .export {
     display: flex;
     justify-content: flex-end;

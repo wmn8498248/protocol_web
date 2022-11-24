@@ -56,7 +56,7 @@
         @size-change=""
         @current-change=""
         :current-page="pages.pageNum"
-        :page-sizes="[5, 10, 20, 50]"
+        :page-sizes="[10, 20, 50, 100]"
         :page-size="pages.pageSize"
         layout="total, sizes, prev, pager, next, jumper"
         :total="total"
@@ -81,7 +81,7 @@ export default {
     };
   },
   created() {},
-
+  mounted() {},
   methods: {},
 };
 </script>

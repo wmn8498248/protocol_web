@@ -1,68 +1,46 @@
 <template>
   <div class="qingxieDataPage">
     <el-tabs v-model="activeName">
-      <el-tab-pane label="气压数据图" name="1" v-if="dataInfo">
+      <el-tab-pane label="气压数据图" name="1">
         <div class="data-top">
           <img class="data-image" src="../../assets/images/qiya.png" />
           <div>
-            <div class="name">{{ dataInfo.deviceName }}</div>
+            <div class="name">{{ deviceName }}</div>
             <!-- <div :class="['status', `status_${status || 0}`]"><i class="status-icon" />{{statusName || '--'}}</div> -->
           </div>
         </div>
         <div class="data-detail">
           <div class="data-chart">
             <div class="chart-img" ref="chart"></div>
-            <div>当前气压aaa：{{ dataInfo.pressureValue }}MPa</div>
-            <div>{{ dataInfo.collectionTime }}</div>
-          </div>
+            <div>当前气压：{{ pressureValue }}KPa</div>
+            <div>{{ collectionTime }}</div>
+          </div>、
+
           <div class="data-table">
             <div class="table-item">
+              <div class="item-name">电流值</div>
+              <div>{{ currentValue }}</div>
+            </div>
+            <div class="table-item">
               <div class="item-name">当前温度(℃)</div>
-              <div>{{ dataInfo.temperature }}</div>
+              <div>{{ temperature }}</div>
             </div>
             <div class="table-item">
-              <div class="item-name">压力值(MPa)</div>
-              <div>{{ dataInfo.pressureValue }}</div>
+              <div class="item-name">压力值(KPa)</div>
+              <div>{{ pressureValue }}</div>
+            </div>
+            <div class="table-item">
+              <div class="item-name">帧计数器</div>
+              <div>{{ frameNum }}</div>
+            </div>
+            <div class="table-item">
+              <div class="item-name">额定值(kPa)</div>
+              <div>{{ rated }}</div>
             </div>
 
-            <div class="table-item">
-              <div class="item-name">额定值(MPa)</div>
-              <div>{{ dataInfo.rated }}</div>
-            </div>
-            <div class="table-item">
-              <div class="item-name">白名单状态</div>
-              <div v-if="dataInfo.isWhite">
-                <el-tag size="mini" type="success">开启</el-tag>
-              </div>
-              <div v-else><el-tag type="danger" size="mini">关闭</el-tag></div>
-            </div>
-            <div class="table-item">
-              <div class="item-name">白名单描述</div>
-              <div>{{ dataInfo.whiteDesc }}</div>
-            </div>
-
-            <div class="table-item">
-              <div class="item-name">最小量程</div>
-              <div>{{ dataInfo.num1 }}</div>
-            </div>
-
-            <div class="table-item">
-              <div class="item-name">最大量程</div>
-              <div>{{ dataInfo.num4 }}</div>
-            </div>
-
-            <div class="table-item">
-              <div class="item-name">低压值</div>
-              <div>{{ dataInfo.num2 }}</div>
-            </div>
-
-            <div class="table-item">
-              <div class="item-name">高压值</div>
-              <div>{{ dataInfo.num3 }}</div>
-            </div>
             <div class="table-item">
               <div class="item-name">传感器别名</div>
-              <div>{{ dataInfo.deviceName }}</div>
+              <div>{{ deviceName }}</div>
             </div>
           </div>
         </div>
@@ -87,21 +65,34 @@
               prop="deviceName"
               label="传感器别名"
             ></el-table-column>
-            <el-table-column
-              prop="collectionTime"
-              label="时间"
-            ></el-table-column>
-            <el-table-column prop="pressureValue" label="压力值(MPa)">
+            <el-table-column prop="collectionTime" label="时间"></el-table-column>
+            <el-table-column prop="pressureValue" label="压力值(KPa)">
             </el-table-column>
             <el-table-column prop="temperature" label="当前温度(℃)">
             </el-table-column>
+            <!-- <el-table-column prop="currentValue" label="电流值"> </el-table-column>
+            <el-table-column prop="frameNum" label="帧数"> </el-table-column>
+            <el-table-column prop="rated" label="额定值"> </el-table-column> -->
+            <!-- <el-table-column prop="protectionName" label="布防状态">
+              <template slot-scope="{ row }">
+                <div>
+                  <el-tag type="info" v-if="row.protectionName == '撤防'">
+                    撤防
+                  </el-tag>
+                  <el-tag type="success" v-else> 布防 </el-tag>
+                </div>
+              </template>
+            </el-table-column> -->
+
+            <!-- <el-table-column prop="address" label="传感器地址">
+            </el-table-column> -->
           </el-table>
           <div class="pagination taR mt20x">
             <el-pagination
               @size-change="onPageSizeChange"
               @current-change="onPageCurrentChange"
               :current-page="pages.pageNum"
-              :page-sizes="[10, 20, 50, 100]"
+              :page-sizes="[20, 50, 100, 200]"
               :page-size="pages.pageSize"
               layout="total, sizes, prev, pager, next, jumper"
               :total="total"
@@ -133,20 +124,8 @@
           >
           </el-date-picker>
         </el-form-item>
-        <el-form-item label="">
-          <el-button @click="getList" class="btn-search">查询</el-button>
-        </el-form-item>
         <el-form-item>
-          <!---->
-          <download-excel
-            class="export-excel-wrapper"
-            :fetch="fetchData"
-            :data="json_list"
-            :fields="json_fields"
-            name="filename.xls"
-          >
-            <el-button type="primary" size="small">导出EXCEL</el-button>
-          </download-excel>
+          <el-button @click="getList" class="btn-search">查询</el-button>
           <!-- <el-button @click="tableExport" class="btn-search" :loading="onload"
             >导出表格</el-button
           > -->
@@ -165,48 +144,30 @@ export default {
   name: "Qiya_data",
   data() {
     return {
-      json_list: [],
-      rated: null,
-      json_fields: {
-        传感器别名: "deviceName",
-        时间: "collectionTime",
-        "压力值(MPa)": "pressureValue",
-        "当前温度(℃)": "temperature",
-      },
-      dataInfo: {
-        deviceId: "",
-        deviceName: "",
-        pressureValue: "",
-        currentValue: "",
-        temperature: "",
-        frameNum: "",
-        collectionTime: "",
-        rated: "",
-        num1: null,
-        num2: null,
-        num3: null,
-        num4: null,
-      },
       deviceNumber: "",
       companyId: 0,
       projectId: 0,
       activeName: "1",
+      deviceId: "",
+      deviceName: "",
+      pressureValue: "",
+      currentValue: "",
+      temperature: "",
+      frameNum: "",
+      collectionTime: "",
+      rated: "",
+      collectionTime: "",
 
       pages: {
         pageNum: 1,
         pageSize: 20,
       },
-      endTime: moment().endOf("month").format("YYYY-MM-DD HH:mm:ss"),
-      startTime: moment(new Date())
-        .subtract(2, "months")
-        .startOf("month")
-        .format("YYYY-MM-DD HH:mm:ss"),
+      startTime: "",
+      endTime: "",
       total: 0,
       tableData: [],
       tableList: [],
       onload: false,
-      maxN: null,
-      minN: null,
     };
   },
   watch: {
@@ -219,22 +180,24 @@ export default {
     },
   },
   computed: {
-    pressureData() {
+    pressureData(){
       if (this.tableData.length == 0) {
         return "";
       }
-      // let arr = this.tableData.map((item) => {
-      //   return +item.pressureValue || 0;
-      // });
-      // let maxN = Math.max.apply(null, arr);
-      // let minN = Math.min.apply(null, arr);
-      // let sum = 0;
-      // for (let i = 0; i < arr.length; i++) {
-      //   sum += arr[i];
-      // }
-      // let mean = sum / arr.length;
-      let unit = "MPa";
-      return `气压：最大值：${this.maxN}${unit} 最小值：${this.minN}${unit}`;
+      let arr = this.tableData.map((item) => {
+        return +item.pressureValue || 0;
+      });
+      let maxN = Math.max.apply(null, arr);
+      let minN = Math.min.apply(null, arr);
+      let sum = 0;
+      for (let i = 0; i < arr.length; i++) {
+        sum += arr[i];
+      }
+      let mean = sum / arr.length;
+      let unit = "KPa";
+      return `气压：最大值：${maxN}${unit} 最小值：${minN}${unit} 平均值：${mean.toFixed(
+        3
+      )}${unit}`;
     },
     temperatureData() {
       if (this.tableData.length == 0) {
@@ -243,72 +206,67 @@ export default {
       let arr = this.tableData.map((item) => {
         return +item.temperature || 0;
       });
-      this.maxN = Math.max.apply(null, arr);
-      this.minN = Math.min.apply(null, arr);
+      let maxN = Math.max.apply(null, arr);
+      let minN = Math.min.apply(null, arr);
       let sum = 0;
       for (let i = 0; i < arr.length; i++) {
         sum += arr[i];
       }
       let mean = sum / arr.length;
       let unit = "℃";
-      return `温度：最大值：${this.maxN}${unit} 最小值：${
-        this.minN
-      }${unit} 平均值：${mean.toFixed(3)}${unit}`;
+      return `温度：最大值：${maxN}${unit} 最小值：${minN}${unit} 平均值：${mean.toFixed(
+        3
+      )}${unit}`;
     },
   },
-  activated() {
+  mounted() {
     this.deviceNumber = this.$route.query.deviceNumber || "";
     this.companyId = this.$route.query.companyId || 0;
     this.projectId = this.$route.query.projectId || 0;
-    this.rated = this.$route.query.rated || 0;
-    this.activeName = "1";
+    let newDate = new Date().getTime();
+    this.endTime = parseTime(newDate);
+    this.endTime = moment().endOf("day").format("YYYY-MM-DD HH:mm:ss"); // 当天23点59分59秒的时间格式
+    this.startTime = moment().startOf("day").format("YYYY-MM-DD HH:mm:ss"); // 当天23点59分59秒的时间格式
     this.getData();
   },
-
   methods: {
     async getData() {
-      this.dataInfo = await api.pressureDataInfo({
+      let result = await api.pressureDataInfo({
         deviceId: this.deviceNumber,
       });
-      // if (result === null) {
-      //   // this.$router.go(-1);
-      //   // this.$emit("close-after", true);
-      //   // this.$message.warning("此设备不存在，无法查看！");
-      // }
-      if (this.dataInfo === null) {
-        this.activeName = "2";
-        this.getList();
-      } else {
-        this.$nextTick(() => {
-          this.setDash();
-        });
-      }
+      console.log(result, "result_____________")
+
+      this.deviceId = result.deviceId;
+      this.deviceName = result.deviceName || "无";
+      this.pressureValue = result.pressureValue || "无";
+      this.currentValue = result.currentValue || "无";
+      this.temperature = result.temperature || "无";
+      this.frameNum = result.frameNum || "无";
+      this.collectionTime = result.collectionTime || "无";
+      this.rated = result.rated || "无";
+      this.setDash();
     },
     setDash() {
       const myChart = this.$echarts.init(this.$refs.chart);
       myChart.clear();
-
+      let pressure =
+        ((+this.pressure - this.num1) / (this.num4 - this.num1)) * 100;
+      // console.log("测试用户",(this.num2 - this.num1) / (this.num4 - this.num1))
       const option = {
         series: [
           {
             type: "gauge",
-            min: this.dataInfo.num1 || 0,
-            max: this.dataInfo.num4 || 0,
-            // splitNumber: 5,
-
             radius: "100%",
             axisLine: {
               lineStyle: {
                 width: 7,
                 color: [
                   [
-                    (this.dataInfo.num2 || 0 - this.dataInfo.num1 || 0) /
-                      (this.dataInfo.num4 || 0 - this.dataInfo.num1 || 0),
+                    (this.num2 - this.num1) / (this.num4 - this.num1),
                     "#67e0e3",
                   ],
                   [
-                    (this.dataInfo.num3 || 0 - this.dataInfo.num1 || 0) /
-                      (this.dataInfo.num4 || 0 - this.dataInfo.num1 || 0),
+                    (this.num3 - this.num1) / (this.num4 - this.num1),
                     "#37a2da",
                   ],
                   [1, "#fd666d"],
@@ -316,7 +274,7 @@ export default {
               },
             },
             splitLine: {
-              distance: -5, //-18
+              distance: -3, //-18
               length: 16,
               lineStyle: {
                 color: "#14e1fa", // x轴刻度大颜色
@@ -324,13 +282,13 @@ export default {
             },
             axisTick: {
               distance: 0, //-12
-              length: 4,
+              length: 10,
               lineStyle: {
                 color: "#14e1fa", // x轴刻度小颜色
               },
             },
             axisLabel: {
-              distance: 8, //-50
+              distance: 2, //-50
               color: "#14e1fa", // x轴刻度文字颜色
               fontSize: 9,
             },
@@ -351,15 +309,15 @@ export default {
               },
             },
 
-            // axisTick: {
-            //   show: false,
-            // },
-            // splitLine: {
-            //   show: false,
-            // },
-            // axisLabel: {
-            //   show: false,
-            // },
+            axisTick: {
+              show: false,
+            },
+            splitLine: {
+              show: false,
+            },
+            axisLabel: {
+              show: false,
+            },
             detail: {
               show: false,
               valueAnimation: true,
@@ -367,31 +325,13 @@ export default {
             },
             data: [
               {
-                value: this.dataInfo.pressureValue,
+                value: pressure,
               },
-              // {
-              //   value: this.num2,
-              // },
-              // {
-              //   value: this.num3,
-              // },
-              // {
-              //   value: this.num4,
-              // },
             ],
           },
         ],
       };
       myChart.setOption(option);
-    },
-    async fetchData() {
-      this.json_list = await api.pressureHistoryList({
-        deviceId: this.deviceNumber,
-        startTime: this.startTime,
-        endTime: this.endTime,
-      });
-
-      return this.json_list.reverse();
     },
     async getList() {
       this.tableData = await api.pressureHistoryList({
@@ -399,15 +339,15 @@ export default {
         startTime: this.startTime,
         endTime: this.endTime,
       });
-      this.tableData = this.tableData.reverse();
+      this.tableData = this.tableData.reverse()
       this.total = this.tableData.length;
       this.cutList();
       this.initEchart();
-      
     },
     // 导出表格
     async tableExport() {
       this.onload = true;
+      // console.log('this.deviceName', this.deviceName)
       await exportExcel({
         url: "pressureHistory/exportExcel",
         params: {
@@ -425,55 +365,32 @@ export default {
     },
     initEchart() {
       const myChart2 = this.$echarts.init(this.$refs.chart2);
-      
       myChart2.clear();
-      let _this = this;
-      if(this.tableData.length > 0) {
-        let arr = _this.tableData.map((item) => {
-          return +item.pressureValue || 0;
-        });
-        _this.maxN = Math.max.apply(null, arr);
-        _this.minN = Math.min.apply(null, arr);
-      }
-      console.log(_this.minN/_this.maxN)
-
       const option2 = {
         tooltip: {
           trigger: "axis",
         },
         legend: {
-          show: true,
-          data: ["压力", "差值", "滤波值"],
-          selected: {
-            压力: true,
-            差值: false,
-            滤波值: false,
-          },
+          data: ["压力" , "温度"],
           textStyle: {
-            color: "#14e1fa",
+            color: "#fff",
           },
-          top: 0,
-          icon: "roundRect",
+          top: 20,
+          right: 30, //可设定图例在左、右、居中
+          icon: "line",
         },
         grid: {
           top: 52,
           left: 66,
-          right: 40,
-          bottom: 80,
+          right: 30,
+          bottom: 70,
         },
         xAxis: {
           type: "category",
-          // min: function (value, aaa) {
-          //   return _this.startTime;
-          // },
-          // max: function (value) {
-          //   return _this.endTime;
-          // },
-          // maxInterval: 3600 * 24 * 1000,
           boundaryGap: false,
           data: this.tableData
             .map((item) => {
-              return item.collectionTime.replace(" ", "\n") || "--";
+              return item.collectionTime || "--";
             })
             .reverse(),
           splitLine: {
@@ -494,9 +411,7 @@ export default {
         },
         yAxis: {
           type: "value",
-          name: "压力/MPa",
-          // max: _this.maxN,
-          // min: 0, 
+          name: "压力/KPa",
           splitLine: {
             show: false,
           },
@@ -515,51 +430,35 @@ export default {
         },
         dataZoom: [
           {
-            type: "slider", //无滑动条内置缩放   type: 'slider', //缩放滑动条
-            show: true, //开启
-            xAxisIndex: [0], //X轴滑动
-            start: 0, //初始化时，滑动条宽度开始标度
-            end: 100, //初始化时，滑动条宽度结束标度
-            // height: 5,
+            type: "slider",
           },
           {
-            type: "slider", //无滑动条内置缩放   type: 'slider', //缩放滑动条
-            show: true, //开启
-            yAxisIndex: [0], //Y轴滑动
-            left: 0,
-            start: _this.maxN===0? 0 : ( _this.minN/_this.maxN) *100, //初始化时，滑动条宽度开始标度
-            end: 100, //初始化时，滑动条宽度结束标度
-            width: 25,
+            type: "inside",
           },
         ],
         series: [
           {
             name: "压力",
             type: "line",
+            symbol: "none",
+            sampling: "lttb",
             data: this.tableData
               .map((item) => {
                 return item.pressureValue || "0";
               })
               .reverse(),
           },
-          {
-            name: "差值",
-            type: "line",
-            data: this.tableData
-              .map((item) => {
-                return item.diffValue || "0";
-              })
-              .reverse(),
-          },
-          {
-            name: "滤波值",
-            type: "line",
-            data: this.tableData
-              .map((item) => {
-                return item.wfValue || "0";
-              })
-              .reverse(),
-          },
+          // {
+          //   name: "温度",
+          //   type: "line",
+          //   symbol: "none",
+          //   sampling: "lttb",
+          //   data: this.tableData
+          //     .map((item) => {
+          //       return item.temperature || "0";
+          //     })
+          //     .reverse(),
+          // },
         ],
       };
       myChart2.setOption(option2);

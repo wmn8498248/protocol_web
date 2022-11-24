@@ -200,7 +200,10 @@ export default {
   beforeDestroy() {
     console.log("beforeDestroy");
   },
-  
+  destroyed() {
+    console.log("destroyed");
+  },
+
   beforeCreate() {
     console.log("beforeCreate");
   },

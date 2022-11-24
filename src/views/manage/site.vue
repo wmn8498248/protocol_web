@@ -19,7 +19,7 @@
           </el-table-column>
           <el-table-column prop="netId" label="网关Id"> </el-table-column>
           <el-table-column prop="netName" label="网关名称"> </el-table-column>
-         
+          <el-table-column prop="netPrefix" label="netPrefix"></el-table-column>
           <el-table-column prop="companyId" label="所属公司">
             <template slot-scope="scope">
               <el-tag type="success">{{
@@ -47,7 +47,7 @@
             @size-change="onPageSizeChange"
             @current-change="onPageCurrentChange"
             :current-page="pages.pageNum"
-            :page-sizes="[5, 10, 20, 50]"
+            :page-sizes="[10, 20, 50, 100]"
             :page-size="pages.pageSize"
             layout="total, sizes, prev, pager, next, jumper"
             :total="total"
@@ -96,7 +96,7 @@
             @size-change="onCompanySizeChange"
             @current-change="onCompanyCurrentChange"
             :current-page="companyPages.pageNum"
-            :page-sizes="[5, 10, 20, 50]"
+            :page-sizes="[10, 20, 50, 100]"
             :page-size="companyPages.pageSize"
             layout="total, sizes, prev, pager, next, jumper"
             :total="companyTotal"
@@ -224,6 +224,7 @@ export default {
         companyId: "",
         netId: "",
         netName: "",
+        // netPrefix: "",
       },
       companyInfo: {
         companyName: "",
@@ -232,7 +233,7 @@ export default {
       editCompanyFlag: false,
     };
   },
-  activated() {
+  mounted() {
     // 公司管理
     this.getCompanyListTotel();
 
@@ -257,6 +258,7 @@ export default {
       this.siteInfo.netId = "";
       this.siteInfo.companyId = "";
       this.siteInfo.netName = "";
+      this.siteInfo.netPrefix = "";
     },
     handleClick() {
       if (this.activeName == 1) {
@@ -267,6 +269,7 @@ export default {
       }
     },
     async getCompanyListTotel() {
+
       this.companyOptions = await api.projectList();
       if (this.companyOptions.length > 0) {
         this.companyOptions.forEach((element) => {
@@ -274,6 +277,7 @@ export default {
         });
       }
       this.getuserRightsAll();
+
     },
     // 获取公司列表
     async getCompanyList() {
@@ -297,14 +301,10 @@ export default {
       // this.total = companyList.total;
     },
     async editSite(id) {
+      await this.getuserRightsAll();
+
       this.editSiteFlag = true;
       this.dialogVisible = true;
-
-       this.siteInfo.companyId = "";
-      this.siteInfo.netId = "";
-      this.siteInfo.netName = "";
-
-      await this.getuserRightsAll();
       let data = {
         id: id,
       };
@@ -313,9 +313,6 @@ export default {
     async editCompany(companyId) {
       this.editCompanyFlag = true;
       this.dialogVisible2 = true;
-      // this.siteInfo.con
-      this.companyInfo.companyName = ""
-
       let data = {
         companyId,
       };
@@ -409,22 +406,22 @@ export default {
         })
         .catch(() => {});
     },
-    // 站点列表条数
+    // 修改站点列表条数
     onPageSizeChange(e) {
       this.pages.pageSize = e;
       this.getCompanyListTotel();
     },
-    // 站点列表页数
+    // 修改站点列表页数
     onPageCurrentChange(e) {
       this.pages.pageNum = e;
       this.getCompanyListTotel();
     },
-    // 公司列表条数
+    // 修改公司列表条数
     onCompanySizeChange(e) {
       this.companyPages.pageSize = e;
       this.getCompanyList();
     },
-    // 公司列表页数
+    // 修改公司列表页数
     onCompanyCurrentChange(e) {
       this.companyPages.pageNum = e;
       this.getCompanyList();

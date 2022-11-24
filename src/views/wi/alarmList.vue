@@ -7,7 +7,7 @@
             class="w180x"
             v-model="searchModel.deviceName"
             type="text"
-            placeholder="传感器别名"
+            placeholder="主设备别名"
           ></el-input>
         </el-form-item>
         <el-form-item label="">
@@ -34,8 +34,8 @@
       <el-table-column prop="immersionValue" label="水浸状态">
         <template slot-scope="{ row }">
           <div>
-            <el-tag type="info" v-if="row.immersionValue == 2"> 正常 </el-tag>
-            <el-tag type="success" v-else> 水浸 </el-tag>
+            <el-tag type="info" v-if="row.immersionValue == 2"> 无水浸 </el-tag>
+            <el-tag type="success" v-else> 有水浸 </el-tag>
           </div>
         </template>
       </el-table-column>
@@ -67,7 +67,7 @@
         @size-change="onPageSizeChange"
         @current-change="onPageCurrentChange"
         :current-page="pages.pageNum"
-        :page-sizes="[5, 10, 20, 50]"
+        :page-sizes="[10, 20, 50, 100]"
         :page-size="pages.pageSize"
         layout="total, sizes, prev, pager, next, jumper"
         :total="total"
@@ -102,15 +102,20 @@ export default {
       alarmList: [],
     };
   },
-  activated() {
-    this.$emit("close-after", false);
+  created() {
     this.getList();
   },
- 
+  mounted() {},
+  // destroyed(){
+  //   console.log(2)
+  // },
+  // beforeDestroy(){
+  //   console.log(3)
+  // },
   methods: {
     handleHistory(res) {
-      this.$emit("close-after", true);
       let deviceNumber = res.deviceId;
+
       this.$router.push({
         path: `/wi/shuijin_data_wi`,
         query: {
@@ -127,8 +132,6 @@ export default {
           alarmType: this.$route.query.alarmType,
           dayNum: this.$route.query.times,
           companyId: this.$route.query.companyId,
-          pageNum: this.pages.pageNum,
-          pageSize: this.pages.pageSize,
         },
       });
       this.onload = false;
@@ -146,12 +149,12 @@ export default {
     // 修改列表条数
     onPageSizeChange(e) {
       this.pages.pageSize = e;
-      this.getList();
+      this.cutList();
     },
     // 修改列表页数
     onPageCurrentChange(e) {
       this.pages.pageNum = e;
-      this.getList();
+      this.cutList();
     },
     // 分割数组
     cutList() {
@@ -161,18 +164,16 @@ export default {
       );
     },
     async getList() {
-      const { page } = await api.alarmDate({
-        dayNum: this.$route.query.times,
-        pageNum: this.pages.pageNum,
-        pageSize: this.pages.pageSize,
-
+      const { list } = await api.alarmDate({
         companyId: this.$route.query.companyId,
         deviceName: this.searchModel.deviceName,
         deviceId: this.searchModel.deviceNumber,
-        alarmType: this.$route.query.alarmType,
+        alarmType: this.$route.query.alarmType== 0 ? "正常": "水浸",
+        dayNum: this.$route.query.times,
       });
-      this.tableList = page.records;
-      this.total = page.total;
+      this.tableData = list;
+      this.total = list.length;
+      this.cutList();
       //   this.total = list
     },
   },

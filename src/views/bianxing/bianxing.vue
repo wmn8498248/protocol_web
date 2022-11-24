@@ -24,13 +24,12 @@
       </el-form>
     </div>
     <el-table :data="tableData" stripe style="width: 100%">
-      <el-table-column prop="deviceId" label="传感器编号"> </el-table-column>
-      <el-table-column prop="deviceName" label="传感器别名"></el-table-column>
+      <el-table-column prop="deviceName" label="设备别名"></el-table-column>
       <el-table-column prop="datavalue" label="变形量ε"> </el-table-column>
       <el-table-column prop="temdev" label="温度/℃"> </el-table-column>
       <el-table-column prop="voltage" label="电压/V"> </el-table-column>
       <el-table-column prop="createTime" label="更新时间"> </el-table-column>
-      <el-table-column label="操作" width="250"> 
+      <el-table-column label="操作" width="250">
         <template slot-scope="{ row }">
           <el-button
             class="btn-data"
@@ -52,7 +51,7 @@
         @size-change="onPageSizeChange"
         @current-change="onPageCurrentChange"
         :current-page="pages.pageNum"
-        :page-sizes="[5, 10, 20, 50]"
+        :page-sizes="[10, 20, 50, 100]"
         :page-size="pages.pageSize"
         layout="total, sizes, prev, pager, next, jumper"
         :total="total"
@@ -86,9 +85,12 @@ export default {
   props: {
     projectId: Number,
   },
- 
+  beforeDestroy() {
+    clearTimeout(this.timer);
+  },
   methods: {
     async getData() {
+      clearTimeout(this.timer);
       let { records, total } = await api.deformationNewList({
         companyId: this.projectId,
         ...this.searchModel,
@@ -96,7 +98,9 @@ export default {
       });
       this.total = total;
       this.tableData = records;
-      console.log('变1形')
+      this.timer = setTimeout(() => {
+        this.getData();
+      }, 30000);
     },
     // 修改列表条数
     onPageSizeChange(e) {

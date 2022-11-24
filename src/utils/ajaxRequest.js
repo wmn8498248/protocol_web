@@ -25,6 +25,7 @@ class AjaxRequest {
         return config;
       },
       err => {
+        console.log(error); // for debug
         return Promise.reject(err);
       }
     );
@@ -40,6 +41,7 @@ class AjaxRequest {
             duration: 5 * 1000
           });
           if (response.data.code === 403) {
+            console.log(403)
             // 权限出错 返回登录页
             MessageBox.confirm('您已注销，可以取消以保留在该页面上，或者再次登录', '确认退出', {
               confirmButtonText: '返回登录页',

@@ -10,9 +10,9 @@ module.exports = {
     sourceType: 'module'
   },
   env: {
-    browser: false,
-    node: false,
-    es6: false
+    browser: true,
+    node: true,
+    es6: true
   },
   extends: ['plugin:vue/essential', 'eslint:recommended'],
 

@@ -255,8 +255,8 @@
       <div class="home-box flex4">
         <div class="box-title">
           <img class="itemImg" src="../../../assets/images/sb6.png" />历史曲线
-          <span class="right">气压: MPa&emsp;温度: ℃</span>
-          <!-- <span class="right">气压: MPa</span> -->
+          <span class="right">气压: KPa&emsp;温度: ℃</span>
+          <!-- <span class="right">气压: KPa</span> -->
         </div>
         <div class="box-container">
           <div ref="chart4" style="width: 100%; height: 100%"></div>
@@ -1030,7 +1030,7 @@ export default {
       });
 
       this.myChart1.on("click", function (param) {
-        that.$emit("moreInfoPopup", "电压等级:" + param.name + "(V)");
+        that.$emit("moreInfoPopup", "电压等级:" + param.name);
         that.$router.push({
           path: "/sf6/grade",
           query: {

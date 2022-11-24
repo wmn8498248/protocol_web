@@ -92,7 +92,7 @@ export default {
 			serviceDisable: true,
     };
   },
-  activated() {
+  mounted() {
 		this.deviceId = this.$route.query.deviceId || 0;
     this.getInfo();
   },

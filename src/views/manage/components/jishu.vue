@@ -2,33 +2,16 @@
   <div class="bileiPage">
     <div class="search-container">
       <el-form inline :model="searchModel" label-width="100px">
-        <el-form-item label="网关Id">
-          <el-select v-model="gatewayId" clearable placeholder="请选择">
-            <el-option
-              v-for="item in gatewayIdList"
-              :key="item.id"
-              :label="item.netName"
-              :value="item.id"
-            >
-            </el-option>
-          </el-select>
-        </el-form-item>
-
         <el-form-item label="">
-          <el-input
-            class="w180x"
-            v-model="searchModel.deviceName"
-            type="text"
-            placeholder="传感器别名"
-          ></el-input>
+          <el-input type="text" v-model="searchModel.name" placeholder="传感器名称"></el-input>
         </el-form-item>
         <el-form-item label="">
-          <el-input
-            class="w180x"
-            v-model="searchModel.deviceId"
-            type="text"
-            placeholder="传感器编号"
-          ></el-input>
+          <el-date-picker type="datetime" placeholder="选择起始时间" v-model="searchModel.startTime" value-format="yyyy-MM-dd HH:mm:ss">
+          </el-date-picker>
+        </el-form-item>
+        <el-form-item label="">
+          <el-date-picker type="datetime" placeholder="选择结束时间" v-model="searchModel.endTime" value-format="yyyy-MM-dd HH:mm:ss">
+          </el-date-picker>
         </el-form-item>
         <el-form-item>
           <el-button @click="getSearch" class="btn-search">查询</el-button>
@@ -36,52 +19,22 @@
       </el-form>
     </div>
     <el-table :data="tableData" stripe>
-      <el-table-column prop="id" label="传感器编号"> </el-table-column>
-      <el-table-column prop="name" label="传感器别名"> </el-table-column>
-
-      <el-table-column prop="devType" label="计数器类型">
-        <template slot-scope="{ row }">
-          <span v-if="row.devType === 1">动作次数计数器</span>
-          <span v-if="row.devType === 2">打压次数计数器</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column prop="countUp" label="次数门限值"></el-table-column>
-
-      <el-table-column prop="voltLevel" label="电压等级"> </el-table-column>
-      <el-table-column prop="deviceClassify" label="设备分类">
-      </el-table-column>
+      <el-table-column prop="deviceId" label="传感器编号"> </el-table-column>
+      <el-table-column prop="deviceName" label="传感器别名"> </el-table-column>
+      <el-table-column prop="deviceType" label="传感器类型"> </el-table-column>
+      <el-table-column prop="actionNum" label="动作次数"> </el-table-column>
+      <el-table-column prop="actionTime" label="动作上报时间"> </el-table-column>
       <el-table-column prop="updateTime" label="更新时间"> </el-table-column>
       <el-table-column label="操作" width="250">
         <template slot-scope="{ row }">
-          <!-- <el-button class="btn-data" size="mini" @click="toSet(row.id)"
-              >远程升级</el-button
-            > -->
-          <!-- <el-button
-            class="btn-data"
-            size="mini"
-            @click="toSet(row.id)"
-            >参数设置</el-button
-          > -->
-          <el-button class="btn-detail" size="mini" @click="toEdit(row.id)"
-            >修改</el-button
-          >
-          <el-button class="btn-clear" size="mini" @click="toDelete(row.id)"
-            >删除</el-button
-          >
+          <el-button class="btn-data" size="mini" @click="toSet(row.deviceId)">命令</el-button>
+          <el-button class="btn-detail" size="mini" @click="toEdit(row.deviceId)">修改</el-button>
+          <el-button class="btn-clear" size="mini" @click="toDelete(row.deviceId)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
     <div class="pagination taR mt20x">
-      <el-pagination
-        @size-change="onPageSizeChange"
-        @current-change="onPageCurrentChange"
-        :current-page="pages.pageNum"
-        :page-sizes="[5, 10, 20, 50]"
-        :page-size="pages.pageSize"
-        layout="total, sizes, prev, pager, next, jumper"
-        :total="total"
-      >
+      <el-pagination @size-change="onPageSizeChange" @current-change="onPageCurrentChange" :current-page="pages.pageNum" :page-sizes="[10, 20, 50, 100]" :page-size="pages.pageSize" layout="total, sizes, prev, pager, next, jumper" :total="total">
       </el-pagination>
     </div>
   </div>
@@ -96,11 +49,10 @@ export default {
   },
   data() {
     return {
-      gatewayIdList: [],
-      gatewayId: null,
       searchModel: {
-        deviceName: "",
-        deviceId: "",
+      	name: '',
+      	startTime: '',
+      	endTime: ''
       },
       pages: {
         pageNum: 1,
@@ -110,34 +62,23 @@ export default {
       tableData: [],
     };
   },
-
-  created() {
-    this.getCompanyList();
-  },
   methods: {
-    async getCompanyList() {
-      let data = {
-        companyId: this.projectId,
-      };
-      this.gatewayIdList = await api.companyList(data);
-    },
-
     async getList() {
       let data = {
-        companyId: this.projectId,
-        gatewayId: this.gatewayId,
+        companyId: this.companyId,
+        projectId: this.projectId,
         ...this.searchModel,
         ...this.pages,
       };
-      let { records, total } = await api.deviceList(data);
-      this.tableData = records;
-      this.total = total;
+      let { wenDuList } = await api.countingList(data);
+      this.tableData = wenDuList.records;
+			this.total = wenDuList.total;
     },
     async toSet(deviceId) {
       this.$router.push({
         path: "/manage/jishu_setting",
         query: {
-          deviceId,
+          deviceId
         },
       });
     },
@@ -146,42 +87,42 @@ export default {
         path: "/manage/jishu_edit",
         query: {
           deviceId,
-          type: "edit",
+          type: 'edit',
         },
       });
     },
-    async toDelete(id) {
-      this.$confirm("确定删除该设备?", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning",
-      })
-        .then(async () => {
-          let data = {
-            id,
-          };
-          await api.deviceDelete(data);
-          this.$message.success("删除成功");
-          this.getList();
-        })
-        .catch(() => {});
+    async toDelete(deviceId) {
+			this.$confirm('确定删除该设备?', '提示', {
+				confirmButtonText: '确定',
+				cancelButtonText: '取消',
+				type: 'warning'
+			}).then(async () => {
+				let data = {
+				  deviceId,
+				};
+				await api.countingDelete(data);
+				this.$message.success("删除成功");
+				this.getList();
+			}).catch(() => {
+				
+			});
     },
-    // 修改列表条数
-    onPageSizeChange(e) {
-      this.pages.pageNum = 1;
-      this.pages.pageSize = e;
-      this.getList();
-    },
-    // 修改列表页数
-    onPageCurrentChange(e) {
-      this.pages.pageNum = e;
-      this.getList();
-    },
-    // 搜索
-    getSearch() {
-      this.pages.pageNum = 1;
-      this.getList();
-    },
+		// 修改列表条数
+		onPageSizeChange(e) {
+		  this.pages.pageNum = 1;
+			this.pages.pageSize = e;
+			this.getList();
+		},
+		// 修改列表页数
+		onPageCurrentChange(e) {
+			this.pages.pageNum = e;
+			this.getList();
+		},
+		// 搜索
+		getSearch() {
+		  this.pages.pageNum = 1;
+		  this.getList();
+		}
   },
 };
 </script>

@@ -16,7 +16,7 @@
       </el-form>
     </div>
     <el-table :data="tableData" stripe style="width: 100%">
-      <el-table-column prop="deviceName" label="传感器别名">
+      <el-table-column prop="deviceName" label="设备别名">
       </el-table-column>
       <!-- <el-table-column label="状态">
 				<template slot-scope="{ row }">
@@ -46,7 +46,7 @@
         @size-change="onPageSizeChange"
         @current-change="onPageCurrentChange"
         :current-page="pages.pageNum"
-        :page-sizes="[5, 10, 20, 50]"
+        :page-sizes="[10, 20, 50, 100]"
         :page-size="pages.pageSize"
         layout="total, sizes, prev, pager, next, jumper"
         :total="total"
@@ -73,9 +73,10 @@ export default {
 			projectId: 0
     };
   },
-  activated() {
+  mounted() {
   	this.projectId = this.$route.meta.standId || 0;
   	this.companyId = this.$route.meta.companyId || 0;
+  	this.getData();
   },
   beforeDestroy() {
   	clearTimeout(this.timer);

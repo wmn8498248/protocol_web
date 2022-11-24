@@ -50,11 +50,11 @@ export default {
     return {
       rulesAnalysis: {
         deviceNumber: [
-          { required: true, message: "请输入传感器编号", trigger: ["blur", "change"] },
-          { min: 6, max: 100, message: "长度在 6 字符以上", trigger: ["blur", "change"] },
+          { required: true, message: "请输入传感器编号", trigger: "blur" },
+          { min: 6, max: 100, message: "长度在 6 字符以上", trigger: "blur" },
         ],
         deviceName: [
-          { required: true, message: "请输入传感器别名", trigger: ["blur", "change"] },
+          { required: true, message: "请输入传感器别名", trigger: "blur" },
         ],
       },
       info: {
@@ -74,7 +74,7 @@ export default {
       projectId: 0, //站点id
     };
   },
-  activated() {
+  mounted() {
     this.deviceId = this.$route.query.deviceId || 0;
     this.type = this.$route.query.type || "add";
     if (this.type == "edit") {

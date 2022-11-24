@@ -16,7 +16,7 @@ export default {
       markerData: [],
     };
   },
-  activated() {
+  mounted() {
 		let longitude = +this.$route.query.longitude || 0;
 		let latitude = +this.$route.query.latitude || 0;
 		this.markerData = [

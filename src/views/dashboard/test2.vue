@@ -2,7 +2,7 @@
   <div class="dashboard">
     <div class="dashboard-topImg">
       <!-- <img src="../../assets/images/bg05.png" /> -->
-      XXXXXXXXXXXXX
+      国网宁夏超高压公司
     </div>
     <div class="dashboard-time" v-if="nowDate">
       <p>{{ nowDate }}</p>
@@ -359,7 +359,9 @@ export default {
       this.countTime = 30;
     }, 30000);
   },
- 
+  destroyed() {
+    console.log("destroyed");
+  },
   deactivated() {
     console.log("deactivated");
   },
@@ -760,7 +762,7 @@ export default {
             data: [
               {
                 value: 58.46,
-                name: "MPa",
+                name: "Kpa",
               },
             ],
           },
@@ -966,7 +968,7 @@ export default {
         },
         series: [
           {
-            name: "气压(MPa)",
+            name: "气压(Kpa)",
             type: "line",
             data: this.devicepressure[this.equipmentName],
             symbol: "ture",

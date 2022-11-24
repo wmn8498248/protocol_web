@@ -71,7 +71,7 @@
         @size-change="onPageSizeChange"
         @current-change="onPageCurrentChange"
         :current-page="pages.pageNum"
-        :page-sizes="[5, 10, 20, 50]"
+        :page-sizes="[10, 20, 50, 100]"
         :page-size="pages.pageSize"
         layout="total, sizes, prev, pager, next, jumper"
         :total="total"
@@ -103,10 +103,16 @@ export default {
       alarmList: [],
     };
   },
-  activated() {
+  created() {
     this.getList();
   },
-   
+  mounted() {},
+  // destroyed(){
+  //   console.log(2)
+  // },
+  // beforeDestroy(){
+  //   console.log(3)
+  // },
   methods: {
     // 导出表格
     async tableExport() {

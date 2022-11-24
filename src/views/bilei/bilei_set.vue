@@ -30,7 +30,7 @@ export default {
 			numA: ''
 		};
   },
- 
+  mounted() {},
   methods: {
 		onCancel() {
 			this.$router.go(-1);

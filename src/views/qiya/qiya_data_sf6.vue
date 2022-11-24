@@ -12,46 +12,34 @@
         <div class="data-detail">
           <div class="data-chart">
             <div class="chart-img" ref="chart"></div>
-            <div>当前气压：{{ pressureValue }}MPa</div>
+            <div>当前气压：{{ pressureValue }}KPa</div>
             <div>{{ collectionTime }}</div>
           </div>
           <div class="data-table">
             <div class="table-item">
-              <div class="item-name">传感器别名</div>
-              <div>{{ deviceName }}</div>
+              <div class="item-name">电流值</div>
+              <div>{{ currentValue }}</div>
             </div>
             <div class="table-item">
               <div class="item-name">当前温度(℃)</div>
               <div>{{ temperature }}</div>
             </div>
             <div class="table-item">
-              <div class="item-name">压力值(MPa)</div>
+              <div class="item-name">压力值(KPa)</div>
               <div>{{ pressureValue }}</div>
             </div>
-
             <div class="table-item">
-              <div class="item-name">额定值(MPa)</div>
+              <div class="item-name">帧计数器</div>
+              <div>{{ frameNum }}</div>
+            </div>
+            <div class="table-item">
+              <div class="item-name">额定值(kPa)</div>
               <div>{{ rated }}</div>
             </div>
 
             <div class="table-item">
-              <div class="item-name">最小量程</div>
-              <div>{{ num1 }}</div>
-            </div>
-
-            <div class="table-item">
-              <div class="item-name">最大量程</div>
-              <div>{{ num4 }}</div>
-            </div>
-
-            <div class="table-item">
-              <div class="item-name">低压值</div>
-              <div>{{ num2 }}</div>
-            </div>
-
-            <div class="table-item">
-              <div class="item-name">高压值</div>
-              <div>{{ num3 }}</div>
+              <div class="item-name">传感器别名</div>
+              <div>{{ deviceName }}</div>
             </div>
           </div>
         </div>
@@ -108,7 +96,7 @@
 </template>
 <script>
 import * as api from "@/api/qiya";
-// import { parseTime } from "@/utils/index.js";
+import { parseTime } from "@/utils/index.js";
 import { exportExcel } from "@/utils/exportExcel";
 import moment from "moment";
 
@@ -128,10 +116,6 @@ export default {
       frameNum: "",
       collectionTime: "",
       rated: "",
-      num1: null,
-      num2: null,
-      num3: null,
-      num4: null,
       collectionTime: "",
 
       pages: {
@@ -170,7 +154,7 @@ export default {
         sum += arr[i];
       }
       let mean = sum / arr.length;
-      let unit = "MPa";
+      let unit = "KPa";
       return `气压：最大值：${maxN}${unit} 最小值：${minN}${unit} 平均值：${mean.toFixed(
         3
       )}${unit}`;
@@ -195,7 +179,7 @@ export default {
       )}${unit}`;
     },
   },
-  activated() {
+  mounted() {
     this.deviceNumber = this.$route.query.deviceNumber || "";
     this.companyId = this.$route.query.companyId || 0;
     this.projectId = this.$route.query.projectId || 0;
@@ -210,36 +194,28 @@ export default {
       let result = await api.pressureDataInfo({
         deviceId: this.deviceNumber,
       });
-      if (result !== null) {
-        this.deviceId = result.deviceId;
-        this.deviceName = result.deviceName;
-        this.pressureValue = result.pressureValue;
-        this.currentValue = result.currentValue;
-        this.temperature = result.temperature;
-        this.frameNum = result.frameNum;
-        this.collectionTime = result.collectionTime;
-        this.rated = result.rated;
-        this.num1 = result.num1;
-        this.num2 = result.num2;
-        this.num3 = result.num3;
-        this.num4 = result.num4;
-        this.setDash();
-      }
+      console.log(result, "result_____________");
+
+      this.deviceId = result.deviceId;
+      this.deviceName = result.deviceName || "无";
+      this.pressureValue = result.pressureValue || "无";
+      this.currentValue = result.currentValue || "无";
+      this.temperature = result.temperature || "无";
+      this.frameNum = result.frameNum || "无";
+      this.collectionTime = result.collectionTime || "无";
+      this.rated = result.rated || "无";
+      this.setDash();
     },
     setDash() {
       const myChart = this.$echarts.init(this.$refs.chart);
       myChart.clear();
       let pressure =
-        ((+this.pressureValue - this.num1) / (this.num4 - this.num1)) * 100;
-
+        ((+this.pressure - this.num1) / (this.num4 - this.num1)) * 100;
+      // console.log("测试用户",(this.num2 - this.num1) / (this.num4 - this.num1))
       const option = {
         series: [
           {
             type: "gauge",
-            min: this.num1,
-            max: this.num4,
-            // splitNumber: 5,
-            
             radius: "100%",
             axisLine: {
               lineStyle: {
@@ -258,7 +234,7 @@ export default {
               },
             },
             splitLine: {
-              distance: -5, //-18
+              distance: -3, //-18
               length: 16,
               lineStyle: {
                 color: "#14e1fa", // x轴刻度大颜色
@@ -266,13 +242,13 @@ export default {
             },
             axisTick: {
               distance: 0, //-12
-              length: 4,
+              length: 10,
               lineStyle: {
                 color: "#14e1fa", // x轴刻度小颜色
               },
             },
             axisLabel: {
-              distance: 8, //-50
+              distance: 2, //-50
               color: "#14e1fa", // x轴刻度文字颜色
               fontSize: 9,
             },
@@ -293,15 +269,15 @@ export default {
               },
             },
 
-            // axisTick: {
-            //   show: false,
-            // },
-            // splitLine: {
-            //   show: false,
-            // },
-            // axisLabel: {
-            //   show: false,
-            // },
+            axisTick: {
+              show: false,
+            },
+            splitLine: {
+              show: false,
+            },
+            axisLabel: {
+              show: false,
+            },
             detail: {
               show: false,
               valueAnimation: true,
@@ -309,17 +285,8 @@ export default {
             },
             data: [
               {
-                value: this.pressureValue,
+                value: pressure,
               },
-              // {
-              //   value: this.num2,
-              // },
-              // {
-              //   value: this.num3,
-              // },
-              // {
-              //   value: this.num4,
-              // },
             ],
           },
         ],
@@ -340,6 +307,7 @@ export default {
     // 导出表格
     async tableExport() {
       this.onload = true;
+      // console.log('this.deviceName', this.deviceName)
       await exportExcel({
         url: "pressureHistory/exportExcel",
         params: {
@@ -403,7 +371,7 @@ export default {
         },
         yAxis: {
           type: "value",
-          name: "压力/MPa",
+          name: "压力/KPa",
           splitLine: {
             show: false,
           },
@@ -440,6 +408,17 @@ export default {
               })
               .reverse(),
           },
+          // {
+          //   name: "温度",
+          //   type: "line",
+          //   symbol: "none",
+          //   sampling: "lttb",
+          //   data: this.tableData
+          //     .map((item) => {
+          //       return item.temperature || "0";
+          //     })
+          //     .reverse(),
+          // },
         ],
       };
       myChart2.setOption(option2);

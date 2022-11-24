@@ -35,7 +35,7 @@
       <el-table-column prop="frameNum" label="帧计数器"> </el-table-column>
 
       <el-table-column prop="collectionTime" label="更新时间" width="250"> </el-table-column>
-      <el-table-column label="操作" width="230">
+      <el-table-column label="操作" fixed="right" width="230">
         <template slot-scope="{ row }">
           <!-- <el-button
             class="btn-map"
@@ -60,7 +60,7 @@
         @size-change="onPageSizeChange"
         @current-change="onPageCurrentChange"
         :current-page="pages.pageNum"
-        :page-sizes="[5, 10, 20, 50]" 
+        :page-sizes="[10, 20, 50, 100]"
         :page-size="pages.pageSize"
         layout="total, sizes, prev, pager, next, jumper"
         :total="total"
@@ -109,11 +109,17 @@ export default {
   props: {
     projectId: Number,
   },
+  mounted() {
+  },
+  beforeDestroy() {
+    clearTimeout(this.timer);
+  },
   methods: {
     dialogClick() {
       this.dialogPressureInfo = !this.dialogPressureInfo;
     },
     async getData() {
+      clearTimeout(this.timer);
       let { records, total } = await api.pressureNewList({
         companyId: this.projectId,
         ...this.searchModel,
@@ -121,7 +127,10 @@ export default {
       });
       this.total = total;
       this.tableData = records;
-      
+      // console.log('this.tableData', JSON.parse(this.tableData[0].originData))
+      this.timer = setTimeout(() => {
+        this.getData();
+      }, 30000);
     },
     // 修改列表条数
     onPageSizeChange(e) {

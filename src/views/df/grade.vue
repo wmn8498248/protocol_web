@@ -7,7 +7,7 @@
             class="w180x"
             v-model="searchModel.name"
             type="text"
-            placeholder="传感器别名"
+            placeholder="主设备别名"
           ></el-input>
         </el-form-item>
         <el-form-item label="">
@@ -54,7 +54,7 @@
         @size-change="onPageSizeChange"
         @current-change="onPageCurrentChange"
         :current-page="pages.pageNum"
-        :page-sizes="[5, 10, 20, 50]"
+        :page-sizes="[10, 20, 50, 100]"
         :page-size="pages.pageSize"
         layout="total, sizes, prev, pager, next, jumper"
         :total="total"
@@ -88,10 +88,16 @@ export default {
       tableList: [],
     };
   },
-  activated() {
+  created() {
     this.getList();
   },
-
+  mounted() {},
+  // destroyed(){
+  //   console.log(2)
+  // },
+  // beforeDestroy(){
+  //   console.log(3)
+  // },
   methods: {
     // 导出表格
     async tableExport() {

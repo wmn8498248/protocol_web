@@ -78,14 +78,13 @@
               </div>
             </div>
             <div class="title-right">
-              <el-button class="btn-map" @click="parentRouting" size="mini">
+              <el-button class="btn-map" @click="parentRouting">
                 更多信息</el-button
               >
               <el-button
                 class="btn-retry"
                 @click="tableExport"
                 :loading="onload"
-                size="mini"
                 >导出excel</el-button
               >
             </div>
@@ -166,7 +165,7 @@
           <div class="box-title">
             <img class="itemImg" src="../../../assets/images/sb6.png" />历史曲线
             <span class="right">温度: ℃&emsp;湿度: %</span>
-            <!-- <span class="right">气压: MPa</span> -->
+            <!-- <span class="right">气压: KPa</span> -->
           </div>
           <div class="box-container">
             <div ref="chart4" style="width: 100%; height: 100%"></div>
@@ -256,7 +255,10 @@ export default {
       this.handlerMouserScroll
     );
   },
- 
+  // destroyed() {
+  // },
+  // beforeCreate() {
+  // },
   created() {
     this.getData();
     let that = this;
@@ -886,7 +888,7 @@ export default {
         ],
       });
       this.myChart1.on("click", function (param) {
-        that.$emit("moreInfoPopup", "电压等级:" + param.name + "(V)");
+        that.$emit("moreInfoPopup", "电压等级:" + param.name);
         that.$router.push({
           path: "/tc/grade",
           query: {

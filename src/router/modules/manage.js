@@ -6,21 +6,6 @@ export default {
   meta: { title: '平台管理', icon: 'theme' },
   children: [
     {
-      path: 'wenduyg_edit',
-      component: () => import('@/views/wenduyg/wendu_edit'),
-      name: 'Wendu_edit',
-      meta: { title: '温度电流传感器修改', icon: 'theme' },
-      hidden: true
-    },
-    {
-      path: 'wenduyg_setting',
-      component: () => import('@/views/wenduyg/wendu_setting'),
-      name: 'Wendu_setting',
-      meta: { title: '温度电流传感器命令', icon: 'theme' },
-      hidden: true
-    },
-
-    {
       path: 'site',
       component: () => import('@/views/manage/site'),
       name: 'Site',

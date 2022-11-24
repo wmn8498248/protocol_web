@@ -1,68 +1,32 @@
 <template>
   <div class="dataAnalysisPage">
     <div class="title">
-      <div>{{ type == "edit" ? "计数器传感器修改" : "计数器传感器添加" }}</div>
+      <div>{{type == 'edit' ? '断路器计数器修改' : '断路器计数器添加'}}</div>
     </div>
     <div class="search-container">
-      <el-form label-width="200px" :model="info" :rules="rulesAnalysis">
-        <el-form-item label="传感器类型"> 计数器传感器 </el-form-item>
-        <!-- <el-form-item required label="规约类型" prop="deviceType">
-          <el-select v-model="info.deviceType" placeholder="请选择">
-            <el-option
-              v-for="item in deviceTypeOptions"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value">
-            </el-option>
-          </el-select>
-        </el-form-item> -->
-
-        <el-form-item  label="规约Id" >
-          <el-input type="text" v-model="info.id"></el-input>
+      <el-form label-width="160px">
+        <el-form-item label="传感器类型"> 断路器计数器 </el-form-item>
+        <el-form-item label="传感器编号" required="">
+          <el-input type="text" v-model="info.deviceNumber"></el-input>
         </el-form-item>
-
-        <el-form-item  label="与网关通信id" >
-          <el-input type="text" v-model="info.sensorId"></el-input>
+        <el-form-item label="传感器别名" required="">
+          <el-input type="text" v-model="info.deviceName"></el-input>
         </el-form-item>
-
-        <el-form-item label="传感器别名" required="" prop="name">
-          <el-input type="text" v-model="info.name"></el-input>
+        <el-form-item label="传感器地址" required>
+          <el-input type="text" v-model="info.address"></el-input>
         </el-form-item>
-
-        <el-form-item required label="网关Id" prop="gatewayId">
-          <el-select v-model="info.gatewayId" clearable placeholder="请选择">
-            <el-option
-              :disabled="type == 'edit'"
-              v-for="item in gatewayIdList"
-              :key="item.id"
-              :label="item.netName"
-              :value="item.id"
-            >
-            </el-option>
-          </el-select>
+        <el-form-item label="经度" required>
+          <el-input type="text" v-model="info.longitude"></el-input>
         </el-form-item>
-
-        <el-form-item required label="设备分类" prop="deviceClassify">
-          <el-input v-model="info.deviceClassify"></el-input>
+        <el-form-item label="纬度" required>
+          <el-input type="text" v-model="info.latitude"></el-input>
         </el-form-item>
-        <el-form-item required label="电压分类" prop="voltLevel">
-          <el-input type="number" v-model="info.voltLevel"></el-input>
+        <el-form-item label="订阅主题" required>
+          <el-input type="text" v-model="info.subscribeTheme"></el-input>
         </el-form-item>
-
-        <el-form-item required label="设备类型" prop="devType">
-          <el-select v-model="info.devType" clearable placeholder="请选择">
-            <el-option
-              :disabled="type == 'edit'"
-              v-for="item in countType"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            >
-            </el-option>
-          </el-select>
+        <el-form-item label="发布主题" required>
+          <el-input type="text" v-model="info.releaseTheme"></el-input>
         </el-form-item>
-        
-
         <el-form-item>
           <el-button @click="toSave" class="btn-create">保存</el-button>
           <el-button @click="backPage" class="btn-cancel">取消</el-button>
@@ -78,143 +42,69 @@ export default {
   name: "Jishu_edit",
   data: function () {
     return {
-      countType: [{
-        value: 1,
-        label: '动作次数计数器'
-      }, {
-        value: 2,
-        label: '打压次数计数器'
-      }],
-
-      deviceTypeOptions: [{
-        value: 1,
-        label: 'bt'
-      }, {
-        value: 2,
-        label: '规约'
-      }],
-      gatewayIdList: [],
-
-      rulesAnalysis: {
-        // sensorId: [
-        //   {
-        //     required: true,
-        //     message: "请输入规约Id",
-        //     trigger: ["blur", "change"],
-        //   },
-        //   {
-        //     min: 12,
-        //     max: 12,
-        //     message: "长度在 12 字符",
-        //     trigger: ["blur", "change"],
-        //   },
-        // ],
-  
-        name: [
-          {
-            required: true,
-            message: "请输入传感器别名",
-            trigger: ["blur", "change"],
-          },
-        ],
-        gatewayId: [
-          {
-            required: true,
-            message: "请输入网关Id",
-            trigger: ["blur", "change"],
-          },
-        ],
-        deviceClassify: [
-          {
-            required: true,
-            message: "请输入设备分类",
-            trigger: ["blur", "change"],
-          },
-        ],
-        voltLevel: [
-          {
-            required: true,
-            message: "请输入电压分类",
-            trigger: ["blur", "change"],
-          },
-        ],
-      },
       info: {
-        gatewayId: null,
-        sensorId:"",
-        name:"",
-        deviceClassify: "",
-        voltLevel: "",
-        devType: 1,
+        deviceNumber: "",
+        deviceName: "",
+        address: "",
+        longitude: "",
+        latitude: "",
+        subscribeTheme: "",
+        releaseTheme: "",
       },
-      type: "add",
-      sensorId: 0,
+      type: 'add',
+      deviceId: 0,
       companyId: 0, //公司id
       projectId: 0, //站点id
     };
   },
-  activated() {
-    this.companyId = this.$route.query.companyId || 0;
-    this.projectId = this.$route.query.projectId || 0;
-    this.sensorId = this.$route.query.deviceId || 0;
-    this.type = this.$route.query.type || "add";
-    this.getCompanyList();
-    this.getInfo();
-    
+  mounted() {
+		this.companyId = this.$route.query.companyId || 0;
+		this.projectId = this.$route.query.projectId || 0;
+		this.deviceId = this.$route.query.deviceId || 0;
+		this.type = this.$route.query.type || 'add';
+    if (this.type == 'edit') {
+      this.getInfo();
+    }
   },
   methods: {
-    async getCompanyList() {
-      let data = {
-        companyId: this.projectId,
-      };
-      this.gatewayIdList = await api.companyList(data);
-    },
-
     async getInfo() {
-      this.info.sensorId = "";
-      this.info.name = "";
-      this.info.gatewayId = null;
-      this.info.deviceClassify = "";
-      this.info.voltLevel = "";
-      this.info.devType = 1;
-      if (this.type == "edit") {
-        let data = {
-          id: this.sensorId,
-        };
-        this.info = await api.deviceInfo(data);
-      }
+      let data = {
+        deviceId: this.deviceId,
+      };
+      let { info } = await api.countingInfo(data);
+      this.info = info;
     },
-
     async toSave() {
       let validator = new Validator();
-      validator.add(this.info.sensorId, [
+      validator.add(this.info.deviceNumber, ["isNonEmpty", "传感器编号不能为空"]);
+      validator.add(this.info.deviceName, ["isNonEmpty", "传感器别名不能为空"]);
+      validator.add(this.info.address, ["isNonEmpty", "传感器位置不能为空"]);
+      validator.add(this.info.longitude, ["isNonEmpty", "经度不能为空"]);
+      validator.add(this.info.latitude, ["isNonEmpty", "纬度不能为空"]);
+      validator.add(this.info.subscribeTheme, [
         "isNonEmpty",
-        "规约Id不能为空",
+        "订阅主题不能为空",
       ]);
-      validator.add(this.info.name, ["isNonEmpty", "传感器别名不能为空"]);
-      validator.add(this.info.gatewayId, ["isNonEmpty", "网关Id不能为空"]);
-      validator.add(this.info.deviceClassify, [
-        "isNonEmpty",
-        "设备分类不能为空",
-      ]);
-      validator.add(this.info.voltLevel, ["isNonEmpty", "电压分类不能为空"]);
-
+      validator.add(this.info.releaseTheme, ["isNonEmpty", "发布主题不能为空"]);
       let msg = validator.start();
       if (msg) {
         this.$message.warning(msg);
-      } else {
-        if (this.type == "edit") {
-          await api.deviceUpdate({
-            ...this.info,
-          });
-        } else {
-          await api.deviceAdd({
-            ...this.info,
-          });
-        }
-        this.$message.success("保存成功");
-        this.backPage();
-      }
+      }else {
+				if (this.type == 'edit') {
+				  await api.countingUpdate({
+						...this.info,
+						deviceId: this.deviceId
+					});
+				} else {
+				  await api.countingSave({
+						...this.info,
+						companyId: this.companyId,
+						projectId: this.projectId
+					});
+				}
+				this.$message.success("保存成功");
+				this.backPage();
+			}
     },
     backPage() {
       this.$router.go(-1);
@@ -255,3 +145,4 @@ export default {
   }
 }
 </style>
+

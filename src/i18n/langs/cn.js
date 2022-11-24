@@ -2,7 +2,7 @@ import zhLocale from 'element-ui/lib/locale/lang/zh-CN';
 
 const cn = {
   systemName: {
-    name: 'XXXXXXXXXXXXX物联管理平台'
+    name: 'XXXXXXXXXXXXXX平台'
   },
   sysSetting: {
     refresh: '刷新',

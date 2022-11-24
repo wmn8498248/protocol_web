@@ -18,11 +18,12 @@
           <el-button @click="messageBox(4)" class="btn-create">
             查询监测参数
           </el-button>
+          <el-button @click="backPage" class="btn-cancel">返回</el-button>
         </el-form-item>
         <el-form-item label="布防状态" required>
           <el-select v-model="info.alarmStatus">
-            <el-option label="撤防" :value="1"></el-option>
-            <el-option label="布防" :value="0"></el-option>
+            <el-option label="撤防" value="1"></el-option>
+            <el-option label="布防" value="0"></el-option>
           </el-select>
         </el-form-item>
 
@@ -49,6 +50,9 @@
             :disabled="disabled"
           ></el-input>
         </el-form-item>
+
+        
+
         <!-- 管理员才可以看到 -->
         <!-- <el-form-item label="空占比" required v-show="dutyState">
           <el-input
@@ -59,7 +63,6 @@
         </el-form-item> -->
         <el-form-item>
           <el-button @click="toSave" class="btn-create">保存</el-button>
-          <el-button @click="backPage" class="btn-cancel">返回</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -75,20 +78,19 @@ export default {
       dutyState: this.$store.getters.userinfo.status == 1,
       issuanceLoad: false,
       info: {
-        alarmStatus: 1,
+        alarmStatus: "1",
         collectionInterval: "",
         collectionNumber: "",
         currentLow: "",
       },
       disabled: false,
       deviceId: 0,
-      id: 0,
     };
   },
-  activated() {
+  mounted() {
     this.deviceId = this.$route.query.deviceId || 0;
-    this.id = this.$route.query.id || 0;
-    this.getInfo();
+    // this.getInfo();
+    // console.log('this.$store.getters',)
   },
   methods: {
     async defence() {
@@ -97,6 +99,7 @@ export default {
       };
       this.issuanceLoad = true;
       let defence = await api.defence(data);
+      console.log(defence);
       if (defence) {
         this.$message.success(defence.msg);
         this.issuanceLoad = false;
@@ -147,11 +150,14 @@ export default {
           }
           this.$message.success(readList);
           this.issuanceLoad = false;
+          // console.log();
           // if (readList) {
+          //   console.log(readList, " readList______1");
 
           //   this.$message.success(readList.msg);
           //   this.issuanceLoad = false;
           // } else {
+          //   console.log(readList, " readList______2");
 
           //   this.issuanceLoad = false;
           // }
@@ -181,6 +187,7 @@ export default {
         deviceId: this.deviceId,
       };
       let restart = await api.issuanceRestart(data);
+      console.log(restart, "restart");
       if (restart) {
         this.$message.success(restart.msg);
         this.issuanceLoad = false;
@@ -188,19 +195,16 @@ export default {
         this.issuanceLoad = false;
       }
     },
-
+   
     async getInfo() {
-      this.info.alarmStatus = null;
-      this.info.collectionInterval = "";
-      this.info.collectionNumber = "";
-      this.info.currentLow = "";
       let data = {
-        id: this.id,
+        deviceId: this.deviceId,
       };
-      this.info = await api.floodingInfo(data);
+      let { info } = await api.pressureInfo(data);
+      this.info = info;
     },
     async toSave() {
-      let validator = new Validator();
+       let validator = new Validator();
       validator.add(this.info.collectionInterval, [
         "isNonEmpty",
         "请输入数据采集间隔",

@@ -1,19 +1,5 @@
 import axios from "@/utils/ajaxRequest";
 
-
-
-
-
-// 公司包含设备类型
-export const getLitsMix = (data) =>
-  axios.request({
-    url: "/sf6/index/list/mix",
-    method: "get",
-    params: {
-      ...data,
-    },
-  });
-
 // 公司包含设备类型
 export const getCompanyDevice = (data) =>
   axios.request({

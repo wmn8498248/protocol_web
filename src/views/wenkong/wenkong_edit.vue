@@ -5,13 +5,12 @@
     </div>
     <div class="search-container">
       <el-form label-width="160px" :model="info" :rules="rulesAnalysis">
-        <el-form-item label="传感器类型"> 温控器 </el-form-item>
+        <el-form-item label="传感器类型"> 温控器1 </el-form-item>
         <el-form-item required label="传感器前缀" prop="devicePrefix">
           <el-input type="text" v-model="info.devicePrefix"></el-input>
         </el-form-item>
         <el-form-item label="传感器编号" required="" prop="deviceId">
           <el-input
-            :readonly="type == 'edit'"
             type="text"
             v-model="info.deviceId"
             prop="deviceId"
@@ -25,7 +24,6 @@
         <el-form-item required label="网关Id" prop="gatewayId">
           <el-select v-model="info.gatewayId" clearable placeholder="请选择">
             <el-option
-              :disabled="type == 'edit'"
               v-for="item in gatewayIdList"
               :key="item.id"
               :label="item.netName"
@@ -70,52 +68,23 @@ export default {
 
       rulesAnalysis: {
         devicePrefix: [
-          {
-            required: true,
-            message: "请输入传感器前缀",
-            trigger: ["blur", "change"],
-          },
+          { required: true, message: "请输入传感器前缀", trigger: "blur" },
         ],
         deviceId: [
-          {
-            required: true,
-            message: "请输入传感器编号",
-            trigger: ["blur", "change"],
-          },
-          {
-            min: 6,
-            max: 100,
-            message: "长度在 6 字符以上",
-            trigger: ["blur", "change"],
-          },
+          { required: true, message: "请输入传感器编号", trigger: "blur" },
+          { min: 6, max: 100, message: "长度在 6 字符以上", trigger: "blur" },
         ],
         deviceName: [
-          {
-            required: true,
-            message: "请输入传感器别名",
-            trigger: ["blur", "change"],
-          },
+          { required: true, message: "请输入传感器别名", trigger: "blur" },
         ],
         gatewayId: [
-          {
-            required: true,
-            message: "请输入网关Id",
-            trigger: ["blur", "change"],
-          },
+          { required: true, message: "请输入网关Id", trigger: "blur" },
         ],
         deviceClassify: [
-          {
-            required: true,
-            message: "请输入设备分类",
-            trigger: ["blur", "change"],
-          },
+          { required: true, message: "请输入设备分类", trigger: "blur" },
         ],
         voltLevel: [
-          {
-            required: true,
-            message: "请输入电压分类",
-            trigger: ["blur", "change"],
-          },
+          { required: true, message: "请输入电压分类", trigger: "blur" },
         ],
       },
       info: {
@@ -137,15 +106,16 @@ export default {
       projectId: 0, //站点id
     };
   },
-  activated() {
+  mounted() {
     this.companyId = this.$route.query.companyId || 0;
     this.projectId = this.$route.query.projectId || 0;
     this.deviceId = this.$route.query.deviceId || 0;
     this.type = this.$route.query.type || "add";
     this.getCompanyList();
 
-    this.getInfo();
-    
+    if (this.type == "edit") {
+      this.getInfo();
+    }
   },
   methods: {
     async getCompanyList() {
@@ -155,28 +125,14 @@ export default {
       this.gatewayIdList = await api.companyList(data);
     },
     async getInfo() {
-      this.info.devicePrefix = "";
-      this.info.deviceId = "";
-      this.info.deviceName = "";
-      this.info.gatewayId = null;
-      this.info.deviceClassify = "";
-      this.info.voltLevel = "";
-      this.info.longitude = "";
-      this.info.latitude = "";
-      if (this.type == "edit") {
-        let data = {
-          id: this.deviceId,
-        };
-        this.info = await api.temperatureControlInfo(data);
-      }
-      
+      let data = {
+        id: this.deviceId,
+      };
+      this.info = await api.temperatureControlInfo(data);
     },
     async toSave() {
       let validator = new Validator();
-      validator.add(this.info.devicePrefix, [
-        "isNonEmpty",
-        "传感器前缀不能为空",
-      ]);
+      validator.add(this.info.devicePrefix, ["isNonEmpty", "传感器前缀不能为空"]);
       validator.add(this.info.deviceId, ["isNonEmpty", "传感器编号不能为空"]);
       validator.add(this.info.deviceName, ["isNonEmpty", "传感器别名不能为空"]);
       validator.add(this.info.gatewayId, ["isNonEmpty", "网关Id不能为空"]);

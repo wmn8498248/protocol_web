@@ -49,7 +49,7 @@
           <el-button @click="toSave" class="btn-create">保存</el-button>
           <el-button @click="backPage" class="btn-cancel">取消</el-button>
         </el-form-item>
-      </el-form>  
+      </el-form>
     </div>
   </div>
 </template>
@@ -81,7 +81,7 @@ export default {
 			projectId: 0, //站点id
     };
   },
-  activated() {
+  mounted() {
 		this.companyId = this.$route.query.companyId || 0;
 		this.projectId = this.$route.query.projectId || 0;
 		this.deviceId = this.$route.query.deviceId || 0;

@@ -1,14 +1,5 @@
 import axios from "@/utils/ajaxRequest";
 
-
-export const getWiMix = (data) =>
-  axios.request({
-    url: "wi/index/list/mix",
-    method: "get",
-    params: {
-      ...data,
-    },
-  });
 export const alarmExport = (data) =>
   axios.request({
     url: "wi/alarm/export",

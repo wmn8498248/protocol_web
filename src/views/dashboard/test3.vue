@@ -2,7 +2,7 @@
   <div class="dashboard">
     <div class="dashboard-topImg">
       <!-- <img src="../../assets/images/bg05.png" /> -->
-      XXXXXXXXXXXXX物联管理平台
+      国网宁夏物联网智能管理平台
     </div>
     <div class="dashboard-time" v-if="nowDate">
       <p>{{ nowDate }}</p>
@@ -40,9 +40,9 @@
               <div class="content">
                 <p
                   style="text-indent: 2em"
-                  title="国网宁夏电力有限公司是国家电网公司全资子公司，属国有特大型能源供应企业，主要从事宁夏回族自治区境内电网的建设、运行、管理和经营，为宁夏经济社会发展提供充足、稳定的电力供应和优质、高效的服务。国网宁夏电力有限公司经营区域覆盖宁夏回族自治区全境，覆盖国土面积6.64万平方公里，供电服务人口688万人。截至2020年底，公司用工总量13601人，其中长期职工9107人、供电服务（农电）职工3258人、集体企业用工1126人、劳务派遣110人。"
+                  title="国网宁夏电力公司是国家电网公司全资子公司，属国有特大型能源供应企业，主要从事宁夏回族自治区境内电网的建设、运行、管理和经营，为宁夏经济社会发展提供充足、稳定的电力供应和优质、高效的服务。国网宁夏电力公司经营区域覆盖宁夏回族自治区全境，覆盖国土面积6.64万平方公里，供电服务人口688万人。截至2020年底，公司用工总量13601人，其中长期职工9107人、供电服务（农电）职工3258人、集体企业用工1126人、劳务派遣110人。"
                 >
-                  国网宁夏电力有限公司是国家电网公司全资子公司，属国有特大型能源供应企业，主要从事宁夏回族自治区境内电网的建设、运行、管理和经营，为宁夏经济社会发展提供充足、稳定的电力供应和优质、高效的服务。国网宁夏电力有限公司经营区域覆盖宁夏回族自治区全境，覆盖国土面积6.64万平方公里，供电服务人口688万人。截至2020年底，公司用工总量13601人，其中长期职工9107人、供电服务（农电）职工3258人、集体企业用工1126人、劳务派遣110人。
+                  国网宁夏电力公司是国家电网公司全资子公司，属国有特大型能源供应企业，主要从事宁夏回族自治区境内电网的建设、运行、管理和经营，为宁夏经济社会发展提供充足、稳定的电力供应和优质、高效的服务。国网宁夏电力公司经营区域覆盖宁夏回族自治区全境，覆盖国土面积6.64万平方公里，供电服务人口688万人。截至2020年底，公司用工总量13601人，其中长期职工9107人、供电服务（农电）职工3258人、集体企业用工1126人、劳务派遣110人。
                 </p>
                 <p>公司成立: 1990年02月28日</p>
                 <p>营业期限: 1990年02月28日-9999年12月31日</p>
@@ -254,7 +254,7 @@
                 <ul class="item">
                   <li>
                     <span class="title" v-text="'传感器别名'"></span>
-                    <span class="title" v-text="'气压(MPa)'"></span>
+                    <span class="title" v-text="'气压(Kpa)'"></span>
                     <span class="title" v-text="'温度(℃)'"></span>
                     <span class="title" v-text="'电量(%)'"></span>
                   </li>
@@ -326,7 +326,7 @@ import { parseTime } from "@/utils/index.js";
 import * as api from "@/api/dashboard";
 import vueSeamlessScroll from "vue-seamless-scroll";
 export default {
-  name: "test",
+  name: "Dashboard",
   data() {
     return {
       countTime: 30,
@@ -436,7 +436,9 @@ export default {
       this.countTime = 30;
     }, 30000);
   },
- 
+  destroyed() {
+    console.log("destroyed");
+  },
   deactivated() {
     console.log("deactivated");
   },
@@ -489,20 +491,17 @@ export default {
       this.last3PressureHistory = last3PressureHistory; //最近3台气压温度数据
 
       this.alarms = alarms; // 报警警告列表
-
       if (alarms.length > 9) {
         this.alarmsOption.step = 1;
       } else {
         this.alarmsOption.step = 1;
       }
-
       this.newData = newData; //最新设备数据
       if (newData.length > 9) {
         this.newDataOption.step = 1;
       } else {
         this.newDataOption.step = 0;
       }
-
       this.todayCase = todayCase; // 设备总数统计
 
       if (weekDataNum.length > 0) {
@@ -580,7 +579,7 @@ export default {
             data: [
               {
                 value: 58.46,
-                name: "MPa",
+                name: "Kpa",
               },
             ],
           },
@@ -717,7 +716,6 @@ export default {
           },
         ],
       });
-    
     },
     chart3Refresh() {
       this.myChart3.clear();
@@ -800,7 +798,6 @@ export default {
           },
         ],
       });
-    
     },
   },
 };
@@ -816,7 +813,6 @@ export default {
   background-position: top left, top right, bottom left, bottom right;
   padding: 14px;
   position: relative;
-  background-color: #030c35;
   .dashboard-topImg {
     position: absolute;
     left: 50%;

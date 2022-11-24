@@ -29,7 +29,7 @@
               @size-change="onPageSizeChange"
               @current-change="onPageCurrentChange"
               :current-page="pages.pageNum"
-              :page-sizes="[5, 5, 10, 20, 50]"
+              :page-sizes="[5, 10, 20, 50, 100]"
               :page-size="pages.pageSize"
               layout="total, sizes, prev, pager, next, jumper"
               :total="total"
@@ -79,7 +79,7 @@ export default {
       onload: false
     };
   },
-  activated() {
+  mounted() {
     this.deviceId = this.$route.query.deviceId || 0;
 		this.deviceCode = this.$route.query.deviceCode || 0;
 		this.getList();

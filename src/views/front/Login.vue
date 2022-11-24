@@ -5,7 +5,7 @@
       <h3 class="title">
         <img class="logo" src="@/assets/images/logo1.png" alt="" />
         <div class="name">
-         XXXXXXXXXXXXX物联管理平台           
+          XXXXXXXXXXXXXX平台
           <!-- <img src="@/assets/images/login_title.png" alt="" /> -->
         </div>
       </h3>
@@ -110,8 +110,6 @@ import { codeDown } from "@/utils/codeDown";
 import * as user from "@/api/user";
 import Validator from "@/utils/validator";
 import { setToken } from "@/utils/auth";
-import Cookies from "js-cookie";
-
 export default {
   name: "Login",
   data() {
@@ -167,8 +165,6 @@ export default {
           setToken(res.token);
           // this.$router.push({ path: this.redirect || "/" }); // 有redirect跳转对应页面  没有跳转默认页面
           if (res.userLevel == 0) {
-            Cookies.set("userName", res.userName);
-            console.log(res.userName, "res.userName__")
             this.$store.commit("app/SET_UPDATE_TRUE");
             this.$router.push({ path: "/dataHistory/dataHistory" }); // 有redirect跳转对应页面  没有跳转默认页面
           } else {
@@ -349,6 +345,7 @@ p {
   width: 100%;
   background: $bg;
   overflow: hidden;
+
   .login-bg {
     position: absolute;
     z-index: 1;
@@ -430,14 +427,7 @@ p {
       }
     }
   }
-  @media screen and (max-height: 666px) {
-    .title-container {
-      top: 6.25rem;
-    }
-    .login-form {
-      top: 22.81rem;
-    }
-  }
+
   .copyright {
     position: absolute;
     top: 41.31rem;

@@ -4,7 +4,7 @@
       <div>{{ info.deviceName }} - 命令</div>
     </div>
     <div class="search-container">
-      <el-form label-width="200px">
+      <el-form label-width="160px">
         <el-form-item>
           <el-button @click="messageBox(1)" class="btn-clear"
             >设置重启</el-button
@@ -18,11 +18,12 @@
           <el-button @click="messageBox(4)" class="btn-create">
             查询监测参数
           </el-button>
+          <el-button @click="backPage" class="btn-cancel">返回</el-button>
         </el-form-item>
         <el-form-item label="布防状态" required>
           <el-select v-model="info.alarmStatus">
-            <el-option label="撤防" :value="1"></el-option>
-            <el-option label="布防" :value="0"></el-option>
+            <el-option label="撤防" value="1"></el-option>
+            <el-option label="布防" value="0"></el-option>
           </el-select>
         </el-form-item>
 
@@ -42,7 +43,7 @@
           ></el-input>
         </el-form-item>
 
-        <el-form-item label="气压告警高阈值(MPa)" required>
+        <el-form-item label="气压告警高阈值(KPa)" required>
           <el-input
             type="text"
             v-model="info.gasHigh"
@@ -50,7 +51,7 @@
           ></el-input>
         </el-form-item>
 
-        <el-form-item label="气压告警低值(MPa)" required>
+        <el-form-item label="气压告警低值(KPa)" required>
           <el-input
             type="text"
             v-model="info.gasLow"
@@ -68,7 +69,6 @@
         </el-form-item> -->
         <el-form-item>
           <el-button @click="toSave" class="btn-create">保存</el-button>
-          <el-button @click="backPage" class="btn-cancel">返回</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -83,9 +83,7 @@ export default {
     return {
       dutyState: this.$store.getters.userinfo.status == 1,
       issuanceLoad: false,
-      toLoadBl: true,
       info: {
-        deviceName: "",
         alarmStatus: "1",
         collectionInterval: "",
         collectionNumber: "",
@@ -93,25 +91,22 @@ export default {
         gasLow: "",
       },
       disabled: false,
-      deviceId: null,
-      id: null,
-      projectId: null,
-      gatewayIdList: [],
+      deviceId: 0,
     };
   },
-  
-  activated() {
-    this.id = this.$route.query.id || 0;
+  mounted() {
     this.deviceId = this.$route.query.deviceId || 0;
-    this.getInfo();
+    // this.getInfo();
+    // console.log('this.$store.getters',)
   },
   methods: {
     async defence() {
       let data = {
-        deviceId: this.info.deviceId,
+        deviceId: this.deviceId,
       };
       this.issuanceLoad = true;
       let defence = await api.defence(data);
+      console.log(defence);
       if (defence) {
         this.$message.success(defence.msg);
         this.issuanceLoad = false;
@@ -162,11 +157,14 @@ export default {
           }
           this.$message.success(readList);
           this.issuanceLoad = false;
+          // console.log();
           // if (readList) {
+          //   console.log(readList, " readList______1");
 
           //   this.$message.success(readList.msg);
           //   this.issuanceLoad = false;
           // } else {
+          //   console.log(readList, " readList______2");
 
           //   this.issuanceLoad = false;
           // }
@@ -196,6 +194,7 @@ export default {
         deviceId: this.deviceId,
       };
       let restart = await api.issuanceRestart(data);
+      console.log(restart, "restart");
       if (restart) {
         this.$message.success(restart.msg);
         this.issuanceLoad = false;
@@ -203,22 +202,16 @@ export default {
         this.issuanceLoad = false;
       }
     },
-
+   
     async getInfo() {
-      this.info.deviceName = "";
-      this.info.alarmStatus = null;
-      this.info.collectionInterval = "";
-      this.info.collectionNumber = "";
-      this.info.gasHigh = "";
-      this.info.gasLow = "";
       let data = {
-        id: this.id,
+        deviceId: this.deviceId,
       };
-      this.info = await api.pressureInfo(data);
-      // this.info = info;
+      let { info } = await api.pressureInfo(data);
+      this.info = info;
     },
     async toSave() {
-      let validator = new Validator();
+       let validator = new Validator();
       validator.add(this.info.collectionInterval, [
         "isNonEmpty",
         "请输入数据采集间隔",
@@ -230,17 +223,18 @@ export default {
       validator.add(this.info.gasLow, ["isNonEmpty", "请输入气压告警低阈值"]);
       validator.add(this.info.gasHigh, ["isNonEmpty", "请输入气压告警高阈值"]);
 
+
       let msg = validator.start();
       if (msg) {
         this.$message.warning(msg);
       } else {
         await api.deviceSetGeneral({
           ...this.info,
-          // deviceId: this.deviceId,
+          deviceId: this.deviceId,
         });
         await api.deviceSetAlarm({
           ...this.info,
-          // deviceId: this.deviceId,
+          deviceId: this.deviceId,
         });
         this.$message.success("保存成功");
         this.backPage();

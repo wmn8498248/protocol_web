@@ -5,15 +5,7 @@
         <el-form-item label="">
           <el-input
             class="w180x"
-            v-model="searchModel.deviceId"
-            type="text"
-            placeholder="传感器编号"
-          ></el-input>
-        </el-form-item>
-        <el-form-item label="">
-          <el-input
-            class="w180x"
-            v-model="searchModel.deviceName"
+            v-model="searchModel.name"
             type="text"
             placeholder="传感器别名"
           ></el-input>
@@ -53,7 +45,7 @@
         @size-change="onPageSizeChange"
         @current-change="onPageCurrentChange"
         :current-page="pages.pageNum"
-        :page-sizes="[5, 10, 20, 50]"
+        :page-sizes="[10, 20, 50, 100]"
         :page-size="pages.pageSize"
         layout="total, sizes, prev, pager, next, jumper"
         :total="total"
@@ -69,7 +61,7 @@ export default {
   name: "wenkong",
   data() {
     return {
-      searchModel: { deviceId: "", deviceName: "" },
+      searchModel: { name: "" },
       baseList: [],
       pages: {
         pageNum: 1,
@@ -80,12 +72,16 @@ export default {
       companyId: 0,
     };
   },
-  props: {
+  props: { 
     projectId: Number,
   },
 
+  beforeDestroy() {
+    clearTimeout(this.timer);
+  },
   methods: {
     async getData() {
+      clearTimeout(this.timer);
       let { records, total } = await api.temperatureControlNewList({
         companyId: this.projectId,
         ...this.searchModel,
@@ -93,6 +89,9 @@ export default {
       });
       this.total = total;
       this.tableData = records;
+      this.timer = setTimeout(() => {
+        this.getData();
+      }, 30000);
     },
     // 修改列表条数
     onPageSizeChange(e) {

@@ -40,7 +40,7 @@
           </li>
         </ul>
       </div> -->
-      <!-- <el-dropdown
+      <el-dropdown
         class="info-container right-menu-item hover-effect"
         trigger="click"
       >
@@ -61,9 +61,10 @@
           </div>
           <div class="info-btn">
             <el-button class="btn-search" size="mini" @click="goToWarining">更多</el-button>
+            <!-- <el-button class="btn-search" size="mini" @click="">确认</el-button> -->
           </div>
         </el-dropdown-menu>
-      </el-dropdown> -->
+      </el-dropdown>
       <el-dropdown
         class="avatar-container right-menu-item hover-effect"
         trigger="click"
@@ -81,7 +82,7 @@
           <!-- <img :src="userinfo.fileName" class="user-avatar" /> -->
           <div>
             <p class="codeName">欢迎登录</p>
-            <p>{{ userName || "您好" }}</p>
+            <p>{{ userinfo.name || "您好" }}</p>
           </div>
           <i class="el-icon-caret-bottom" />
         </div>
@@ -109,7 +110,6 @@ import Hamburger from "@/components/Hamburger";
 import Screenfull from "@/components/Screenfull";
 import SizeSelect from "@/components/SizeSelect";
 import * as api from "@/api/dashboard";
-import Cookies from 'js-cookie'
 
 export default {
   components: {
@@ -126,9 +126,6 @@ export default {
     };
   },
   computed: {
-    userName(){
-      return Cookies.get('userName')
-    },
     ...mapGetters(["sidebar", "userinfo", "device"]),
   },
   mounted() {

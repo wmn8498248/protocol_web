@@ -2,19 +2,16 @@
   <div class="bileiPage">
     <div class="search-container">
       <el-form inline :model="searchModel" label-width="100px">
-        
         <el-form-item label="">
-          <el-input type="text" v-model="searchModel.deviceId" placeholder="传感器编号"></el-input>
+          <el-input type="text" v-model="searchModel.deviceId" placeholder="设备编号"></el-input>
         </el-form-item>
 
         <el-form-item label="">
           <el-input type="text" v-model="searchModel.deviceName" placeholder="设备名称"></el-input>
         </el-form-item>
-
         <el-form-item>
           <el-button @click="getSearch" class="btn-search">查询</el-button>
         </el-form-item>
-
       </el-form>
     </div>
     <el-table :data="tableData" stripe>
@@ -25,8 +22,7 @@
       <el-table-column prop="updateTime" label="更新时间"> </el-table-column>
       <el-table-column label="操作" width="250">
     		<template slot-scope="{ row }">
-          <el-button class="btn-data" size="mini" @click="upgrade('bt/strain',row.deviceId)">远程升级</el-button>
-    		  <!-- <el-button class="btn-data" size="mini" @click="toSet(row.deviceId)">远程升级</el-button> -->  
+    		  <!-- <el-button class="btn-data" size="mini" @click="toSet(row.deviceId)">远程升级</el-button> -->
     		  <el-button class="btn-detail" size="mini" @click="toEdit(row.id)">修改</el-button>
     		  <el-button class="btn-clear" size="mini" @click="toDelete(row.deviceId)">删除</el-button>
     		</template>
@@ -37,7 +33,7 @@
         @size-change="onPageSizeChange"
         @current-change="onPageCurrentChange"
         :current-page="pages.pageNum"
-        :page-sizes="[5, 10, 20, 50]"
+        :page-sizes="[10, 20, 50, 100]"
         :page-size="pages.pageSize"
         layout="total, sizes, prev, pager, next, jumper"
         :total="total"
@@ -70,15 +66,6 @@ export default {
     };
   },
   methods: {
-    upgrade(deviceType,deviceId){
-      this.$router.push({
-        path: "/manage/upgrade_setting",
-        query: {
-          deviceType,
-          deviceId
-        },
-      });
-    },
 		async getList() {
       let data = {
         companyId: this.projectId,

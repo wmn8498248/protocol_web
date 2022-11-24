@@ -164,7 +164,7 @@ export default {
     this.myChart4.resize();
   },
   beforeDestroy() {},
- 
+  destroyed() {},
   beforeCreate() {},
   mounted() {
     this.myChart = this.$echarts.init(this.$refs.chart);
@@ -179,6 +179,7 @@ export default {
       this.myChart4.resize();
     });
     this.nowDate = parseTime(new Date(), "{y}年{m}月{d}日 {h}:{i}");
+    this.getData();
     // this.initEchart();
   },
   methods: {

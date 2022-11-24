@@ -13,7 +13,7 @@
           <div class="data-chart">
             <div class="data-name">
               <svg-icon icon-class="shidu" style="font-size: 20px"></svg-icon>
-              湿度：
+              湿度
               <span class="data-num"> {{ dataInfo.humidity }}%rh </span>
             </div>
             <img class="chart-img" src="../../assets/images/001.gif" />
@@ -22,25 +22,9 @@
           </div>
           <div class="data-table">
             <div class="table-item">
-              <div class="item-name">加湿器状态</div>
-              <div v-if="dataInfo.humStatus">
-                <el-tag size="mini" type="success">运行</el-tag>
-              </div>
-              <div v-else><el-tag type="danger" size="mini">关闭</el-tag></div>
-            </div>
-            <div class="table-item">
-              <div class="item-name">加热器状态</div>
-              <div v-if="dataInfo.tempStatus">
-                <el-tag size="mini" type="success">运行</el-tag>
-              </div>
-              <div v-else><el-tag type="danger" size="mini">关闭</el-tag></div>
-            </div>
-
-            <div class="table-item">
               <div class="item-name">温度（°C）</div>
               <div>{{ dataInfo.temperature }}</div>
             </div>
-
             <div class="table-item">
               <div class="item-name">湿度（%rh）</div>
               <div>{{ dataInfo.humidity }}</div>
@@ -55,7 +39,7 @@
               <div>{{ dataInfo.deviceId }}</div>
             </div>
             <div class="table-item">
-              <div class="item-name">传感器别名1</div>
+              <div class="item-name">传感器别名</div>
               <div>{{ dataInfo.deviceName }}</div>
             </div>
           </div>
@@ -74,46 +58,25 @@
             <span>{{ humidityData }}</span>
           </div>
           <el-table :data="tableList" stripe style="width: 100%">
-            <el-table-column prop="createTime" label="时间"></el-table-column>
+            <el-table-column prop="updateTime" label="时间"></el-table-column>
             <el-table-column
               prop="deviceName"
               label="传感器别名"
             ></el-table-column>
-            <el-table-column prop="tempStatus" label="加热状态">
-              <template slot-scope="{ row }">
-                <div v-if="dataInfo.tempStatus">
-                  <el-tag size="mini" type="success">运行</el-tag>
-                </div>
-                <div v-else>
-                  <el-tag type="danger" size="mini">关闭</el-tag>
-                </div>
-              </template>
-            </el-table-column>
-
             <el-table-column prop="temperature" label="温度（°C）">
-            </el-table-column>
-
-            <el-table-column prop="humStatus" label="加湿状态">
-              <template slot-scope="{ row }">
-                <div v-if="dataInfo.humStatus">
-                  <el-tag size="mini" type="success">运行</el-tag>
-                </div>
-                <div v-else>
-                  <el-tag type="danger" size="mini">关闭</el-tag>
-                </div>
-              </template>
             </el-table-column>
             <el-table-column
               prop="humidity"
               label="湿度（%rh）"
             ></el-table-column>
+           
           </el-table>
           <div class="pagination taR mt20x">
             <el-pagination
               @size-change="onPageSizeChange"
               @current-change="onPageCurrentChange"
               :current-page="pages.pageNum"
-              :page-sizes="[10, 20, 50, 100]"
+              :page-sizes="[20, 50, 100, 200]"
               :page-size="pages.pageSize"
               layout="total, sizes, prev, pager, next, jumper"
               :total="total"
@@ -183,8 +146,8 @@ export default {
         pageNum: 1,
         pageSize: 20,
       },
-      startTime: moment().startOf("day").format("YYYY-MM-DD HH:mm:ss"),
-      endTime: moment().endOf("day").format("YYYY-MM-DD HH:mm:ss"),
+      startTime:moment().startOf("day").format("YYYY-MM-DD HH:mm:ss"),
+			endTime: moment().endOf("day").format("YYYY-MM-DD HH:mm:ss"),
       total: 0,
       tableData: [],
       tableList: [],
@@ -240,35 +203,29 @@ export default {
       )}${unit}`;
     },
   },
-  activated() {
+  mounted() {
     this.deviceNumber = this.$route.query.deviceNumber || "";
     this.companyId = this.$route.query.companyId || 0;
     this.projectId = this.$route.query.projectId || 0;
     this.activeName = "1";
     this.getData();
-
-    console.log(moment("2022-10-17 10:38:49").valueOf(), "火影忍者");
   },
   methods: {
     async getData() {
       this.dataInfo = await api.temperatureControlDataInfo({
         deviceId: this.deviceNumber,
+        // deviceId: "9c65f9ffa2b10001",
       });
-
-      if (this.dataInfo === null) {
-        this.activeName = "2";
-        this.getList();
-      }
     },
     async getList() {
-      let dataListJson = await api.temperatureControlHistoryList({
+      this.tableData = await api.temperatureControlHistoryList({
         // deviceId: "9c65f9ffa2b10001",
         deviceId: this.deviceNumber,
         startTime: this.startTime,
         endTime: this.endTime,
       });
-      this.tableData = dataListJson.reverse();
-      this.total = dataListJson.length;
+      this.tableData = this.tableData.reverse()
+      this.total = this.tableData.length;
       this.cutList();
       this.initEchart();
     },
@@ -287,32 +244,13 @@ export default {
     },
     initEchart() {
       const myChart = this.$echarts.init(this.$refs.chart);
-      let _this = this
       myChart.clear();
-      let mapListTemp = [];
-      let mapListHum = [];
-      this.tableData.forEach((el, index) => {
-        if (el.tempStatus === 1) {
-          // mapListTemp.push({value: el.temperature, label: el.createTime, color: 'red'},)
-          mapListTemp.push({ gte: index, lte: index + 1, color: "#FF0000" });
-        }
-        if (el.humStatus === 1) {
-          // mapListHum.push({value: el.humidity, label: el.createTime, color:  "FF0033"},)
-          mapListHum.push({ gte: index, lte: index + 1, color: "#FF00FF" });
-        }
-      });
-      console.log(mapListTemp);
-      console.log(mapListHum);
       const option = {
         tooltip: {
           trigger: "axis",
         },
         legend: {
           data: ["温度", "湿度"],
-          textStyle: {
-            fontSize: 16, //字体大小
-            color: "#ffffff", //字体颜色
-          },
         },
         grid: {
           top: 52,
@@ -321,22 +259,13 @@ export default {
           bottom: 70,
         },
         xAxis: {
-          type: "time",
-          min: function (value, aaa) {
-            console.log(value, aaa, "value.min");
-            return _this.startTime;
-          },
-          max: function (value) {
-            return _this.endTime;
-          },
-          maxInterval: 3600 * 24 * 1000,
+          type: "category",
           boundaryGap: false,
-          //  moment(item.createTime).valueOf()
-          // data: this.tableData
-          //   .map((item) => {
-          //     return item.createTime || "--";
-          //   })
-          //   .reverse(),
+          data: this.tableData
+            .map((item) => {
+              return item.createTime || "--";
+            })
+            .reverse(),
           splitLine: {
             show: true,
             lineStyle: {
@@ -353,52 +282,43 @@ export default {
             show: false,
           },
         },
-        yAxis: {
-          nameTextStyle: {
-            color: "#3BDFFF",
-          },
-          type: "value",
-          splitLine: {
-            lineStyle: {
-              color: "rgba(91, 122, 137, 0.1)",
-            },
-          },
-          axisLabel: {
-            //x轴文字的配置
-            textStyle: {
-              color: "#fff",
-            },
-          },
-          axisLine: {
-            show: true,
-            lineStyle: {
-              color: "rgba(20, 225, 250, 0.2)",
-            },
-          },
-        },
-        visualMap: [
+        yAxis: [
           {
-            show: false,
-            dimension: 0,
-            seriesIndex: 0,
-            pieces: mapListTemp, //pieces的值由动态数据决定mapListTemp
-            inRange: {
-              color: ["#5470c6"],
+            type: "value",
+            name: "温度(℃)",
+            splitLine: {
+              show: false,
             },
-            outOfRange: {
-              color: "#5470c6",
+            axisLabel: {
+              //x轴文字的配置
+              textStyle: {
+                color: "#fff",
+              },
+            },
+            axisLine: {
+              show: false,
+              lineStyle: {
+                color: "rgba(20, 225, 250, 0.2)",
+              },
             },
           },
           {
-            show: false,
-            seriesIndex: 1,
-            dimension: 0,
-            pieces: mapListHum, //pieces的值由动态数据决定mapListHum
-            inRange: {
-              color: ["#91cc75"],
+            type: "value",
+            name: "湿度(%rh)",
+            splitLine: {
+              show: false,
             },
-            outOfRange: {
-              color: "#91cc75",
+            axisLabel: {
+              //x轴文字的配置
+              textStyle: {
+                color: "#fff",
+              },
+            },
+            axisLine: {
+              show: false,
+              lineStyle: {
+                color: "rgba(20, 225, 250, 0.2)",
+              },
             },
           },
         ],
@@ -414,18 +334,22 @@ export default {
           {
             name: "温度",
             type: "line",
+            yAxisIndex: 0,
+            barWidth: 20, //柱图宽度
             data: this.tableData
               .map((item) => {
-                return [item.createTime, item.temperature] || "0";
+                return item.temperature || "0";
               })
               .reverse(),
           },
           {
             name: "湿度",
-            type: "line", // bar
+            type: "bar",
+            yAxisIndex: 1,
+            barWidth: 20, //柱图宽度
             data: this.tableData
               .map((item) => {
-                return [item.createTime, item.humidity] || "0";
+                return item.humidity || "0";
               })
               .reverse(),
           },
@@ -531,7 +455,7 @@ export default {
       position: relative;
       top: 50px;
       .data-num {
-        // color: #e62832;
+        color: #e62832;
       }
     }
   }

@@ -7,7 +7,7 @@
             class="w180x"
             v-model="searchModel.deviceName"
             type="text"
-            placeholder="传感器别名"
+            placeholder="主设备别名"
           ></el-input>
         </el-form-item>
         <el-form-item label="">
@@ -18,7 +18,7 @@
             placeholder="传感器编号"
           ></el-input>
         </el-form-item>
-
+       
         <el-form-item>
           <el-button @click="getList" class="btn-search">查询</el-button>
           <el-button @click="tableExport" class="btn-search" :loading="onload"
@@ -29,7 +29,8 @@
     </div>
 
     <el-table height="500px" :data="tableList" stripe style="width: 100%">
-      <el-table-column prop="deviceId" label="传感器编号"> </el-table-column>
+      <el-table-column prop="deviceId" label="传感器编号">
+      </el-table-column>
       <el-table-column prop="deviceName" label="传感器别名"> </el-table-column>
       <el-table-column prop="datavalue" label="长度(mm)"> </el-table-column>
       <el-table-column prop="temdev" label="温度(℃)"> </el-table-column>
@@ -61,7 +62,7 @@
         @size-change="onPageSizeChange"
         @current-change="onPageCurrentChange"
         :current-page="pages.pageNum"
-        :page-sizes="[5, 10, 20, 50]"
+        :page-sizes="[10, 20, 50, 100]"
         :page-size="pages.pageSize"
         layout="total, sizes, prev, pager, next, jumper"
         :total="total"
@@ -96,19 +97,24 @@ export default {
       alarmList: [],
     };
   },
-  activated() {
-    this.$emit("close-after", false);
+  created() {
     this.getList();
   },
-   
+  mounted() {},
+  // destroyed(){
+  //   console.log(2)
+  // },
+  // beforeDestroy(){
+  //   console.log(3)
+  // },
   methods: {
     handleHistory(res) {
-      this.$emit("close-after", true);
       let deviceNumber = res.deviceId;
+
       this.$router.push({
         path: `/btOffset/shengsuo_data_offset`,
         query: {
-          deviceNumber,
+          deviceNumber
         },
       });
     },
@@ -136,12 +142,12 @@ export default {
     // 修改列表条数
     onPageSizeChange(e) {
       this.pages.pageSize = e;
-      this.getList();
+      this.cutList();
     },
     // 修改列表页数
     onPageCurrentChange(e) {
       this.pages.pageNum = e;
-      this.getList();
+      this.cutList();
     },
     // 分割数组
     cutList() {
@@ -151,15 +157,14 @@ export default {
       );
     },
     async getList() {
-      const { page } = await api.alarmDate({
-        pageNum: this.pages.pageNum,
-        pageSize: this.pages.pageSize,
+      const { list } = await api.alarmDate({
         companyId: this.$route.query.companyId,
         deviceName: this.searchModel.deviceName,
         deviceId: this.searchModel.deviceNumber,
       });
-      this.tableList = page.records;
-      this.total = page.total;
+      this.tableData = list;
+      this.total = list.length;
+      this.cutList();
       //   this.total = list
     },
   },

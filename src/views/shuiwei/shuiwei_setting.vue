@@ -71,7 +71,7 @@ export default {
       disabled: true
     };
   },
-  activated() {
+  mounted() {
 		this.deviceId = this.$route.query.deviceId || 0;
     this.getInfo();
   },
