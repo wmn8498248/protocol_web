@@ -89,7 +89,6 @@ export default {
   },
   activated() {
     this.getList();
-    console.log(this.$store.getters.userinfo);
   },
  
   methods: {

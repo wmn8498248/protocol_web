@@ -14,6 +14,7 @@
     </div>
     <div class="content" v-if="companyList.length > 0">
       <el-tabs v-model="activeName">
+        
         <el-tab-pane label="SF6气体压力传感器" name="4">
           <qiya :companyId="companyId" :projectId="projectId" ref="qiya"></qiya>
         </el-tab-pane>
@@ -77,6 +78,22 @@
           ></dianliu>
         </el-tab-pane>
 
+        <el-tab-pane label="单火开关" name="15">
+          <onoff
+            :companyId="companyId"
+            :projectId="projectId"
+            ref="onoff"
+          ></onoff>
+        </el-tab-pane>
+        <el-tab-pane label="断路器计数器" name="16">
+          <jishu
+            :companyId="companyId"
+            :projectId="projectId"
+            ref="jishu"
+          ></jishu>
+        </el-tab-pane>
+        
+
         <el-tab-pane label="避雷器" name="1" disabled>
           <bilei
             :companyId="companyId"
@@ -107,13 +124,7 @@
           ></shuiwei>
         </el-tab-pane>
 
-        <el-tab-pane label="断路器计数器" name="8" disabled>
-          <jishu
-            :companyId="companyId"
-            :projectId="projectId"
-            ref="jishu"
-          ></jishu>
-        </el-tab-pane>
+        
       </el-tabs>
       <div class="export">
         <el-form inline label-width="100px">
@@ -121,7 +132,9 @@
             <el-button @click="toAdd" class="btn-create">新增设备</el-button>
           </el-form-item>
           <el-form-item>
-            <el-button size="small" type="success" @click="toModifyAdd">批量导入</el-button>
+            <el-button size="small" type="success" @click="toModifyAdd"
+              >批量导入</el-button
+            >
           </el-form-item>
         </el-form>
       </div>
@@ -145,14 +158,15 @@ import bianxing from "./components/bianxing";
 
 import wenduyg from "./components/wenduyg";
 import dianliu from "./components/dianliu";
+import onoff from "./components/onoff";
 
 import Cookies from "js-cookie";
 import { getToken } from "@/utils/auth";
-
 // sf6BatchSave tcBatchSave thBatchSave wiBatchSave
 export default {
   name: "Sensor",
   components: {
+    onoff,
     dianliu,
     wenduyg,
     bilei,
@@ -299,7 +313,13 @@ export default {
           break;
         case "14":
           this.$refs.dianliu.getList();
-          break;    
+          break;
+        case "15":
+          this.$refs.onoff.getList();
+          break;
+        case "16":
+          this.$refs.jishu.getList();
+          break;  
         default:
           break;
       }
@@ -356,7 +376,13 @@ export default {
           break;
         case "14":
           url = "/manage/dianliu_edit";
-          break;  
+          break;
+        case "15":
+          url = "/manage/onoff_edit";
+          break;
+        case "16":
+          url = "/manage/jishu_edit";
+          break;
         default:
           break;
       }
@@ -420,10 +446,10 @@ export default {
   }
   .content {
     width: 100%;
-    >>> .el-table__expanded-cell{
-      background-color:#00051e;
+    >>> .el-table__expanded-cell {
+      background-color: #00051e;
     }
-    >>> .el-form-item__label{
+    >>> .el-form-item__label {
       color: #14e1fa;
     }
     >>> .el-tabs__nav-wrap {
@@ -449,7 +475,7 @@ export default {
       width: 400px;
     }
   }
-  
+
   .export {
     display: flex;
     justify-content: flex-end;

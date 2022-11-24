@@ -1,88 +1,63 @@
-import axios from '@/utils/ajaxRequest';
+import axios from "@/utils/ajaxRequest";
 
-// 计数传感器列表
-export const countingList = data =>
+// 网关列表
+export const companyList = data =>
   axios.request({
-    url: 'counting/list',
-    method: 'post',
+    url: 'gateway/list',
+    method: 'GET',
     data
   });
-// 计数传感器详情
-export const countingInfo = data =>
+
+// 计数传感器
+export const deviceAdd = (data) =>
   axios.request({
-    url: 'counting/info',
-    method: 'get',
+    url: "count/device/add",
+    method: "post",
+    data,
+  });
+export const deviceInfo = (data) =>
+  axios.request({
+    url: "count/device/info",
+    method: "get",
     params: {
-      ...data
-    }
+      ...data,
+    },
   });
-// 计数传感器新增
-export const countingSave = data =>
+export const deviceUpdate = (data) =>
   axios.request({
-    url: 'counting/save',
-    method: 'post',
-    data
+    url: "count/device/update",
+    method: "post",
+    data,
   });
-// 计数传感器修改
-export const countingUpdate = data =>
+
+export const deviceDelete = (data) =>
   axios.request({
-    url: 'counting/update',
-    method: 'post',
-    data
-  });
-// 计数传感器删除
-export const countingDelete = data =>
-  axios.request({
-    url: 'counting/delete',
-    method: 'post',
-    data
-  });
-// 计数传感器数据下发
-export const countingSendOut = data =>
-  axios.request({
-    url: 'counting/sendOut',
-    method: 'post',
-    data
-  });
-// 计数传感器历史数据列表
-export const countingHistoryList = data =>
-  axios.request({
-    url: 'wi/history/historyList',
-    method: 'post',
-    data
-  });
-// 计数传感器最新数据列表
-export const countingNewList = data =>
-  axios.request({
-    url: 'wi/history/list123',
-    method: 'post',
-    data
-  });
-// 计数传感器最新数据详情
-export const countingDataInfo = data =>
-  axios.request({
-    url: 'wi/history/info',
-    method: 'get',
+    url: "count/device/delete",
+    method: "post",
     params: {
-      ...data
-    }
+      ...data,
+    },
   });
-// 计数传感器波线图
-export const countingDataWave = data =>
+
+export const deviceList = (data) =>
   axios.request({
-    url: 'wi/history/waveForm',
-    method: 'get',
-    params: {
-      ...data
-    }
+    url: "count/device/list",
+    method: "post",
+    data,
   });
-  
-// 计数传感器历史数据导出表格
-export const countingHistoryExcel = data =>
+
+export const indexData = (data) =>
   axios.request({
-    url: 'countingHistory/exportExcel',
-    method: 'get',
+    url: "count/index",
+    method: "get",
     params: {
-      ...data
-    }
+      ...data,
+    },
+  });
+
+export const indexChart = (data) =>
+  axios.request({
+    url: "count/history/chart",
+    method: "post",
+    data,
   });

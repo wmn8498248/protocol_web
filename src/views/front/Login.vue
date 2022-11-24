@@ -5,7 +5,7 @@
       <h3 class="title">
         <img class="logo" src="@/assets/images/logo1.png" alt="" />
         <div class="name">
-         国网宁夏超高压公司物联管理平台           
+         XXXXXXXXXXXXX物联管理平台           
           <!-- <img src="@/assets/images/login_title.png" alt="" /> -->
         </div>
       </h3>
@@ -349,7 +349,6 @@ p {
   width: 100%;
   background: $bg;
   overflow: hidden;
-
   .login-bg {
     position: absolute;
     z-index: 1;
@@ -431,7 +430,14 @@ p {
       }
     }
   }
-
+  @media screen and (max-height: 666px) {
+    .title-container {
+      top: 6.25rem;
+    }
+    .login-form {
+      top: 22.81rem;
+    }
+  }
   .copyright {
     position: absolute;
     top: 41.31rem;

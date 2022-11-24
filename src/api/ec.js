@@ -1,9 +1,18 @@
 import axios from "@/utils/ajaxRequest";
 
+// 正常列表
+export const NormalList = (data) =>
+  axios.request({
+    url: "ec/index/normalList",
+    method: "POST",
+    data,
+  });
+
+
 export const getListMix = (data) =>
   axios.request({
     url: "ec/index/list/mix",
-    method: "get",
+    method: "get", 
     params: {
       ...data,
     },

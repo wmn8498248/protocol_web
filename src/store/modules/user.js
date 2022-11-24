@@ -35,12 +35,10 @@ const actions = {
       getMenu()
         .then(res => {
 					let { userinfoEntity } = res.menuList;
-					// console.log("存放用户信息", res.menuList)
 					commit('SET_USERINFO', userinfoEntity); //存入vuex
 					resolve(res.menuList); //返回
         })
         .catch(err => {
-          console.log(err);
           reject(err);
         });
       /////////////////////////////////////////上下切换////////////////////////////////////////

@@ -33,7 +33,7 @@ module.exports = {
     host: '0.0.0.0',
     https: false,
     port: 8080,
-    public: 'http://0.0.0.0:8080'
+    public: 'http://0.0.0.0:8080',
   },
   configureWebpack: {
     // provide the app's title in webpack's name field, so that

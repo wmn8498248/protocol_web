@@ -1,4 +1,15 @@
 import axios from '@/utils/ajaxRequest';
+
+// 查询
+export const deviceQueryGeneral = data =>
+  axios.request({
+    url: '/tc/device/query',
+    method: 'get',
+    params: {
+      ...data
+    }
+  });
+  
 // 网关列表
 export const companyList = data =>
   axios.request({
@@ -24,6 +35,16 @@ export const temperatureControlInfo = data =>
       ...data
     }
   });
+
+// 设备参数设置
+export const tcDeviceSetting = data =>
+  axios.request({
+    url: 'tc/device/setting',
+    method: 'post',
+    data
+  });
+
+
 // 温控传感器新增
 export const temperatureControlSave = data =>
   axios.request({

@@ -18,7 +18,7 @@
             placeholder="传感器别名"
           ></el-input>
         </el-form-item>
-       
+
         <el-form-item>
           <el-button @click="getSearch" class="btn-search">查询</el-button>
         </el-form-item>
@@ -61,7 +61,7 @@
             size="mini"
             @click="toEdit(row.id)"
             >修改</el-button
-          >
+          > 
           <el-button
             class="btn-clear"
             size="mini"
@@ -139,7 +139,6 @@ export default {
 			});
     },
     toDelete(id) {
-      console.log(id, '11111')
 			this.$confirm('确定删除该设备?', '提示', {
 				confirmButtonText: '确定',
 				cancelButtonText: '取消',

@@ -18,7 +18,7 @@
     </div>
     <el-table :data="tableData">
       <el-table-column prop="deviceId" width="150" label="传感器编号"> </el-table-column>
-      <el-table-column prop="deviceName" sortable width="150" label="传感器别名"> </el-table-column>
+      <el-table-column prop="deviceName" width="150" label="传感器别名"> </el-table-column>
       <el-table-column prop="alarmStatus" width="100"  label="布防状态">
         <template slot-scope="{ row }">
           <div>
@@ -29,8 +29,8 @@
           </div>
         </template>
       </el-table-column>
-      <el-table-column prop="gasHigh" label="气压告警高阈值(MPa)"> </el-table-column>
-      <el-table-column prop="gasLow" label="气压告警低阈值(MPa)"> </el-table-column>
+      <!-- <el-table-column prop="gasHigh" label="气压告警高阈值(MPa)"> </el-table-column> -->
+      <!-- <el-table-column prop="gasLow" label="气压告警低阈值(MPa)"> </el-table-column> -->
       <el-table-column prop="collectionInterval" label="采集间隔(S)"> </el-table-column>
       <el-table-column prop="collectionNumber" label="采集个数"> </el-table-column>
       <el-table-column prop="updateTime" width="150" label="更新时间" > </el-table-column>

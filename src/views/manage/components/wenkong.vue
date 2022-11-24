@@ -11,7 +11,7 @@
         </el-form-item>
         <el-form-item label="">
           <el-input
-            type="text"
+            type="text"    
             v-model="searchModel.deviceName"
             placeholder="设备名称"
           ></el-input>
@@ -21,10 +21,10 @@
         </el-form-item>
       </el-form>
     </div>
-    <el-table :data="tableData" stripe>
+    <el-table :data="tableData" stripe>           
       <el-table-column type="expand">
-        <template slot-scope="props">
-          <el-form label-position="left"  class="demo-table-expand">
+        <template slot-scope="props">  
+          <el-form label-position="left"  class="demo-table-expand"> 
             <el-form-item label="变化值参数:">
               <span>{{ props.row.variation }}</span>
             </el-form-item>
@@ -120,12 +120,15 @@
           </div>
         </template>
       </el-table-column>
-      <el-table-column prop="voltLevel" label="电压等级"> </el-table-column>
-      <el-table-column prop="deviceClassify" label="设备分类"> </el-table-column>
-      <el-table-column prop="collectionInterval" label="采集间隔(S)">
+      <el-table-column prop="tempLow" label="启动温度"> </el-table-column>
+      <el-table-column prop="tempHigh" label="停止温度"> </el-table-column>
+      <el-table-column prop="humLow" label="启动湿度"> </el-table-column>
+      <el-table-column prop="humHigh" label="停止湿度"> </el-table-column>
+      <!-- <el-table-column prop="deviceClassify" label="设备分类"> </el-table-column> -->
+      <el-table-column prop="reportTime" label="采集间隔(S)">
       </el-table-column>
-      <el-table-column prop="collectionNumber" label="采集个数">
-      </el-table-column>
+      <!-- <el-table-column prop="collectionNumber" label="采集个数">
+      </el-table-column> -->
       <el-table-column prop="updateTime" width="150" label="更新时间"> </el-table-column>
       <el-table-column label="操作" width="350">
         <template slot-scope="{ row }">

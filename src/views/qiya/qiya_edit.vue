@@ -47,6 +47,23 @@
           <el-input type="number" v-model="info.voltLevel"></el-input>
         </el-form-item>
 
+        <el-form-item label="白名单状态" prop="isWhite">
+          <el-switch
+            style="display: inline-block; font-size: 18px;vertical-align: text-bottom;"
+            v-model="info.isWhite"
+            active-color="#67c23a"
+            inactive-color="#f56c6c"
+            active-text="开启"
+            inactive-text="关闭">
+          </el-switch>
+          <!-- <el-input type="number" v-model="info.isWhite"></el-input> -->
+        </el-form-item>
+
+        <el-form-item label="白名单描述" prop="whiteDesc">
+          <el-input :disabled="!info.isWhite" v-model="info.whiteDesc"></el-input>
+        </el-form-item>
+
+
         <el-form-item label="经度" prop="longitude">
           <el-input type="number" v-model="info.longitude"></el-input>
         </el-form-item>
@@ -193,7 +210,6 @@ export default {
     },
 
     coefficient() {
-      console.log("coefficient____TCU");
     },
     async getInfo() {
       this.info.devicePrefix = "";
@@ -274,6 +290,9 @@ export default {
     height: 58px;
     padding: 0 20px;
     border-bottom: 1px solid rgba(20, 225, 250, 0.3);
+  }
+  >>> .el-input.is-disabled .el-input__inner{
+    background-color: #354446;
   }
   >>> .search-container {
     margin-top: 20px;

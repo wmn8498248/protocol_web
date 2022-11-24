@@ -5,7 +5,7 @@
     </div>
     <div class="search-container">
       <el-form label-width="200px" :model="info" :rules="rulesAnalysis">
-        <el-form-item label="传感器类型"> {{info.id.length}} 远观温度传感器 {{info.sensorId.length}} </el-form-item>
+        <el-form-item label="传感器类型"> {{info.id.length}} 温度传感器 {{info.sensorId.length}} </el-form-item>
         <el-form-item required label="规约类型" prop="deviceType">
           <el-select v-model="info.deviceType" placeholder="请选择">
             <el-option

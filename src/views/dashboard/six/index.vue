@@ -79,13 +79,14 @@
               </div>
             </div> -->
             <div class="title-right">
-              <el-button class="btn-map" @click="parentRouting">
+              <el-button class="btn-map" @click="parentRouting" size="mini">
                 更多信息</el-button
               >
               <el-button
                 class="btn-retry"
                 @click="tableExport"
                 :loading="onload"
+                size="mini"
                 >导出excel</el-button
               >
             </div>
@@ -634,11 +635,23 @@ export default {
     },
 
     chart4Refresh(res, hisTitle) {
-      this.historyList = res;
+      // this.historyList = res.reverse();
 
       this.myChart4 = this.$echarts.init(this.$refs.chart4);
-
       this.myChart4.clear();
+
+      let mapListTemp = []
+      let mapListHum = []
+      this.historyList.forEach((el, index) => {
+        if(el.tempStatus === 1){
+          // mapListTemp.push({value: el.temperature, label: el.createTime, color: 'red'},)
+          mapListTemp.push({gte: index, lte: index+1, color: "#FF0000"})
+        }
+        if(el.humStatus === 1){
+          // mapListHum.push({value: el.humidity, label: el.createTime, color:  "FF0033"},)
+          mapListHum.push({gte: index, lte: index+1, color: "#FF00FF"})
+        }
+      });
       this.myChart4.setOption({
         title: {
           text: hisTitle,
@@ -674,7 +687,7 @@ export default {
           top: 60,
           left: 80,
           right: 40,
-          bottom: 70,
+          bottom: 80,
         },
         xAxis: {
           type: "category",
@@ -683,7 +696,8 @@ export default {
           //   return str.replace(" ", "\n");
           // }),
           data: this.historyList.map(function (str) {
-            return str.createTime;
+            // return str.createTime;
+            return str.createTime.replace(" ", "\n");
           }),
           axisLabel: {
             //x轴文字的配置
@@ -722,6 +736,38 @@ export default {
             },
           },
         },
+        visualMap: [{
+            show: false,
+            dimension: 0,
+            seriesIndex: 0,
+            pieces: mapListTemp,  //pieces的值由动态数据决定
+            inRange: {
+              color: ["#5470c6"],
+            },
+            outOfRange: {
+                color: '#5470c6'
+            }
+          },{
+            show: false,
+            seriesIndex: 1,
+            dimension: 0,
+            pieces: mapListHum,  //pieces的值由动态数据决定
+            inRange: {
+              color: ["#91cc75"],
+            },
+            outOfRange: {
+                color: '#91cc75'
+            }
+          }
+        ],
+        dataZoom: [
+          {
+            type: "slider",
+          },
+          {
+            type: "inside",
+          },
+        ],
         series: [
           {
             name: "温度",

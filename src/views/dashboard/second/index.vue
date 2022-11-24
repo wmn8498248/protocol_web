@@ -52,8 +52,6 @@
           <div ref="chart1" style="width: 100%; height: 100%"></div>
         </div>
       </div>
-    
-    
     </div>
 
     <div class="home-flex">
@@ -63,61 +61,136 @@
             class="itemImg"
             src="../../../assets/images/sb6.png"
           />数据详情<span v-if="dataDetailsType">({{ dataDetailsType }})</span>
+          <div class="dash_dater">
+            <div
+              class="dash_dater_item"
+              :style="{ opacity: times == 1 ? 1 : 0.5 }"
+              @click="changeTimes(1)"
+            >
+              正常
+            </div>
+            <div class="dash_dater_border"></div>
+            <div
+              class="dash_dater_item"
+              :style="{ opacity: times == 0 ? 1 : 0.5 }"
+              @click="changeTimes(0)"
+            >
+              报警
+            </div>
+            <div class="dash_dater_border"></div>
+          </div>
           <div class="title-right">
-            <el-button class="btn-map" @click="parentRouting">
+            <el-button class="btn-map" @click="parentRouting" v-if="times === 0" size="mini">
               更多信息</el-button
             >
-            <!-- <el-button class="btn-retry" @click="tableExport" :loading="onload"
+            <el-button class="btn-retry" @click="tableExport" :loading="onload" size="mini"
               >导出excel</el-button
-            > -->
+            >
           </div>
         </div>
         <div class="box-container">
           <div class="warp" style="height: initial">
-            <ul class="item">
+            <ul class="item" v-if="times === 1">
+              <li>
+                <span class="title" v-text="'设备Id'"></span>
+                <span class="title" v-text="'主设备名称'"></span>
+                <span class="title" v-text="'温度'"></span>
+                <span class="title" v-text="'电量'"></span>
+                <span class="title" v-text="'时间'"></span>
+              </li>
+            </ul>
+            <ul class="item" v-else>
               <li>
                 <span class="title" v-text="'主设备名称'"></span>
                 <span class="title" v-text="'报警类型'"></span>
                 <span class="title" v-text="'报警值'"></span>
-                <span class="title" v-text="'状态'"></span>
+                <span class="title" v-text="'在线状态'"></span>
                 <span class="title" v-text="'报警时间'"></span>
               </li>
             </ul>
           </div>
           <div
-            @click.stop="handleGoToDetail($event.target.title)"
+            @click.stop="handleGoToDetail($event.target.id)"
             v-if="alarmList.length > 0"
           >
             <vue-seamless-scroll
               :data="alarmList"
               :class-option="newDataOption"
               class="warp"
+              v-if="times === 1"
             >
               <ul class="item">
                 <li v-for="(item, index) in alarmList" :key="index">
                   <span
                     class="date"
-                    :title="index"
+                    :id="index"
+                    :title="item.deviceId"
+                    v-text="item.deviceId"
+                  ></span>
+                  <span
+                    class="date"
+                    :id="index"
+                    :title="item.deviceName"
                     v-text="item.deviceName"
                   ></span>
                   <span
                     class="date"
-                    :title="index"
-                    v-text="item.alarmType"
+                    :id="index"
+                    :title="item.temp"
+                    v-text="item.temp"
                   ></span>
                   <span
                     class="date"
-                    :title="index"
+                    :id="index"
+                    :title="item.elect"
+                    v-text="item.elect"
+                  ></span>
+                  <span
+                    class="date"
+                    :id="index"
+                    :title="item.createTime"
+                    v-text="item.createTime"
+                  ></span>
+                </li>
+              </ul>
+            </vue-seamless-scroll>
+
+            <vue-seamless-scroll
+              :data="alarmList"
+              :class-option="newDataOption"
+              class="warp"
+              v-else
+            >
+              <ul class="item">
+                <li v-for="(item, index) in alarmList" :key="index">
+                  <span
+                    class="date"
+                    :id="index"
+                    :title="item.deviceName"
+                    v-text="item.deviceName"
+                  ></span>
+                  <span
+                    class="date"
+                    :id="index"
+                    :title="typeListName[item.alarmType]"
+                    v-text="typeListName[item.alarmType]"
+                  ></span>
+                  <span
+                    class="date"
+                    :id="index"
+                    :title="item.alarmValue"
                     v-text="item.alarmValue"
                   ></span>
                   <span
                     class="date"
-                    :title="index"
+                    :id="index"
+                    :title="item.status === 1 ? '已读' : '未读'"
                     v-text="item.status === 1 ? '已读' : '未读'"
                   ></span>
                   <span
                     class="date"
-                    :title="index"
+                    :id="index"
+                    :title="item.updateTime ? item.updateTime : '暂无'"
                     v-text="item.updateTime ? item.updateTime : '暂无'"
                   ></span>
                 </li>
@@ -161,6 +234,17 @@ export default {
   },
   data() {
     return {
+      typeListName: [
+        "正常",
+        "连续下降",
+        "突变",
+        "高压",
+        "低压",
+        "高温",
+        "低温",
+        "湿度过高",
+        "湿度过低",
+      ],
       typeList: {
         正常: 0,
         连续下降: 1,
@@ -185,7 +269,7 @@ export default {
       historyList: [],
       alarmList: [],
       voltLevel: {},
-      times: 1,
+      times: 0,
       searchModel: {
         name: "",
         deviceNumber: "",
@@ -302,38 +386,60 @@ export default {
       }
     },
     async getList(status, res) {
-
-      // this.dataDetailsType = res;
+      let dataList = [];
       this.alarmList = [];
 
-      const { records } = await api.alarmDate({
-        companyId: this.companyId,
-        // alarmType: this.typeList[res],
-        dayNum: this.times,
-        pageNum: 1,
-        pageSize: 100,
-      });
+      if (this.times) {
+        dataList = await api.tempNormalList({
+          companyId: this.companyId,
+          pageNum: 1,
+          pageSize: 100,
+        });
+        this.dataDetailsType = "正常";
 
+      } else {
+        dataList = await api.alarmDate({
+          companyId: this.companyId,
+          pageNum: 1,
+          pageSize: 100,
+        });
+        this.dataDetailsType = "报警";
 
+      } 
+      let records = dataList.records
       if (records.length > 7) {
         this.newDataOption.step = 1;
       } else {
         this.newDataOption.step = 0;
       }
+
       this.alarmList = records;
+
       this.handleGoToDetail(0);
     },
     // 导出表格
     async tableExport() {
       this.onload = true;
-      await exportExcelAlarm({
-        url: "/th/index/list/export",
-        params: {
-          // alarmType: this.typeList[this.dataDetailsType],
-          dayNum: this.times,
-          companyId: this.companyId,
-        },
-      });
+      if (this.times) {
+        await exportExcelAlarm({
+          url: "/temp/index/export/historylist",
+          params: {
+            // alarmType: this.typeList[this.dataDetailsType],
+            // dayNum: this.times,
+            companyId: this.companyId,
+          },
+        });
+      } else {
+        await exportExcelAlarm({
+          url: "/temp/index/export/alarmlist",
+          params: {
+            // alarmType: this.typeList[this.dataDetailsType],
+            // dayNum: this.times,
+            companyId: this.companyId,
+          },
+        });
+      }
+
       this.onload = false;
     },
 
@@ -372,28 +478,11 @@ export default {
     // 修改时间
     async changeTimes(times) {
       this.times = times;
-      const { alarmType, list } = await api.alarmDate({
-        companyId: this.companyId,
-        alarmType: this.typeList[this.dataDetailsType],
-        dayNum: times,
-      });
 
-      if (list.length > 7) {
-        this.newDataOption.step = 1;
-      } else {
-        this.newDataOption.step = 0;
-      }
-      this.alarmList = list;
+      console.log(times);
+      this.getList(this.times);
 
-      let alarmTypeName = [];
-      let alarmTypeValue = [];
-
-      for (var item in alarmType) {
-        alarmTypeName.push(item);
-        alarmTypeValue.push(alarmType[item]);
-      }
-
-      this.chart3Refresh(alarmTypeName, alarmTypeValue);
+      // this.chart3Refresh(alarmTypeName, alarmTypeValue);
       this.handleGoToDetail(0);
     },
     chart3Refresh(alarmTypeName, alarmTypeValue) {

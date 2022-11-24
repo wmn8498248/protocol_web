@@ -102,7 +102,6 @@ export default {
   activated() {
     this.id = this.$route.query.id || 0;
     this.deviceId = this.$route.query.deviceId || 0;
-    // console.log(this.$route.query.info, 'this.$route.query.info')
     this.getInfo();
   },
   methods: {
@@ -112,7 +111,6 @@ export default {
       };
       this.issuanceLoad = true;
       let defence = await api.defence(data);
-      console.log(defence);
       if (defence) {
         this.$message.success(defence.msg);
         this.issuanceLoad = false;
@@ -163,14 +161,12 @@ export default {
           }
           this.$message.success(readList);
           this.issuanceLoad = false;
-          // console.log();
           // if (readList) {
-          //   console.log(readList, " readList______1");
+          //   (readList, " readList______1");
 
           //   this.$message.success(readList.msg);
           //   this.issuanceLoad = false;
           // } else {
-          //   console.log(readList, " readList______2");
 
           //   this.issuanceLoad = false;
           // }
@@ -200,7 +196,6 @@ export default {
         deviceId: this.deviceId,
       };
       let restart = await api.issuanceRestart(data);
-      console.log(restart, "restart");
       if (restart) {
         this.$message.success(restart.msg);
         this.issuanceLoad = false;

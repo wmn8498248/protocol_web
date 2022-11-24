@@ -90,7 +90,6 @@ export default {
   },
   activated() {
     this.getList();
-    console.log(this.$store.getters.userinfo);
   },
   
   methods: {
@@ -142,7 +141,6 @@ export default {
       this.tableData = list;
       this.total = list.length;
       this.cutList();
-      console.log(this.tableData);
       //   const { list } = await api.alarmDate({
       //     projectId: 1,
       //     alarmType: this.$route.query.alarmType,

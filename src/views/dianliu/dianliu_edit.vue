@@ -1,11 +1,11 @@
 <template>
   <div class="dataAnalysisPage">
     <div class="title">
-      <div>{{ type == "edit" ? "温湿度传感器修改" : "温湿度传感器添加" }}</div>
+      <div>{{ type == "edit" ? "电流传感器修改" : "电流传感器添加" }}</div>
     </div>
     <div class="search-container">
       <el-form label-width="200px" :model="info" :rules="rulesAnalysis">
-        <el-form-item label="传感器类型"> 远观电流传感器 </el-form-item>
+        <el-form-item label="传感器类型"> 电流传感器 </el-form-item>
         <!-- <el-form-item required label="规约类型" prop="deviceType">
           <el-select v-model="info.deviceType" placeholder="请选择">
             <el-option

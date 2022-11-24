@@ -151,7 +151,6 @@ export default {
       );
     },
     async getList() {
-        console.log(this.$route.query.alarmTime, "this.$route.query.alarmTime")
         let alarmListData = []
       switch (this.$route.query.alarmTime) {
         case "日":
@@ -178,7 +177,6 @@ export default {
       this.tableData = alarmListData.alarmList
       this.total = alarmListData.alarmList.length
       this.cutList()
-      console.log(this.tableData)
       //   const { list } = await api.alarmDate({
       //     projectId: 1,
       //     alarmType: this.$route.query.alarmType,

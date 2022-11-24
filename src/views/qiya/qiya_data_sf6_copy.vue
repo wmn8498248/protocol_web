@@ -185,7 +185,6 @@ export default {
       myChart.clear();
       let pressure =
         ((+this.pressure - this.num1) / (this.num4 - this.num1)) * 100;
-      // console.log("测试用户",(this.num2 - this.num1) / (this.num4 - this.num1))
       const option = {
         series: [
           {
@@ -284,7 +283,6 @@ export default {
     // 导出表格
     async tableExport() {
       this.onload = true;
-      // console.log('this.deviceName', this.deviceName)
       await exportExcel({
         url: "pressureHistory/exportExcel",
         params: {

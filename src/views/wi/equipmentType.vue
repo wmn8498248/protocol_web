@@ -136,7 +136,6 @@ export default {
       );
     },
     async getList() {
-      console.log(this.$route.query.alarmTime, "this.$route.query.alarmTime");
       this.tableData = await api.deviceClassify({
         companyId: this.$route.query.companyId,
         deviceClassify: this.$route.query.deviceClassify,

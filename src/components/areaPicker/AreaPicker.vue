@@ -120,7 +120,6 @@ export default {
     // 修改省
     changeProvince() {
       const key = this.province.split("-")[0];
-      console.log(key);
       this.cityList = city[key];
       this.city = this.district = "";
     },

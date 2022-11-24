@@ -2,7 +2,7 @@
   <div class="dashboard">
     <div class="dashboard-topImg">
       <!-- <img src="../../assets/images/bg05.png" /> -->
-      国网宁夏超高压公司
+      XXXXXXXXXXXXX
     </div>
     <div class="dashboard-time" v-if="nowDate">
       <p>{{ nowDate }}</p>

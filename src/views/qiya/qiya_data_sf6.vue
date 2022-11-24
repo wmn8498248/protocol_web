@@ -210,7 +210,6 @@ export default {
       let result = await api.pressureDataInfo({
         deviceId: this.deviceNumber,
       });
-      console.log(result, "result_____________");
       if (result !== null) {
         this.deviceId = result.deviceId;
         this.deviceName = result.deviceName;
@@ -341,7 +340,6 @@ export default {
     // 导出表格
     async tableExport() {
       this.onload = true;
-      // console.log('this.deviceName', this.deviceName)
       await exportExcel({
         url: "pressureHistory/exportExcel",
         params: {

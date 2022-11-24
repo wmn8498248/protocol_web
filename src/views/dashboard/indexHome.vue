@@ -1,13 +1,19 @@
 <template>
-  <div class="index-home">
+  <div
+    class="index-home"
+    :style="{ height: isActiveName==='onoff' ? 'auto' : '100%' }"
+  >
     <div class="home-profile" @click="toProfile">平台介绍</div>
     <!-- <div class="home-left" @click="toProfile">{{}}</div> -->
-    <div class="home-container">
+    <div
+      class="home-container"
+      :style="{ height: isActiveName==='onoff' ? 'auto' : '100%' }"
+    >
       <div class="home-title">
         <div class="title-left title-public">
           <span
             @click="equipmentTypeChange(index, item)"
-            :class="{ active: isActive === index }"
+            :class="isActive === index ? 'active btn' : 'btn'"
             v-for="(item, index) in equipmentType"
             :key="index"
             >{{ item.companyName }}</span
@@ -31,16 +37,33 @@
               </el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
-          <span
-            @click="equipmentTypeList(index, itemList.deviceAbbr)"
-            :class="{ active: isActiveList === index }"
-            v-for="(itemList, index) in equipmentType[isActive].deviceTypeList"
-            :key="index"
-            >{{ itemList.deviceType }}</span
+          <template v-if="equipmentType[isActive].deviceTypeList.length < 8">
+            <span
+              @click="equipmentTypeList(index, itemList.deviceAbbr)"
+              :class="isActiveList === index ? 'active btn' : 'btn'"
+              v-for="(itemList, index) in equipmentType[isActive]
+                .deviceTypeList"
+              :key="index"
+              >{{ itemList.deviceType }}</span
+            >
+          </template>
+          <el-select
+            v-else
+            v-model="typeValue"
+            placeholder="请选择"
+            @change="equipmentTypeList(1, $event)"
           >
+            <el-option
+              v-for="item in equipmentType[isActive].deviceTypeList"
+              :key="item.deviceAbbr"
+              :label="item.deviceType"
+              :value="item.deviceAbbr"
+            >
+            </el-option>
+          </el-select>
         </div>
 
-        <span>国网宁夏超高压公司物联管理平台</span>
+        <span>XXXXXXXXXXXXX物联管理平台</span>
       </div>
       <!-- slide-fade moveL slide-->
       <transition name="slide">
@@ -86,13 +109,20 @@ import eight from "./eight";
 
 import ninth from "./ninth";
 
+import test from "./test";
+
+import onoff from "./onoff";
+
 import profile from "./profile";
+
+import jishu from "./jishu";
 
 import nopages from "@/views/error-page/404";
 
 export default {
   name: "indexHome",
   components: {
+    onoff,
     first,
     second,
     third,
@@ -106,12 +136,16 @@ export default {
     ninth,
     profile,
     nopages,
+    test,
+    jishu,
   },
   computed: {
     // ...mapGetters([ "userinfo"]),
   },
   data() {
     return {
+      isActiveName: "",
+      typeValue: "",
       companyId: null,
       dialogTitle: "",
       dialogTableVisible: false,
@@ -162,6 +196,7 @@ export default {
           0,
           this.equipmentType[0].deviceTypeList[0].deviceAbbr
         );
+        this.typeValue = this.equipmentType[0].deviceTypeList[0].deviceAbbr;
       }
       // this.companyId = this.equipmentType[res].companyId;
 
@@ -173,7 +208,7 @@ export default {
     },
     adminClick() {
       this.$router.push({
-        path: "/dataHistory/dataHistory",
+        path: "/manage/sensor",
       });
     },
     async getSensorType(res) {
@@ -203,12 +238,12 @@ export default {
       this.isActive = 0;
       this.isActiveList = 0;
       this.getCompanyList(0);
+      console.log(this.typeValue, "this.typeValue ");
     },
     toProfile() {
-      this.currentTabComponent = profile;
+      // this.currentTabComponent = profile;
     },
     dialogClosed() {
-      console.log('返回页数为1')
       this.$store.commit("app/SET_SIZE", 1);
       this.$router.push({
         path: "/indexHome",
@@ -288,12 +323,19 @@ export default {
       } catch (err) {}
     },
     equipmentTypeList(res, deviceName) {
-      console.log(deviceName, "设备类型pages");
+      // console.log(deviceName, "设备类型pages");
       this.isActiveList = res;
-
-      // deviceName = "temp"
+      // deviceName = "onoff";
+      this.isActiveName = deviceName;
 
       switch (deviceName) {
+        case "count":
+          this.currentTabComponent = jishu;
+          break;
+        case "onoff":
+          this.currentTabComponent = onoff;
+          break;
+
         // 电流
         case "ec":
           this.currentTabComponent = fifth;
@@ -303,12 +345,11 @@ export default {
         case "temp":
           this.currentTabComponent = second;
           break;
-        
+
         // 湿度
         case "humidity":
           this.currentTabComponent = fourth;
           break;
-
 
         case "sf6":
           this.currentTabComponent = first;
@@ -344,60 +385,26 @@ export default {
           break;
       }
 
-      // switch (this.isActive) {
-      //   case 0:
-      //     if (res == 0) {
-      //       this.currentTabComponent = first;
-      //     } else if (res == 1) {
-      //       this.currentTabComponent = second;
-      //     }
-      //     break;
-      //   case 1:
-      //     if (res == 0) {
-      //       this.currentTabComponent = third;
-      //     } else if (res == 1) {
-      //       this.currentTabComponent = fourth;
-      //     } else if (res == 2) {
-      //       this.currentTabComponent = fifth;
-      //     }
-      //     break;
-      //   default:
-      //     break;
-      // }
       this.$nextTick(() => {
         this.$refs.sensorHome.getData();
       });
     },
+
     equipmentTypeChange(res, item) {
       this.isActive = res;
       this.companyId = item.companyId;
-      console.log(res, item);
       if (this.equipmentType[this.isActive].deviceTypeList.length > 0) {
         this.equipmentTypeList(
           0,
           this.equipmentType[this.isActive].deviceTypeList[0].deviceAbbr
         );
+        this.typeValue =
+          this.equipmentType[this.isActive].deviceTypeList[0].deviceAbbr;
       } else {
         this.currentTabComponent = nopages;
       }
-      console.log(this.equipmentType[this.isActive]);
-
-      // this.getSensorType(item.companyId);
-
-      // this.isActive = res;
-      // this.isActiveList = 0;
-      // res
-      //   ? (this.currentTabComponent = third)
-      //   : (this.currentTabComponent = first);
-
-      // this.getSensorType(this.companyId);
-
-      // this.$nextTick(() => {
-      //   this.$refs.sensorHome.getData();
-      // });
     },
     moreInfoPopup(res, title) {
-      console.log("父组件");
       this.dialogTitle = res;
       this.dialogTableVisible = true;
     },
@@ -782,14 +789,9 @@ export default {
       font-size: 18px;
       top: 31px;
       line-height: 40px;
-      span {
+      span.btn {
         display: inline-block;
         padding: 0 20px;
-        // width: 100px;
-        // border-left: 1px solid #14e1fa;
-        // border-top: 1px solid #14e1fa;
-        // border-right: 1px solid #14e1fa;
-        // background-color: #213d6c; // 009694 213d6c
         border: 1px solid #5f6f93;
         font-family: initial;
         cursor: pointer;
@@ -817,7 +819,7 @@ export default {
       top: 8px;
       right: 28px;
       font-size: 16px;
-      span {
+      span.btn {
         line-height: 30px;
       }
     }

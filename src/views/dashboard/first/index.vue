@@ -40,6 +40,16 @@
         </div>
       </div>
 
+      <div class="home-box home-box-width4">
+        <div class="box-title">
+          <img class="itemImg" src="../../../assets/images/sb5.png" />设备报警
+          <span class="right">单位: 次数</span>
+        </div>
+        <div class="box-container" style="width: 500px">
+          <div ref="chart3" style="width: 100%; height: 100%"></div>
+        </div>
+      </div>
+
       <div class="home-box home-box-width1">
         <div class="box-title">
           <img class="itemImg" src="../../../assets/images/sb6.png" />额定值分类
@@ -79,195 +89,72 @@
           <div ref="chart5" style="width: 100%; height: 100%"></div>
         </div>
       </div>
-
-      <div class="home-box home-box-width4">
-        <div class="box-title">
-          <img class="itemImg" src="../../../assets/images/sb5.png" />设备报警
-          <span class="right">单位: 次数</span>
-        </div>
-        <div class="box-container" style="width: 500px">
-          <div ref="chart3" style="width: 100%; height: 100%"></div>
-        </div>
-      </div>
     </div>
 
     <div class="home-flex">
-      <div class="home-box flex6">
+      <div class="home-box flex6" style="height: 390px">
         <div class="box-title">
-          <img
-            class="itemImg"
-            src="../../../assets/images/sb6.png"
-          />数据详情<span v-if="dataDetailsType">({{ dataDetailsType }})</span>
-          <div class="dash_dater">
-            <div
-              class="dash_dater_item"
-              :style="{ opacity: times == 1 ? 1 : 0.5 }"
-              @click="changeTimes(1)"
-            >
-              1日
-            </div>
-            <div class="dash_dater_border"></div>
-            <div
-              class="dash_dater_item"
-              :style="{ opacity: times == 7 ? 1 : 0.5 }"
-              @click="changeTimes(7)"
-            >
-              7日
-            </div>
-            <div class="dash_dater_border"></div>
-            <div
-              class="dash_dater_item"
-              :style="{ opacity: times == 30 ? 1 : 0.5 }"
-              @click="changeTimes(30)"
-            >
-              30日
-            </div>
+          <img class="itemImg" src="../../../assets/images/sb6.png" />
+          <span>数据详情</span>
+          <div class="dash_dater" style="border: none">
+            <el-input
+              @input="changeList"
+              v-model="searchModel.deviceName"
+              type="text"
+              placeholder="请输入传感器名称"
+            ></el-input>
           </div>
           <div class="title-right">
-            <el-button class="btn-map" @click="parentRouting">
+            <el-button class="btn-map" @click="parentRouting" size="mini">
               更多信息</el-button
             >
-            <el-button class="btn-retry" @click="tableExport" :loading="onload"
+            <el-button
+              class="btn-retry"
+              @click="tableExport"
+              :loading="onload"
+              size="mini"
               >导出excel</el-button
             >
           </div>
         </div>
-        <div class="box-container">
-          <div class="warp" style="height: initial">
-            <ul class="item" v-if="dataDetailsType !== '正常'">
-              <li>
-                <span class="title" v-text="'主设备名称'"></span>
-                <span class="title" v-text="'报警类型'"></span>
-                <span class="title" v-text="'报警值'"></span>
-                <span class="title" v-text="'主设备电压'"></span>
-                <span class="title" v-text="'额定值'"></span>
-                <span class="title" v-text="'报警时间'"></span>
-                <!-- <span class="title" v-text="'上次报警时间'"></span> -->
-              </li>
-            </ul>
-            <ul class="item" v-else>
-              <li>
-                <span class="title" v-text="'主设备名称'"></span>
-                <span class="title" v-text="'气压值'"></span>
-                <span class="title" v-text="'温度'"></span>
-                <span class="title" v-text="'更新时间'"></span>
-                <span class="title" v-text="'主设备电压等级'"></span>
-                <span class="title" v-text="'设备类型分类'"></span>
-                <span class="title" v-text="'额定值'"></span>
-              </li>
-            </ul>
-          </div>
-          <div
-            @click.stop="handleGoToDetail($event.target.id)"
-            v-if="alarmList.length > 0"
-          >
-            <vue-seamless-scroll
-              :data="alarmList"
-              :class-option="newDataOption"
-              class="warp"
-              v-if="dataDetailsType !== '正常'"
-            >
-              <ul class="item">
-                <li v-for="(item, index) in alarmList" :key="index">
-                  <span
-                    class="date"
-                    :id="index"
-                    :title="item.deviceName"
-                    v-text="item.deviceName"
-                  ></span>
-                  <span
-                    class="date"
-                    :id="index"
-                    :title="typeListName[item.alarmType]"
-                    v-text="typeListName[item.alarmType]"
-                  ></span>
-                  <span
-                    class="date"
-                    :id="index"
-                    :title="item.pressureValue"
-                    v-text="item.pressureValue"
-                  ></span>
-                  <span
-                    class="date"
-                    :id="index"
-                    :title="item.voltLevel"
-                    v-text="item.voltLevel"
-                  ></span>
-                  <span
-                    class="date"
-                    :id="index"
-                    :title="item.rated"
-                    v-text="item.rated || '暂无'"
-                  ></span>
-                  <span
-                    class="date"
-                    :id="index"
-                    :title="item.collectionTime"
-                    v-text="item.collectionTime"
-                  ></span>
-                  <!-- <span
-                    class="date"
-                    :textTitle= "index"
-                    :title="index"
-                    v-text="item.lastCreateTime ? item.lastCreateTime : '暂无'"
-                  ></span> -->
-                </li>
-              </ul>
-            </vue-seamless-scroll>
-            <vue-seamless-scroll
-              :data="alarmList"
-              :class-option="newDataOption"
-              class="warp"
-              v-else
-            >
-              <ul class="item">
-                <!-- @click="goToDetail(item.deviceNumber, item.companyId,item.projectId)" -->
-                <li v-for="(item, index) in alarmList" :key="index">
-                  <span
-                    class="date"
-                    :title="item.deviceName"
-                    :id="index"
-                    v-text="item.deviceName"
-                  ></span>
-                  <span
-                    class="date"
-                    :title="item.pressureValue"
-                    :id="index"
-                    v-text="item.pressureValue"
-                  ></span>
-                  <span
-                    class="date"
-                    :title="item.temperature"
-                    :id="index"
-                    v-text="item.temperature"
-                  ></span>
-                  <span
-                    class="date"
-                    :title="item.collectionTime"
-                    :id="index"
-                    v-text="item.collectionTime"
-                  ></span>
-                  <span
-                    class="date"
-                    :title="item.voltLevel"
-                    :id="index"
-                    v-text="item.voltLevel"
-                  ></span>
-                  <span
-                    class="date"
-                    :title="item.deviceClassify"
-                    :id="index"
-                    v-text="item.deviceClassify"
-                  ></span>
-                  <span
-                    class="date"
-                    :title="item.rated"
-                    :id="index"
-                    v-text="item.rated || '暂无'"
-                  ></span>
-                </li>
-              </ul>
-            </vue-seamless-scroll>
+        <div class="box-container" style="height: 340px">
+          <div class="" style="height: initial" v-if="alarmList.length > 0">
+            <el-table :data="alarmList" style="width: 100%" height="250">
+              <el-table-column prop="deviceName" label="主设备名称">
+              </el-table-column>
+              <el-table-column prop="pressureValue" label="气压值">
+              </el-table-column>
+              <el-table-column prop="temperature" label="温度">
+              </el-table-column>
+              <el-table-column prop="collectionTime" label="更新时间">
+              </el-table-column>
+              <el-table-column prop="voltLevel" label="电压等级">
+              </el-table-column>
+              <el-table-column prop="deviceClassify" label="类型分类">
+              </el-table-column>
+              <el-table-column prop="rated" label="额定值"> </el-table-column>
+              <el-table-column label="操作">
+                <template slot-scope="{ row }">
+                  <el-button
+                    type="text"
+                    @click="handleGoToDetail(row.deviceId, row.deviceName)"
+                    >历史曲线</el-button
+                  >
+                </template>
+              </el-table-column>
+            </el-table>
+            <div class="pagination taR mt20x">
+              <el-pagination
+                @size-change="onPageSizeChange"
+                @current-change="onPageCurrentChange"
+                :current-page="pages.pageNum"
+                :page-sizes="[10, 20, 50, 100]"
+                :page-size="pages.pageSize"
+                layout="total, sizes, prev, pager, next, jumper"
+                :total="total"
+              >
+              </el-pagination>
+            </div>
           </div>
           <div v-else class="none-font">
             <svg-icon icon-class="none"></svg-icon>
@@ -276,13 +163,13 @@
         </div>
       </div>
 
-      <div class="home-box flex4">
+      <div class="home-box flex4" style="height: 390px">
         <div class="box-title">
           <img class="itemImg" src="../../../assets/images/sb6.png" />历史曲线
           <span class="right">气压: MPa&emsp;温度: ℃</span>
           <!-- <span class="right">气压: MPa</span> -->
         </div>
-        <div class="box-container">
+        <div class="box-container" style="height: 340px">
           <div ref="chart4" style="width: 100%; height: 100%"></div>
         </div>
         <div class="none-font container-none" v-if="alarmList.length == 0">
@@ -306,6 +193,18 @@ export default {
   },
   data() {
     return {
+      maxN: 0,
+      minN: 0,
+      searchModel: {
+        deviceName: "",
+        deviceId: "",
+        params: "",
+      },
+      total: 0,
+      pages: {
+        pageNum: 1,
+        pageSize: 10,
+      },
       typeList: {
         正常: 0,
         连续下降: 1,
@@ -368,7 +267,7 @@ export default {
     };
   },
   mounted() {
-    this.myChart6   = this.$echarts.init(this.$refs.chart6)
+    this.myChart6 = this.$echarts.init(this.$refs.chart6);
     this.myChart1 = this.$echarts.init(this.$refs.chart1);
     this.myChart2 = this.$echarts.init(this.$refs.chart2);
     this.myChart3 = this.$echarts.init(this.$refs.chart3);
@@ -409,6 +308,19 @@ export default {
     clearInterval(this.nowDateId);
   },
   methods: {
+    changeList(res) {
+      // console.log(res)
+      this.getList();
+    },
+    onPageSizeChange(e) {
+      this.pages.pageSize = e;
+      this.getList();
+    },
+    // 修改列表页数
+    onPageCurrentChange(e) {
+      this.pages.pageNum = e;
+      this.getList();
+    },
     numListClick(res) {
       this.$emit("moreInfoPopup", "设备数量");
       this.$router.push({
@@ -459,34 +371,23 @@ export default {
       }
     },
     async getList(status, res) {
-      this.dataDetailsType = res;
-      this.alarmList = [];
-
-      const { alarmType, page } = await api.sf6IndexListDate({
+      const { total, records } = await api.getLitsMix({
         companyId: this.companyId,
-        alarmType: this.typeList[res],
-        dayNum: this.times,
-        pageNum: 1,
-        pageSize: 100,
+        type: "all",
+        ...this.searchModel,
+        ...this.searchModel,
       });
-      let list = page.records;
-      if (list.length > 7) {
-        this.newDataOption.step = 1;
-      } else {
-        this.newDataOption.step = 0;
+
+      this.alarmList = records;
+      this.total = total;
+
+      if (records.length > 0) {
+        this.handleGoToDetail(
+          this.alarmList[0].deviceId,
+          this.alarmList[0].deviceName
+        );
       }
-      this.alarmList = list;
-
-      let alarmTypeName = [];
-      let alarmTypeValue = [];
-
-      for (var item in alarmType) {
-        alarmTypeName.push(item);
-        alarmTypeValue.push(alarmType[item]);
-      }
-
-      this.chart3Refresh(alarmTypeName, alarmTypeValue);
-      this.handleGoToDetail(0);
+      // let deviceId = ;
     },
     // 导出表格
     async tableExport() {
@@ -494,31 +395,25 @@ export default {
       await exportExcelAlarm({
         url: "/sf6/index/list/export",
         params: {
-          alarmType: this.typeList[this.dataDetailsType],
-          dayNum: this.times,
+          alarmType: 0,
+          dayNum: 30,
           companyId: this.companyId,
         },
       });
       this.onload = false;
     },
 
-    async handleGoToDetail(res) {
+    async handleGoToDetail(deviceId, deviceName) {
       // console.log(moment().endOf('day').format('YYYY-MM-DD HH:mm:ss') , "今天结束")
       // console.log(moment().startOf('day').day(moment().day() - 1).format('YYYY-MM-DD HH:mm:ss'), "昨天开始")
-      let historyList = [];
-      let deviceName = "";
-      if (this.alarmList.length > 0) {
-        let deviceId = this.alarmList[res].deviceId;
-        historyList = await api.deviceHistoryList({
-          deviceId: deviceId,
-          startTime: moment()
-            .startOf("day")
-            .day(moment().day() - this.times)
-            .format("YYYY-MM-DD HH:mm:ss"),
-          endTime: moment().endOf("day").format("YYYY-MM-DD HH:mm:ss"),
-        });
-        deviceName = this.alarmList[res].deviceName;
-      }
+      let historyList = await api.deviceHistoryList({
+        deviceId: deviceId,
+        startTime: moment()
+          .startOf("day")
+          .day(moment().day() - this.times)
+          .format("YYYY-MM-DD HH:mm:ss"),
+        endTime: moment().endOf("day").format("YYYY-MM-DD HH:mm:ss"),
+      });
 
       this.chart4Refresh(historyList, deviceName);
 
@@ -529,11 +424,10 @@ export default {
       // console.log(this.dataDetailsType,"this.dataDetailsType")
       this.$emit("moreInfoPopup", "数据详情 - " + this.dataDetailsType);
       this.$router.push({
-        path: "/sf6/alarmList",
+        path: "/sf6/mix",
         query: {
-          alarmType: this.typeList[this.dataDetailsType],
+          type: "all",
           companyId: this.companyId,
-          times: this.times,
         },
       });
     },
@@ -566,7 +460,7 @@ export default {
       }
 
       this.chart3Refresh(alarmTypeName, alarmTypeValue);
-      this.handleGoToDetail(0);
+      this.handleGoToDetail(this.alarmList[0].deviceId);
     },
     chart3Refresh(alarmTypeName, alarmTypeValue) {
       this.myChart3.clear();
@@ -655,30 +549,32 @@ export default {
 
       this.myChart3.off("click"); //先移除，再点击
       this.myChart3.on("click", function (param) {
-        that.getList(that.times, param.name);
-        // that.$emit("moreInfoPopup", "设备报警：" + param.name);
-        // that.$router.push({
-        //   path: "/sf6/alarmType",
-        //   query: {
-        //     alarmType: param.name,
-        //     alarmTime: that.times,
-        //   },
-        // });
+        // that.getList(that.times, param.name);
+        console.log(param.name, "param");
+        that.$emit("moreInfoPopup", "报警类型:" + param.name);
+        that.$router.push({
+          path: "/sf6/mix",
+          query: {
+            type: "alarm",
+            params: param.name,
+            companyId: that.companyId,
+          },
+        });
       });
     },
 
     chart6Refresh(res, hisTitle) {
-      let ratedList = [] 
-      let ratedValue = [] 
+      let ratedList = [];
+      let ratedValue = [];
       for (var item in res) {
-        ratedList.push('额定' + item + 'MPa');
-        ratedValue.push({ name: item + 'MPa', value: res[item] });
+        ratedList.push("额定" + item + "MPa");
+        ratedValue.push({ name: item + "MPa", value: res[item] });
       }
-      
+
       this.myChart6.clear();
       this.myChart6.setOption({
         tooltip: {
-          trigger: 'item',
+          trigger: "item",
           show: true,
           // formatter: "{a} {hr}<br/>{b}: {c} ({d}%)",
           backgroundColor: "#F6F8FC",
@@ -716,9 +612,9 @@ export default {
         },
         series: [
           {
-            name: '额定值',
-            type: 'pie',
-            radius: '40%',
+            name: "额定值",
+            type: "pie",
+            radius: "40%",
             data: ratedValue,
             labelLine: {
               show: true,
@@ -759,18 +655,18 @@ export default {
                 },
               },
             },
-          }
-        ]
+          },
+        ],
       });
-      let that = this
+      let that = this;
       this.myChart6.on("click", function (param) {
-        // console.log( )
-        that.$emit("moreInfoPopup", "额定值:" + param.name );
+        console.log(param.name.split("MPa")[0], "param");
+        that.$emit("moreInfoPopup", "额定值:" + param.name);
         that.$router.push({
           path: "/sf6/mix",
           query: {
             type: "rated",
-            params: param.name.substring(0,3),
+            params: param.name.split("MPa")[0],
             companyId: that.companyId,
           },
         });
@@ -911,10 +807,23 @@ export default {
 
     chart4Refresh(res, hisTitle, ratedValue) {
       this.historyList = res;
-
       this.myChart4 = this.$echarts.init(this.$refs.chart4);
-
       this.myChart4.clear();
+
+      let _this = this;
+      if(res.length > 0) {
+        let arr = res.map((item) => {
+          return + item.pressureValue || 0;
+        });
+        _this.maxN = Math.max.apply(null, arr);
+        _this.minN = Math.min.apply(null, arr);
+      }
+
+      
+      console.log(_this.minN, "/_this.maxN")
+      console.log(_this.maxN, "/_this.maxN")
+
+
       this.myChart4.setOption({
         title: {
           text: hisTitle,
@@ -940,12 +849,11 @@ export default {
           // x 设置水平安放位置，默认全图居中，可选值：'center' ¦ 'left' ¦ 'right' ¦ {number}（x坐标，单位px）
           // y 设置垂直安放位置，默认全图顶端，可选值：'top' ¦ 'bottom' ¦ 'center' ¦ {number}（y坐标，单位px）
           selected: {
-            // 选中'系列1'
-            气压: true,
-            // 不选中'系列2'
-            温度: false,
+            压力: true,
+            差值: false,
+            滤波值: false,
           },
-          data: ["气压", "温度"],
+          data: ["压力", "差值", "滤波值"],
           textStyle: {
             color: "#fff",
           },
@@ -963,7 +871,7 @@ export default {
           boundaryGap: false,
           // data: timeList,
           data: this.historyList.map(function (str) {
-            return str.collectionTime;
+            return str.collectionTime.replace(" ", "\n");
           }),
           axisLabel: {
             //x轴文字的配置
@@ -1003,58 +911,44 @@ export default {
             },
           },
         },
-
+        dataZoom: [
+          {
+            type: "slider", //无滑动条内置缩放   type: 'slider', //缩放滑动条
+            show: true, //开启
+            yAxisIndex: [0], //Y轴滑动
+            left: 0, //( _this.minN/_this.maxN) *100
+            start: _this.maxN===0? 0 : ( _this.minN/_this.maxN) *100, //初始化时，滑动条宽度开始标度
+            end: 100, //初始化时，滑动条宽度结束标度
+            width: 25,
+          },
+        ],
         series: [
           {
-            name: "额定值",
+            name: "压力",
             type: "line",
-            data: this.historyList.map(function (str) {
-              return str.rated;
-            }),
-            symbol: "none",
-            lineStyle: {
-              // type: "dotted", //'dotted'虚线 'solid'实线
-            },
-            itemStyle: {
-              normal: {
-                lineStyle: {
-                  width: 1,
-                },
-                color: "#fac858",
-              },
-            },
+            data: this.historyList
+              .map((item) => {
+                return item.pressureValue || "0";
+              })
+              .reverse(),
           },
           {
-            name: "温度",
+            name: "差值",
             type: "line",
-            data: this.historyList.map(function (str) {
-              return str.temperature;
-            }),
-            symbol: "none",
-            itemStyle: {
-              normal: {
-                lineStyle: {
-                  width: 2,
-                },
-                // color: "#ff0000",
-              },
-            },
+            data: this.historyList
+              .map((item) => {
+                return item.diffValue || "0";
+              })
+              .reverse(),
           },
           {
-            name: "气压",
+            name: "滤波值",
             type: "line",
-            data: this.historyList.map(function (str) {
-              return str.pressureValue;
-            }),
-            symbol: "none",
-            itemStyle: {
-              normal: {
-                lineStyle: {
-                  // width: 1,
-                },
-                // color: "#ff0000",
-              },
-            },
+            data: this.historyList
+              .map((item) => {
+                return item.wfValue || "0";
+              })
+              .reverse(),
           },
         ],
       });
@@ -1112,8 +1006,6 @@ export default {
         voltLevelName.push(item);
         voltLevelList.push({ name: item, value: voltLevel[item] });
       }
-      console.log(voltLevelName, 'voltLevelName')
-      console.log(voltLevelList, 'voltLevelList')
       this.myChart1.clear();
       this.myChart1.setOption({
         tooltip: {
@@ -1324,10 +1216,17 @@ export default {
         });
       });
 
-      this.getList(that.times, "正常");
+      let alarmTypeName = [];
+      let alarmTypeValue = [];
 
+      for (var item in alarmType) {
+        alarmTypeName.push(item);
+        alarmTypeValue.push(alarmType[item]);
+      }
+      this.chart3Refresh(alarmTypeName, alarmTypeValue);
       this.chart5Refresh(historyAlarmCount, "");
-      this.chart6Refresh(ratedMap)
+      this.chart6Refresh(ratedMap);
+      this.getList(that.times, alarmType);
     },
   },
 };
@@ -1336,6 +1235,52 @@ export default {
 .first {
   width: 100%;
   height: 100%;
+
+  .el-table >>> th.gutter {
+    display: table-cell !important;
+    background-color: #081b2f;
+  }
+  >>> ::-webkit-scrollbar {
+    width: 6px; // 横向滚动条
+    height: 6px; // 纵向滚动条 必写
+  }
+  // 滚动条的滑块
+  >>> ::-webkit-scrollbar-thumb {
+    background-color: #6d9dcd;
+    border-radius: 3px;
+  }
+  .dash_dater {
+    >>> .el-input__inner {
+      border: none;
+      background-color: #000;
+      color: #14e1fa;
+      font-size: 12px;
+    }
+  }
+  .box-title-list {
+    display: flex;
+  }
+  >>> .el-table tr {
+    background-color: #081b2f;
+  }
+  >>> .el-table td {
+    border-bottom: 0px solid #dfe6ec;
+  }
+  >>> .el-table__row--striped td {
+    background: #081b2f !important;
+  }
+
+  >>> .el-table {
+    color: #6d9dcd;
+  }
+  >>> .el-table thead {
+    color: #6d9dcd;
+  }
+  >>> .el-table th.is-leaf {
+    height: 85px;
+    background: #081b2f !important;
+    border-bottom: 0px solid #dfe6ec;
+  }
   .home-left {
     position: absolute;
     left: 25px;
@@ -1355,18 +1300,6 @@ export default {
   .home-left:hover,
   .home-right:hover {
     opacity: 1;
-  }
-  .home-box-width1 {
-    // width: 21%;
-  }
-  .home-box-width2 {
-    // width: 25%;
-  }
-  .home-box-width3 {
-    // width: 31%;
-  }
-  .home-box-width4 {
-    // width: 23%;
   }
   .box-container-num {
     min-width: 230px;
@@ -1408,6 +1341,7 @@ export default {
         background-color: #213d6c;
         color: #ffffff;
         font-size: 16px;
+        cursor: initial;
       }
     }
   }

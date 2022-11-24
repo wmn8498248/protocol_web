@@ -151,7 +151,6 @@ export default {
       );
     },
     async getList() {
-        console.log(this.$route.query.alarmTime, "this.$route.query.alarmTime")
         let alarmListData = []
       switch (this.$route.query.alarmTime) {
         case "日":

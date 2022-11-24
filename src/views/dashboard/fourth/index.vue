@@ -79,13 +79,14 @@
               </div>
             </div>
             <div class="title-right">
-              <el-button class="btn-map" @click="parentRouting">
+              <el-button class="btn-map" @click="parentRouting" size="mini">
                 更多信息</el-button
               >
               <el-button
                 class="btn-retry"
                 @click="tableExport"
                 :loading="onload"
+                size="mini"
                 >导出excel</el-button
               >
             </div>

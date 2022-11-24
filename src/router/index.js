@@ -46,8 +46,18 @@ export const constantRoutes = [
     hidden: true,
   },
   {
+    path: "/danhuo",
+    component: () => import("@/views/dashboard/onoff"),
+    hidden: true,
+  },
+  {
     path: "/test1",
     component: () => import("@/views/dashboard/index"),
+    hidden: true,
+  },
+  {
+    path: "/onoff",
+    component: () => import("@/views/dashboard/onoff"),
     hidden: true,
   },
   {
@@ -67,6 +77,27 @@ export const constantRoutes = [
         hidden: true,
         // hidden: true
       },
+
+      {
+        path: "/jishu/jishu_data",
+        component: () => import("@/views/jishu/jishu_data"),
+        name: "Jishu_data",
+        meta: {
+          icon: "theme",
+          title: "监测监控图",
+        },  
+        hidden: true,
+      },
+
+      {
+        path: "/jishu/mix",
+        component: () => import("@/views/jishu/mix"),
+        name: "Count_mix",
+        meta: { title: "数据详情", icon: "theme" },
+        hidden: true,
+      },
+      
+
       {
         path: "/temp/mix",
         component: () => import("@/views/temp/mix"),
@@ -623,8 +654,6 @@ export function resetRouter() {
 }
 
 // router.beforeEach((to, from, next) => {
-//   // console.log(store.state.user.userinfo.userName == "admin", "___________to");
-//   // console.log(to.fullPath, "___________to");
 //   next();
 
 //   if (store.state.user.userinfo.userName == "admin") {

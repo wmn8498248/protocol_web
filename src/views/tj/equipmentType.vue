@@ -133,7 +133,6 @@ export default {
       );
     },
     async getList() {
-      console.log(this.$route.query.alarmTime, "this.$route.query.alarmTime");
       const { list } = await api.deviceClassify({
         projectId: 2,
         deviceClassify: this.$route.query.deviceClassify,
@@ -143,7 +142,6 @@ export default {
       this.tableData = list;
       this.total = list.length;
       this.cutList();
-      console.log(this.tableData);
     },
   },
 };

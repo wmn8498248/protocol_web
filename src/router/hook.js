@@ -23,7 +23,6 @@ router.beforeEach(async (to, from, next) => {
     if (to.path === "/login") {
       // 如果已经登录了，重定向到主页面
       next({ path: "/" });
-      console.log(to.path, "to.path");
     } else {
       // next();
       const authRoutes = store.getters.authRoutes; //取到vuex内的权限菜单数据
@@ -37,7 +36,6 @@ router.beforeEach(async (to, from, next) => {
           // 通过用token拿到当前用户的权限菜单
           // let { userRouterMenu } = await store.dispatch('user/getInfo');
           // // 生成处理过的权限路由
-          console.log(menuList, "menuList______________");
           let menuList = [
             {
               path: "/dataHistory",
@@ -319,8 +317,39 @@ router.beforeEach(async (to, from, next) => {
               alwaysShow: false,
               children: [
                 {
+                  path: "onoff_edit",
+                  name: "Onoff_edit",
+                  component: "/onoff/onoff_edit",
+                  hidden: true,
+                  meta: {
+                    icon: "sensor",
+                    title: "单火开关传感器管理",
+                    noCache: true,
+                    standId: null,
+                    companyId: null,
+                  },
+                  alwaysShow: false,
+                  children: null,
+                },
+
+                {
+                  path: "onoff_setting",
+                  name: "Onoff_setting",
+                  component: "/onoff/onoff_setting",
+                  hidden: true,
+                  meta: {
+                    icon: "sensor",
+                    title: "单火开关传感器参数设置",
+                    noCache: true,
+                    standId: null,
+                    companyId: null,
+                  },
+                  alwaysShow: false,
+                  children: null,
+                },
+                {
                   path: "dianliu_edit",
-                  name: "Ddianliu_edit",
+                  name: "Dianliu_edit",
                   component: "/dianliu/dianliu_edit",
                   hidden: true,
                   meta: {
@@ -862,8 +891,6 @@ router.beforeEach(async (to, from, next) => {
             menuList
           );
           // //动态添加权限路由
-          console.log(authRoutes, "authRoutes______");
-
           router.addRoutes(authRoutes);
           next({ ...to, replace: true }); // 展开...to 传入path是以确保addRoutes是完整的  replace: true 当用户点击浏览器后退按钮时不会一直在同一个页面
         } catch (error) {

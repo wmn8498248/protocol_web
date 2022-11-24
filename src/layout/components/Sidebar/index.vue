@@ -44,7 +44,6 @@ export default {
       return path;
     },
     routers() {
-			console.log(777, this.$router.options.routes)
       return this.$router.options.routes;
     },
     showLogo() {

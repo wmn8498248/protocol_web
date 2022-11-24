@@ -9,10 +9,16 @@ export const getListMix = (data) =>
     },
   });
 
+export const historyExport = (data) =>
+  axios.request({
+    url: "temp/index/export/historylist",
+    method: "post",
+    data,
+  });
 
 export const alarmExport = (data) =>
   axios.request({
-    url: "temp/alarm/export",
+    url: "temp/index/export/alarmlist",
     method: "post",
     data,
   });
@@ -58,7 +64,15 @@ export const alarmRead = (data) =>
       ...data,
     },
   });
+// 正常列表
+export const tempNormalList = (data) =>
+  axios.request({
+    url: "temp/index/normalList",
+    method: "POST",
+    data,
+  });
 
+// 报警列表  
 export const alarmDate = (data) =>
   axios.request({
     url: "temp/alarm/list",

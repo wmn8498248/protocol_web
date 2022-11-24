@@ -1,45 +1,77 @@
 <template>
   <div class="upgrade-setting" v-if="upgradeInfo !== null">
-      <ul>
-        <!-- <li style="text-align: center;"><el-tag type="warning" size="medium ">定时刷新</el-tag>&ensp;{{ timeNum }}</li> -->
-        <li>
-          定时刷新&ensp;<el-tag type="danger">{{ timeNum }}</el-tag>
-        </li>
-        <!-- <li><el-button type="primary" >定时刷新:{{ timeNum }}</el-button></li> -->
-        <li>
-          <el-tag type="success" size="medium ">设备型号</el-tag>&ensp;{{
-            upgradeInfo.deviceVersion
-          }}
-        </li>
-        <li>
-          <el-tag type="success" size="medium ">硬件版本号</el-tag>&ensp;{{
-            upgradeInfo.hardwareVersion
-          }}
-        </li>
-        <li>
-          <el-tag type="success" size="medium ">当前软件版本号</el-tag>&ensp;{{
-            upgradeInfo.softwareVersion
-          }}
-        </li>
-        <li>
-          <el-tag type="success" size="medium ">软件包版本</el-tag>&ensp;{{
-            upgradeInfo.softwarePackageVersion
-          }}
-        </li>
-        <li>
-          <el-tag type="success" size="medium ">校验状态</el-tag>&ensp;{{
-            statusList[upgradeInfo.status]
-          }}
-        </li>
-        <li>
-          <el-tag type="success" size="medium ">时间</el-tag>&ensp;{{
-            upgradeInfo.time
-          }}
-        </li>
-      </ul>
-      <ul class="upload-li">
-        <li>
-          <el-upload
+    <ul>
+      <!-- <li style="text-align: center;"><el-tag type="warning" size="medium ">定时刷新</el-tag>&ensp;{{ timeNum }}</li> -->
+      <li>
+        定时刷新&ensp;<el-tag type="danger">{{ timeNum }}</el-tag>
+      </li>
+      <!-- <li><el-button type="primary" >定时刷新:{{ timeNum }}</el-button></li> -->
+      <li>
+        <el-tag type="success" size="medium ">设备型号</el-tag>&ensp;{{
+          upgradeInfo.deviceVersion
+        }}
+      </li>
+      <li>
+        <el-tag type="success" size="medium ">硬件版本号</el-tag>&ensp;{{
+          upgradeInfo.hardwareVersion
+        }}
+      </li>
+      <li>
+        <el-tag type="success" size="medium ">当前软件版本号</el-tag>&ensp;{{
+          upgradeInfo.softwareVersion
+        }}
+      </li>
+      <li>
+        <el-tag type="success" size="medium ">软件包版本</el-tag>&ensp;{{
+          upgradeInfo.softwarePackageVersion
+        }}
+      </li>
+      <li>
+        <el-tag type="success" size="medium ">校验状态</el-tag>&ensp;{{
+          statusList[upgradeInfo.status]
+        }}
+      </li>
+      <li>
+        <el-tag type="success" size="medium ">时间</el-tag>&ensp;{{
+          upgradeInfo.time
+        }}
+      </li>
+
+      <li class="pos-right">
+        <!-- :disabled="upgradeInfo.status !== 0 && upgradeInfo.status !== 4" -->
+        <el-button
+          :disabled="upgradeInfo.status !== 0 && upgradeInfo.status !== 4 && upgradeInfo.status !== 3"
+          size="small"
+          type="success"
+          @click="messageBox(1)"
+          >发送查询命令</el-button
+        >
+      </li>
+    </ul>
+    <ul class="upload-li">
+      <li><span v-if="upgradeTime && upgradeInfo.status === 2">(预计校验成功时间是：{{upgradeTime}})</span></li>
+      <li>
+        <!-- :disabled="upgradeInfo.status !== 1" -->
+        <!-- v-if="upgradeInfo.status === 1" -->
+        <el-upload
+          v-if="upgradeInfo.status === 1"
+          class="upload-demo"
+          drag
+          :action="actionUrl"
+          :headers="headerObj"
+          :data="{ deviceType: deviceType, deviceId: deviceId }"
+          :before-upload="beforeUpload"
+          :on-success="handle_success"
+          :on-preview="handlePreview"
+          :file-list="fileList"
+          :limit="1"
+          :auto-upload="true"
+          :multiple="false"
+        >
+          <i class="el-icon-upload"></i>
+          <div class="el-upload__text">将文件拖到此处，或<i>点击上传</i></div>
+        </el-upload>
+        <!-- <el-upload
             class="upload-demo"
             ref="upload"
             :action="actionUrl"
@@ -50,50 +82,49 @@
             :file-list="fileList"
             :auto-upload="false"
           >
-            <!-- <el-button size="small" type="success">选择文件</el-button> -->
-
             <el-button size="mini" type="info">选择文件</el-button>
           </el-upload>
           <div>
-            <el-button size="small" type="primary" @click="submitUpload"
-              >发送接受命令</el-button
-            >
-          </div>
-          <!-- <el-button size="small" type="primary" @click="">升级</el-button> -->
-        </li>
-        <li>
-          <el-button size="small" type="success" @click="messageBox(1)"
-            >发送查询命令</el-button
-          >
-        </li>
-        <li>
-          <el-button size="small" type="primary" @click="messageBox(2)"
-            >发送升级命令</el-button
-          >
-        </li>
-      </ul>
-      <div class="page-back"><el-button size="mini" @click="backPage">返回</el-button></div>
+            <el-button size="small" type="primary" @click="submitUpload">上传文件</el-button>
+          </div> -->
+      </li>
+      <li>
+        <!-- :disabled="upgradeInfo.status !== 3" -->
+        <el-button
+          :disabled="upgradeInfo.status !== 3"
+          size="small"
+          type="primary"
+          @click="messageBox(2)"
+          >升级固件包</el-button
+        >
+      </li>
+    </ul>
+    <div class="page-back">
+      <el-button size="mini" @click="backPage">返回</el-button>
+    </div>
   </div>
 </template>
 <script>
 import * as api from "@/api/manage";
 import { getToken } from "@/utils/auth";
+import moment from "moment";
 
 export default {
   name: "Upgrade_setting",
   data() {
     return {
-      timeNum: 10,
+      upgradeTime:null,
+      timeNum: 5,
       timeRefresh: null,
       fileList: [],
       deviceType: this.$route.query.deviceType,
       deviceId: this.$route.query.deviceId,
       upgradeInfo: null,
       statusList: [
-        "请发送查询命令",
-        "请发送接收命令",
-        "正在发送软件包，请勿重新提交",
-        "校验成功，可升级",
+        "请发送查询指令",
+        "可发送软件包",
+        "软件包发送中",
+        "校验成功",
         "校验失败",
       ],
     };
@@ -103,13 +134,12 @@ export default {
     this.timeRefresh = setInterval(() => {
       if (this.timeNum < 1) {
         this.getUpgradeInfo();
-        this.timeNum = 10;
+        this.timeNum = 5;
       }
       this.timeNum--;
     }, 1000);
   },
   deactivated() {
-    console.log("离开deactivated ");
     clearInterval(this.timeRefresh);
   },
   computed: {
@@ -128,9 +158,18 @@ export default {
     },
   },
   methods: {
+    beforeUpload(res) {
+      let time = moment(time).valueOf();
+      let timeUpload = (res.size * this.upgradeInfo.everyTime) / 212 * 1000;
+      let timestamp = time + timeUpload;
+      this.upgradeTime = moment(timestamp).format("YYYY-MM-DD HH:mm:ss");
+      return true;
+    },
+    
     backPage() {
       this.$router.go(-1);
     },
+
     submitUpload() {
       if (this.upgradeInfo.status === 2 || this.upgradeInfo.status === 3) {
         this.$message.warning("无法进行此命令");
@@ -252,7 +291,7 @@ export default {
   width: 700px;
   margin: 0 auto;
   color: #fff;
-  ul{
+  ul {
     float: left;
     width: 100%;
     line-height: 40px;
@@ -260,13 +299,34 @@ export default {
     background-color: #141e46;
     list-style: none;
     padding: 10px;
+    position: relative;
   }
-  .upload-li{
-    li{
+  >>> .el-upload-list__item-name [class^="el-icon"] {
+    color: #14e1fa;
+  }
+  >>> .el-progress__text {
+    color: #14e1fa;
+  }
+  >>> .el-upload-list__item-name {
+    color: #14e1fa;
+  }
+  >>> .el-upload__tip {
+    color: #ffffff;
+  }
+  >>> .el-upload-dragger {
+    background-color: #14e1fa;
+  }
+  .upload-li {
+    li {
       margin-bottom: 10px;
     }
   }
-  .page-back{
+  .pos-right {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+  }
+  .page-back {
     // padding-left: 40px;
   }
 }

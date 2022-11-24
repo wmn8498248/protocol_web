@@ -131,7 +131,6 @@ export default {
       );
     },
     async getList() {
-      console.log(this.$route.query.alarmTime, "this.$route.query.alarmTime");
       const { list } = await api.deviceVoltLevel({
         projectId: 2,
         voltLevel: this.$route.query.voltLevel,

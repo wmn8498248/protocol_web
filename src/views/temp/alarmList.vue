@@ -57,7 +57,7 @@
           <el-button size="mini" @click="handleHistory(scope.row)"
             >查看数据</el-button
           >
-          <el-button type="info" v-if="scope.row.status === 0" @click="handleRead(scope.row.id)"
+          <el-button type="info" size="mini" v-if="scope.row.status === 0" @click="handleRead(scope.row.id)"
             >设置已读</el-button
           >
           <el-button type="danger" round size="mini" @click="handleDelete(scope.row.id)"
