@@ -3,7 +3,7 @@
     <div class="dashboard">
       <div class="dashboard-topImg">
         <!-- <img src="../../assets/images/bg05.png" /> -->
-        国网宁夏物联网智能管理平台
+        XXXXXXXXXXXXX物联网管理平台
       </div>
       <div class="dashboard-time">{{ nowDate }} 欢迎使用！</div>
       <div class="dashboard-container">

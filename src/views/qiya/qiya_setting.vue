@@ -6,6 +6,9 @@
     <div class="search-container">
       <el-form label-width="200px">
         <el-form-item>
+          <el-button @click="commandSleep()" class="btn-create"
+            >开启睡眠</el-button
+          >
           <el-button @click="messageBox(1)" class="btn-clear"
             >设置重启</el-button
           >
@@ -99,7 +102,7 @@ export default {
       gatewayIdList: [],
     };
   },
-  
+
   activated() {
     this.id = this.$route.query.id || 0;
     this.deviceId = this.$route.query.deviceId || 0;
@@ -132,6 +135,28 @@ export default {
         this.issuanceLoad = false;
       }
     },
+    commandSleep() {
+      let that = this;
+      this.$prompt("请输入参数命令", "发送睡眠命令", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+      })
+        .then(async ({ value }) => {
+          let data = {
+            deviceId: this.deviceId,
+            patternStatus: parseInt(value),
+          };
+          let readList  = await api.setGeneral(data);
+          console.log(readList)
+          that.$message.success(readList);
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "取消输入",
+          });
+        });
+    },
     messageBox(res) {
       this.$confirm("确定提交命令到【设备：" + this.deviceId + "】", "提示", {
         confirmButtonText: "确定",
@@ -157,6 +182,20 @@ export default {
               readList = await api.deviceMonitor(data);
               break;
 
+            case 5:
+              this.$prompt("请输入参数命令", "提示", {
+                confirmButtonText: "确定",
+                cancelButtonText: "取消",
+              })
+                .then(({ value }) => {})
+                .catch(() => {
+                  this.$message({
+                    type: "info",
+                    message: "取消输入",
+                  });
+                });
+              // readList = await api.deviceMonitor(data);
+              break;
             default:
               break;
           }

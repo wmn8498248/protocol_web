@@ -636,6 +636,7 @@ export default {
 
     chart4Refresh(res, hisTitle) {
       // this.historyList = res.reverse();
+      this.historyList = res;
 
       this.myChart4 = this.$echarts.init(this.$refs.chart4);
       this.myChart4.clear();

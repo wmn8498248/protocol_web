@@ -1,5 +1,38 @@
 import axios from "@/utils/ajaxRequest";
 
+
+// 增加
+export const cronAdd = (data) =>
+  axios.request({
+    url: "onoff/job/cron/save",
+    method: "post",
+    data,
+  });
+// 列表
+export const cronList = (data) =>
+  axios.request({
+    url: "onoff/job/cron/list",
+    method: "post",
+    data,
+  });
+// 修改
+export const cronUpdate = (data) =>
+  axios.request({
+    url: "onoff/job/cron/update",
+    method: "post",
+    data,
+  });
+// 删除
+export const cronDelete = (data) =>
+  axios.request({
+    url: "/onoff/job/cron/delete/{id}",
+    method: "post",
+    data,
+  });    
+
+
+
+
 // 设备参数查询
 export const onoffInfo = (data) =>
   axios.request({

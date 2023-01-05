@@ -105,7 +105,7 @@
                       <span
                         class="date"
                         :title="index"
-                        v-text="item.countUp"
+                        v-text="item.actionNum"
                       ></span>
                       <span
                         class="date"
@@ -379,7 +379,7 @@
         let historyList = [];
         let deviceName = "";
         if (this.dataDetailsList.length > 0) {
-          let deviceId = this.dataDetailsList[res].deviceId;
+          let deviceId = this.dataDetailsList[res].sensorId; 
           historyList = await api.indexChart({
             deviceId: deviceId,
             phase: this.times,
@@ -649,7 +649,7 @@
         this.myChart4.clear();
         this.myChart4.setOption({
           title: {
-            text: hisTitle ? hisTitle+ _this.time + "相": "",
+            text: hisTitle ? hisTitle+ _this.times + "相": "",
             top: 10,
             left: "center",
             textStyle: {

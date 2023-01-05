@@ -46,7 +46,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column prop="countUp" label="次数门限值"></el-table-column>
+      <el-table-column prop="actionNum" label="次数"></el-table-column>
 
       <el-table-column prop="voltLevel" label="电压等级"> </el-table-column>
       <el-table-column prop="deviceClassify" label="设备分类">

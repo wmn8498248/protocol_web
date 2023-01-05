@@ -1,4 +1,4 @@
-# 立信管理平台 2.0 后台
+# toProfile 2.0 后台
 
 > 它只包含了 Element UI & axios & iconfont & permission control & lint，这些搭建后台必要的东西。
 

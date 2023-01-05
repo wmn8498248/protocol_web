@@ -6,7 +6,7 @@
         <el-tab-pane label="传感器列表" name="first">
           <div class="switch-content">
             <el-row :gutter="10">
-              <el-col :md="6" :lg="6" :xl="4" v-for="item in tableData">
+              <el-col :md="8" :lg="6" :xl="4" v-for="item in tableData">
                 <div class="box-info">
                   <div class="item item-title">
                     {{ item.name }}
@@ -19,7 +19,6 @@
                     <svg-icon icon-class="sw-sd"></svg-icon>湿度：
                     {{ item.humidity }}%RH
                   </div>
-
                   <div class="item">
                     <svg-icon icon-class="sw-dl"></svg-icon>电流：
                     {{ item.electricity }}A
@@ -28,7 +27,6 @@
                     <svg-icon icon-class="sw-rq"></svg-icon>
                     {{ item.updateTime }}
                   </div>
-
                   <!-- <div class="item">
                     <svg-icon icon-class="sw-rq"></svg-icon>
                     定时任务
@@ -98,7 +96,7 @@
               @size-change="onPageSizeChange"
               @current-change="onPageCurrentChange"
               :current-page="pages.pageNum"
-              :page-sizes="[5, 10, 20, 50]"
+              :page-sizes="[12, 24, 48, 96]"
               :page-size="pages.pageSize"
               layout="total, sizes, prev, pager, next, jumper"
               :total="total"
@@ -109,14 +107,10 @@
         <el-tab-pane label="任务列表" name="second">
           <el-table :data="taskData" stripe style="width: 100%">
             <!-- <el-table-column prop="jobId" label="任务Id"></el-table-column> -->
-            <!-- <el-table-column prop="jobParam" label="参数">
+            <el-table-column prop="jobParam" label="定时任务">
               <template slot-scope="{ row }">
-                <div
-                  class="job-param"
-                  v-for="(item, index) in row.jobParam"
-                  :key="index"
-                >
-                  <p>
+                <!-- <div>{{row.jobParam[0]}}</div> -->
+                <!-- <p>
                     <el-tag type="success">
                       任务开关：{{ item.status ? "开启" : "关闭" }}
                     </el-tag>
@@ -128,12 +122,21 @@
                   </p>
                   <p>
                     <el-tag type="success">
-                      开关Id：{{ item.onoffNum }}
+                      开关ID：{{ item.onoffNum }}
                     </el-tag>
-                  </p>
+                  </p> -->
+                <div
+                  class="job-param"
+                  v-for="(item, index) in row.jobParam"
+                  :key="index"
+                >
+                  <!-- 创新工作室台灯定时开启 -->
+                  {{ item.deviceName }} - {{ item.onoffName }} - 定时{{
+                    item.status ? "开启" : "关闭"
+                  }}
                 </div>
               </template>
-            </el-table-column> -->
+            </el-table-column>
             <el-table-column prop="jobName" label="任务别名"></el-table-column>
             <el-table-column prop="jobStatus" label="任务状态">
               <template slot-scope="{ row }">
@@ -160,13 +163,13 @@
             <el-table-column prop="createTime" label="时间"></el-table-column>
             <el-table-column label="操作" width="350">
               <template slot-scope="{ row }">
-                <el-button
+                <!-- <el-button
                   v-if="adminStatus"
                   class="btn-retry"
                   size="mini"
                   @click="getLogList(row.jobId)"
                   >日志</el-button
-                >
+                > -->
                 <el-button
                   class="btn-detail"
                   size="mini"
@@ -203,44 +206,17 @@
           </div>
         </el-tab-pane>
 
-        <el-tab-pane label="日志" name="third" v-if="adminStatus">
+        <!-- <el-tab-pane label="日志" name="third" v-if="adminStatus">
           <el-table :data="logData" stripe style="width: 100%">
-            <!-- <el-table-column prop="jobId" label="jobId"></el-table-column> -->
-            <!-- <el-table-column prop="jobLogId" label="jobLogId"></el-table-column> -->
             <el-table-column prop="jobParam" label="失败列表" width="420px">
               <template slot-scope="{ row }">
                 {{ row.failInfo }}
               </template>
-
-              <!-- <template slot-scope="{ row }">
-                <div
-                  class="job-param"
-                  v-for="(item, index) in row.failInfo"
-                  :key="index"
-                >
-                  <p>
-                    <el-tag type="success">
-                      任务开关：{{ item.status ? "开启" : "关闭" }}
-                    </el-tag>
-                  </p>
-                  <p>
-                    <el-tag type="success">
-                      开关设备：{{ item.deviceId }}
-                    </el-tag>
-                  </p>
-                  <p>
-                    <el-tag type="success">
-                      开关Id：{{ item.onoffNum }}
-                    </el-tag>
-                  </p>
-                </div>
-              </template> -->
             </el-table-column>
             <el-table-column prop="successRatio" label="成功率，成功个数/总数">
             </el-table-column>
             <el-table-column prop="createTime" label="时间"></el-table-column>
           </el-table>
-
           <div class="pagination taR mt20x">
             <el-pagination
               @size-change="onPageSizeChange2"
@@ -253,7 +229,7 @@
             >
             </el-pagination>
           </div>
-        </el-tab-pane>
+        </el-tab-pane> -->
       </el-tabs>
     </div>
 
@@ -284,6 +260,7 @@ export default {
   },
   data() {
     return {
+      itemStatus: false,
       logData: [],
       activeName: "first",
       taskData: [],
@@ -294,7 +271,7 @@ export default {
       searchModel: { deviceId: "", deviceName: "" },
       pages: {
         pageNum: 1,
-        pageSize: 10,
+        pageSize: 12,
       },
       total: 0,
       pages2: {
@@ -328,8 +305,14 @@ export default {
   },
 
   methods: {
-    getLogList(jobId){
-      this.activeName=  "third"
+    itemHover(res) {
+      this.itemStatus = res;
+      if (res) {
+      } else {
+      }
+    },
+    getLogList(jobId) {
+      this.activeName = "third";
       this.getJobLog(jobId);
     },
     jobChange(item) {
@@ -444,6 +427,7 @@ export default {
         status = 1;
       }
       // console.log(item[name])
+      clearInterval(this.nowDateId);
 
       this.$confirm(
         "确定修改《" + item[name + "Name"] + "》状态为" + statusName + "?",
@@ -455,24 +439,31 @@ export default {
         }
       )
         .then(async () => {
-          clearInterval(this.nowDateId);
-
           let data = {
             id: item.id,
           };
 
           data[name] = status;
-          item[name] = !item[name];
 
           await api.onoffSetting(data);
-          this.$message.success("修改成功");
-          // this.getData();
+          item[name] = !item[name];
+
+          this.$message.success("指令发送成功");
+          // setTimeout(() => {
+          //   this.getData();
+          // }, 1000);
+
           let that = this;
           this.nowDateId = setInterval(() => {
             that.getData();
           }, 5000);
         })
-        .catch(() => {});
+        .catch(() => {
+          let that = this;
+          this.nowDateId = setInterval(() => {
+            that.getData();
+          }, 5000);
+        });
     },
     // 修改列表条数
     onPageSizeChange2(e) {
@@ -556,9 +547,7 @@ export default {
       border-radius: 5px;
       text-align: center;
       margin-bottom: 10px;
-      .item-title {
-        background-color: #000000;
-      }
+
       .item {
         line-height: 30px;
         border-bottom: 1px solid #333333;
@@ -566,6 +555,10 @@ export default {
           margin-right: 5px;
           font-size: 16px;
         }
+      }
+      .item-title {
+        background-color: #000000;
+        // margin-bottom: 10px;
       }
     }
     .box-btn-content {

@@ -14,7 +14,6 @@
     </div>
     <div class="content" v-if="companyList.length > 0">
       <el-tabs v-model="activeName">
-        
         <el-tab-pane label="SF6气体压力传感器" name="4">
           <qiya :companyId="companyId" :projectId="projectId" ref="qiya"></qiya>
         </el-tab-pane>
@@ -85,6 +84,15 @@
             ref="onoff"
           ></onoff>
         </el-tab-pane>
+
+        <el-tab-pane label="WiFi开关" name="17">
+          <wifi
+            :companyId="companyId"
+            :projectId="projectId"
+            ref="wifi"
+          ></wifi>
+        </el-tab-pane>
+
         <el-tab-pane label="断路器计数器" name="16">
           <jishu
             :companyId="companyId"
@@ -92,7 +100,6 @@
             ref="jishu"
           ></jishu>
         </el-tab-pane>
-        
 
         <el-tab-pane label="避雷器" name="1" disabled>
           <bilei
@@ -123,8 +130,6 @@
             ref="shuiwei"
           ></shuiwei>
         </el-tab-pane>
-
-        
       </el-tabs>
       <div class="export">
         <el-form inline label-width="100px">
@@ -159,6 +164,7 @@ import bianxing from "./components/bianxing";
 import wenduyg from "./components/wenduyg";
 import dianliu from "./components/dianliu";
 import onoff from "./components/onoff";
+import wifi from "./components/wifi";
 
 import Cookies from "js-cookie";
 import { getToken } from "@/utils/auth";
@@ -166,6 +172,7 @@ import { getToken } from "@/utils/auth";
 export default {
   name: "Sensor",
   components: {
+    wifi,
     onoff,
     dianliu,
     wenduyg,
@@ -319,7 +326,10 @@ export default {
           break;
         case "16":
           this.$refs.jishu.getList();
-          break;  
+          break;
+        case "17":
+          this.$refs.wifi.getList();
+          break;
         default:
           break;
       }
@@ -382,6 +392,9 @@ export default {
           break;
         case "16":
           url = "/manage/jishu_edit";
+          break;
+        case "17":
+          url = "/manage/wifi_edit";
           break;
         default:
           break;

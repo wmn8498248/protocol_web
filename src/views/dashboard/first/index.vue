@@ -375,7 +375,7 @@ export default {
         companyId: this.companyId,
         type: "all",
         ...this.searchModel,
-        ...this.searchModel,
+        ...this.pages,
       });
 
       this.alarmList = records;

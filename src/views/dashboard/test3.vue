@@ -2,7 +2,7 @@
   <div class="dashboard">
     <div class="dashboard-topImg">
       <!-- <img src="../../assets/images/bg05.png" /> -->
-      XXXXXXXXXXXXX物联管理平台
+      XXXXXXXXXXXXX物联网管理平台
     </div>
     <div class="dashboard-time" v-if="nowDate">
       <p>{{ nowDate }}</p>

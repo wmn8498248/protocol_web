@@ -317,6 +317,38 @@ router.beforeEach(async (to, from, next) => {
               alwaysShow: false,
               children: [
                 {
+                  path: "wifi_edit",
+                  name: "Wifi_edit",
+                  component: "/wifi/wifi_edit",
+                  hidden: true,
+                  meta: {
+                    icon: "sensor",
+                    title: "wifi传感器管理",
+                    noCache: true,
+                    standId: null,
+                    companyId: null,
+                  },
+                  alwaysShow: false,
+                  children: null,
+                },
+
+                {
+                  path: "wifi_setting",
+                  name: "Wifi_setting",
+                  component: "/wifi/wifi_setting",
+                  hidden: true,
+                  meta: {
+                    icon: "sensor",
+                    title: "wifi传感器参数设置",
+                    noCache: true,
+                    standId: null,
+                    companyId: null,
+                  },
+                  alwaysShow: false,
+                  children: null,
+                },
+
+                {
                   path: "onoff_edit",
                   name: "Onoff_edit",
                   component: "/onoff/onoff_edit",
@@ -432,6 +464,23 @@ router.beforeEach(async (to, from, next) => {
                   },
                   alwaysShow: false,
                 },
+
+                // {
+                //   path: "cron",
+                //   name: "Cron",
+                //   component: "/manage/cron",
+                //   hidden: false,
+                //   meta: {
+                //     icon: "site",
+                //     title: "cron表达式",
+                //     noCache: false,
+                //     standId: null,
+                //     companyId: null,
+                //   },
+                //   alwaysShow: false,
+                //   children: null,
+                // },
+
                 {
                   path: "site",
                   name: "Site",

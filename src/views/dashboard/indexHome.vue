@@ -1,13 +1,13 @@
 <template>
   <div
-    class="index-home"
-    :style="{ height: isActiveName==='onoff' ? 'auto' : '100%' }"
+    :class="isActiveName == 'wifi' ? 'index-home index-home-bg' : 'index-home'"
+    :style="{ height: isActiveName === 'onoff' ? 'auto' : '100%' }"
   >
     <div class="home-profile" @click="toProfile">平台介绍</div>
     <!-- <div class="home-left" @click="toProfile">{{}}</div> -->
     <div
       class="home-container"
-      :style="{ height: isActiveName==='onoff' ? 'auto' : '100%' }"
+      :style="{ height: isActiveName === 'onoff' ? 'auto' : '100%' }"
     >
       <div class="home-title">
         <div class="title-left title-public">
@@ -63,7 +63,7 @@
           </el-select>
         </div>
 
-        <span>XXXXXXXXXXXXX物联管理平台</span>
+        <span>XXXXXXXXXXXXX物联网管理平台</span>
       </div>
       <!-- slide-fade moveL slide-->
       <transition name="slide">
@@ -76,13 +76,14 @@
         ></component>
       </transition>
     </div>
-
+    <!-- :close-on-click-modal="false" -->
     <el-dialog
+      top="15vh"
+      width="100%"
       min-height="700px"
       :title="dialogTitle"
       :visible.sync="dialogTableVisible"
       @close="dialogClosed"
-      width="90%"
       :before-close="handleClose"
       center
     >
@@ -112,6 +113,7 @@ import ninth from "./ninth";
 import test from "./test";
 
 import onoff from "./onoff";
+import wifi from "./wifi";
 
 import profile from "./profile";
 
@@ -122,6 +124,7 @@ import nopages from "@/views/error-page/404";
 export default {
   name: "indexHome",
   components: {
+    wifi,
     onoff,
     first,
     second,
@@ -377,6 +380,10 @@ export default {
 
         case "wi":
           this.currentTabComponent = ninth;
+          break;
+
+        case "wifi":
+          this.currentTabComponent = wifi;
           break;
 
         default:
@@ -865,5 +872,12 @@ export default {
     flex: 1;
     width: 100%;
   }
+}
+.index-home-bg {
+  // background-image: url('../../assets/images/wifi.jpg');
+  // background-position: center;
+  // background-repeat: no-repeat;
+  // background-size:  100%;
+  // background-color: #01010b;
 }
 </style>

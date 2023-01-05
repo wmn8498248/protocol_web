@@ -28,7 +28,7 @@
       <el-table height="500px" :data="tableList" stripe style="width: 100%">
         <el-table-column prop="id" label="传感器编号"> </el-table-column>
         <el-table-column prop="name" label="传感器别名"> </el-table-column>
-        <el-table-column prop="countUp" label="次数"> </el-table-column>
+        <el-table-column prop="actionNum" label="次数"> </el-table-column>
         
         <el-table-column prop="createTime" label="更新时间" width="150px">
         </el-table-column>
@@ -93,7 +93,7 @@
     methods: {
       handleHistory(res) {
         this.$emit("close-after", true);
-        let deviceNumber = res.id;
+        let deviceNumber = res.sensorId;
         this.$router.push({
           path: `/jishu/jishu_data`,
           query: {

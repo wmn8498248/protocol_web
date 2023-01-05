@@ -1,6 +1,14 @@
 import axios from '@/utils/ajaxRequest';
 
 
+// 查询监测数据
+export const setGeneral = data =>
+  axios.request({
+    url: 'sf6/device/sendout/set/general',
+    method: 'post',
+    data
+  });
+
 // 网关列表
 export const companyList = data =>
   axios.request({
